@@ -1,4 +1,5 @@
-import { SiteDisclaimer } from "@/components/legal";
+import { SiteDisclaimer, NYFED_TERMS } from "@/components/legal";
+import { useSession, useIsAdmin } from "@/components/auth";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -124,6 +125,9 @@ function ThemeToggle() {
 }
 
 function Nav() {
+  const { session } = useSession();
+  const admin = useIsAdmin(session?.user.id);
+  const items = NAV.filter((n) => n.to !== "/watchlist" || admin.data === true);
   return (
     <header className="nav-glass sticky top-0 z-40 border-b border-separator">
       <div className="mx-auto flex max-w-[1080px] items-center gap-3 px-4 pt-1 md:px-8">
@@ -134,7 +138,7 @@ function Nav() {
       </div>
       <nav aria-label="Sections" className="mx-auto max-w-[1080px] overflow-x-auto px-4 pb-2 md:px-8">
         <div className="segmented">
-          {NAV.map((n) => (
+          {items.map((n) => (
             <Link key={n.to} to={n.to} activeOptions={{ exact: n.to === "/" }} activeProps={{ className: "active", "aria-current": "page" }}>
               {n.label}
             </Link>
@@ -163,6 +167,8 @@ function RootComponent() {
         </main>
         <footer className="mx-auto max-w-[1080px] px-4 pb-12 text-[13px] text-muted-foreground md:px-8">
           <SiteDisclaimer />
+          <p className="mt-2"><a href={NYFED_TERMS} target="_blank" rel="noopener noreferrer">SOFR and EFFR: Federal Reserve Bank of New York, subject to its Terms of Use</a></p>
+          <p className="mt-2">Sources also include EIA, U.S. Treasury and USDA AMS.</p>
           <p className="mt-2 flex flex-wrap gap-x-4"><Link to="/sources">Sources</Link><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link><Link to="/accessibility">Accessibility</Link><Link to="/contact">Contact</Link></p>
         </footer>
       </ReportIssueProvider>

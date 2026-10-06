@@ -5,7 +5,7 @@ import { useReportIssue } from "@/components/report-issue";
 
 export const Route = createFileRoute("/contact")({
   staticData: { sitemap: true },
-  head: () => legalHead("Contact — Close & Open", "How to reach Close & Open: send a message through the Report an issue form."),
+  head: () => legalHead("Contact — Close & Open", "How to reach Close & Open: use the Report an issue form."),
   component: Contact,
 });
 
@@ -19,7 +19,7 @@ function Contact() {
         <div className="row !block text-[0.9375rem]">Add your email if you'd like a reply. It's optional.</div>
         <div className="row !block text-[0.9375rem]">Email: <EmailLink /></div>
       </Group>
-      <button className="btn-primary mt-6" onClick={() => open({ field: "Contact" })}>Send a message</button>
+      <button className="btn-primary mt-6" onClick={() => open({ field: "Contact" })}>Report an issue</button>
     </div>
   );
 }

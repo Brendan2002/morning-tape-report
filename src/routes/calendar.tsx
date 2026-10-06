@@ -1,8 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { getCalendarWeek } from "@/lib/reports.functions";
 import { longDate } from "@/components/report";
-import { ErrorRow, Group, PageHeader, SkeletonRows, SourceTag } from "@/components/tape";
+import { ErrorRow, Group, PageHeader, SourceTag } from "@/components/tape";
 import { FlagButton } from "@/components/report-issue";
 
 export const Route = createFileRoute("/calendar")({
@@ -15,31 +14,20 @@ export const Route = createFileRoute("/calendar")({
       { property: "og:description", content: "Economic releases and central bank events for the next 7 days." },
     ],
   }),
+  loader: () => getCalendarWeek(),
+  errorComponent: CalendarError,
   component: CalendarPage,
 });
 
-const iso = (d: Date) => d.toISOString().slice(0, 10);
 
 function CalendarPage() {
-  const q = useQuery({
-    queryKey: ["calendar"],
-    queryFn: async () => {
-      const now = new Date();
-      const end = new Date(now.getTime() + 7 * 864e5);
-      const { data, error } = await supabase
-        .from("calendar_events").select("*")
-        .gte("event_date", iso(now)).lte("event_date", iso(end))
-        .order("event_date").order("event_time");
-      if (error) throw error;
-      return data;
-    },
-  });
-  const days = new Map<string, NonNullable<typeof q.data>>();
-  (q.data ?? []).forEach((e) => days.set(e.event_date, [...(days.get(e.event_date) ?? []), e]));
+  const events = Route.useLoaderData();
+  const days = new Map<string, typeof events>();
+  events.forEach((e) => days.set(e.event_date, [...(days.get(e.event_date) ?? []), e]));
   return (
     <>
       <PageHeader title="Calendar" subtitle="Next 7 days · times in ET · importance ●●● high to ●○○ low" />
-      {q.isLoading ? <div className="group"><SkeletonRows rows={5} /></div> : q.isError ? <div className="group"><ErrorRow onRetry={() => q.refetch()} /></div> : days.size === 0 ? (
+      {days.size === 0 ? (
         <div className="group"><div className="row text-muted-foreground">No scheduled events in the next 7 days.</div></div>
       ) : (
         <div className="space-y-8">
@@ -72,4 +60,9 @@ function CalendarPage() {
       )}
     </>
   );
+}
+
+function CalendarError() {
+  const router = useRouter();
+  return <><PageHeader title="Calendar" /><div className="group"><ErrorRow onRetry={() => router.invalidate()} /></div></>;
 }
