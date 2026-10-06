@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { ChevronDown, Ellipsis, Newspaper, Percent, TrendingUp, Wheat } from "lucide-react";
-import { KEY_TV, TV_LABEL, TickerTape } from "./tradingview";
+import { CFD_NOTE, KEY_TV, TV_LABEL, TickerTape } from "./tradingview";
 
 /* ---------- Bottom tab bar (mobile only) ---------- */
 
@@ -84,7 +84,7 @@ export function KeyStrip() {
     <section aria-label="Key numbers" className="md:hidden">
       <h2 className="group-label">Key numbers</h2>
       <div className="group px-2 py-1"><TickerTape symbols={KEY_TV} /></div>
-      <div className="group-footer">{TV_LABEL}</div>
+      <div className="group-footer">{TV_LABEL}. {CFD_NOTE}</div>
     </section>
   );
 }

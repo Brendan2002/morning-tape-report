@@ -96,16 +96,16 @@ export function MiniChart({ symbol, height = 220 }: { symbol: string; height?: n
   return <TVWidget type="mini-symbol-overview" height={height} label={`${symbol} chart`} config={{ symbol, width: "100%", height, dateRange: "3M", autosize: false, largeChartUrl: "", noTimeScale: false }} />;
 }
 
-/** Symbols used on Today (desktop sidebar + mobile ticker). */
+export const CFD_NOTE = "CFD = a broker's contract-for-difference price that tracks the market; it is not the official exchange quote or settlement.";
+
+/** Symbols used on Today (desktop sidebar + mobile ticker). Exchange futures and Treasury yields aren't available to free widgets, so they're omitted. */
 export const KEY_TV: TVSym[] = [
-  { s: "FOREXCOM:SPXUSD", d: "S&P 500" },
-  { s: "FOREXCOM:NSXUSD", d: "Nasdaq 100" },
-  { s: "FOREXCOM:DJI", d: "Dow" },
-  { s: "TVC:US10Y", d: "10-yr yield" },
+  { s: "FOREXCOM:SPXUSD", d: "S&P 500 (CFD)" },
+  { s: "FOREXCOM:NSXUSD", d: "Nasdaq 100 (CFD)" },
+  { s: "FOREXCOM:DJI", d: "Dow (CFD)" },
   { s: "TVC:USOIL", d: "WTI crude" },
   { s: "TVC:GOLD", d: "Gold" },
   { s: "FX:EURUSD", d: "EUR/USD" },
-  { s: "TVC:DXY", d: "Dollar index" },
-  { s: "CME:DC1!", d: "Class III milk" },
-  { s: "CBOT:ZC1!", d: "Corn" },
+  { s: "CAPITALCOM:DXY", d: "Dollar index (CFD)" },
+  { s: "CAPITALCOM:CORN", d: "Corn (CFD)" },
 ];

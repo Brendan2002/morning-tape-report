@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/tape";
-import { MarketQuotes, TVWidget, TV_LABEL, type TVGroup } from "@/components/tradingview";
+import { CFD_NOTE, MarketQuotes, TVWidget, TV_LABEL, type TVGroup } from "@/components/tradingview";
 
 export const Route = createFileRoute("/markets")({
   staticData: { sitemap: true },
@@ -17,18 +17,16 @@ export const Route = createFileRoute("/markets")({
 
 const GROUPS: TVGroup[] = [
   { name: "Indices", symbols: [
-    { s: "FOREXCOM:SPXUSD", d: "S&P 500" }, { s: "FOREXCOM:NSXUSD", d: "Nasdaq 100" }, { s: "FOREXCOM:DJI", d: "Dow" },
+    { s: "FOREXCOM:SPXUSD", d: "S&P 500 (CFD)" }, { s: "FOREXCOM:NSXUSD", d: "Nasdaq 100 (CFD)" }, { s: "FOREXCOM:DJI", d: "Dow (CFD)" },
     { s: "INDEX:DEU40", d: "DAX" }, { s: "FOREXCOM:UKXGBP", d: "FTSE 100" }, { s: "INDEX:NKY", d: "Nikkei 225" }, { s: "INDEX:HSI", d: "Hang Seng" },
   ] },
-  { name: "Index futures", symbols: [{ s: "CME_MINI:ES1!", d: "S&P 500 futures" }, { s: "CME_MINI:NQ1!", d: "Nasdaq 100 futures" }, { s: "CBOT_MINI:YM1!", d: "Dow futures" }] },
-  { name: "Rates", symbols: [{ s: "TVC:US02Y", d: "2-yr yield" }, { s: "TVC:US10Y", d: "10-yr yield" }, { s: "TVC:US30Y", d: "30-yr yield" }] },
   { name: "Currencies", symbols: [
-    { s: "TVC:DXY", d: "Dollar index" }, { s: "FX:EURUSD", d: "EUR/USD" }, { s: "FX:USDJPY", d: "USD/JPY" }, { s: "FX:GBPUSD", d: "GBP/USD" },
+    { s: "CAPITALCOM:DXY", d: "Dollar index (CFD)" }, { s: "FX:EURUSD", d: "EUR/USD" }, { s: "FX:USDJPY", d: "USD/JPY" }, { s: "FX:GBPUSD", d: "GBP/USD" },
     { s: "FX_IDC:USDCNY", d: "USD/CNY" }, { s: "BITSTAMP:BTCUSD", d: "Bitcoin" },
   ] },
   { name: "Commodities", symbols: [
     { s: "TVC:USOIL", d: "WTI crude" }, { s: "TVC:UKOIL", d: "Brent crude" }, { s: "TVC:GOLD", d: "Gold" }, { s: "TVC:SILVER", d: "Silver" },
-    { s: "CBOT:ZC1!", d: "Corn" }, { s: "CBOT:ZW1!", d: "Wheat" },
+    { s: "CAPITALCOM:CORN", d: "Corn (CFD)" }, { s: "CAPITALCOM:WHEAT", d: "Wheat (CFD)" },
   ] },
 ];
 
@@ -57,7 +55,7 @@ function Markets() {
         <Section label="Top movers (US)" footer={`Gainers, losers and most active US stocks. ${TV_LABEL}.`}>
           <TVWidget type="hotlists" height={560} label="Top movers" config={{ dateRange: "1D", exchange: "US", showChart: true, largeChartUrl: "", showSymbolLogo: false, showFloatingTooltip: false, width: "100%", height: 560 }} />
         </Section>
-        <Section label="Global markets">
+        <Section label="Global markets" footer={`${TV_LABEL}. ${CFD_NOTE} Index futures and Treasury yields aren't available in TradingView's free widgets; see Macro & Rates for official Treasury yields.`}>
           <MarketQuotes groups={GROUPS} height={620} />
         </Section>
       </div>

@@ -3,7 +3,7 @@ import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ExternalLink } from "lucide-react";
 import { Group } from "./tape";
-import { KEY_TV, MarketQuotes, TV_LABEL } from "./tradingview";
+import { CFD_NOTE, KEY_TV, MarketQuotes, TV_LABEL } from "./tradingview";
 import { BriefList, KeyStrip, SectionNav, type BriefItem } from "./mobile";
 import { useReportIssue } from "./report-issue";
 
@@ -23,7 +23,7 @@ export function LiveMarkets() {
     <section className="min-w-0">
       <h2 className="group-label">Live markets</h2>
       <div className="group px-2 py-2"><MarketQuotes groups={[{ name: "Key markets", symbols: KEY_TV }]} /></div>
-      <div className="group-footer">{TV_LABEL}. Yields in percent.</div>
+      <div className="group-footer">{TV_LABEL}. {CFD_NOTE} Treasury yields: see Macro &amp; Rates.</div>
     </section>
   );
 }

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { ErrorRow, Group, LineChart, PageHeader, SkeletonRows, SourceTag, fmt, shortDate, signed } from "@/components/tape";
-import { MarketQuotes, MiniChart, TV_LABEL } from "@/components/tradingview";
+import { CFD_NOTE, MarketQuotes, MiniChart, TV_LABEL } from "@/components/tradingview";
 import { FlagButton } from "@/components/report-issue";
 import { ResponsiveSheet } from "@/components/sheet";
 import { sinceYears, useMacro } from "@/components/macro";
@@ -21,15 +21,15 @@ export const Route = createFileRoute("/dairy")({
   component: Dairy,
 });
 
+// Exchange futures (CME/CBOT/NYMEX) aren't available to free TradingView widgets; broker CFD prices are shown and labelled.
+// Class III milk and soybean meal have no free-widget equivalent and are omitted (official USDA dairy prices are above).
 const ITEMS = [
-  { s: "CME:DC1!", d: "Class III milk", unit: "$/cwt" },
-  { s: "CBOT:ZC1!", d: "Corn", unit: "¢/bu" },
-  { s: "CBOT:ZS1!", d: "Soybeans", unit: "¢/bu" },
-  { s: "CBOT:ZM1!", d: "Soybean meal", unit: "$/short ton" },
-  { s: "CBOT:ZW1!", d: "Wheat", unit: "¢/bu" },
-  { s: "CME:LE1!", d: "Live cattle", unit: "¢/lb" },
-  { s: "NYMEX:HO1!", d: "Heating oil / ULSD (diesel proxy)", unit: "$/gal" },
-];
+  { s: "CAPITALCOM:CORN", d: "Corn (CFD)", unit: "¢/bu" },
+  { s: "CAPITALCOM:SOYBEAN", d: "Soybeans (CFD)", unit: "¢/bu" },
+  { s: "CAPITALCOM:WHEAT", d: "Wheat (CFD)", unit: "¢/bu" },
+  { s: "CAPITALCOM:LIVECATTLE", d: "Live cattle (CFD)", unit: "¢/lb" },
+  { s: "CAPITALCOM:HEATINGOIL", d: "Heating oil / ULSD (CFD, diesel proxy)", unit: "$/gal" },
+]
 
 type Detail = {
   origin?: { x: number; y: number }; title: string; points?: { label: string; v: number }[]; format?: (v: number) => string; source: string; tv?: string };
@@ -44,15 +44,15 @@ function Dairy() {
 
   return (
     <>
-      <PageHeader title="Dairy & Feed" subtitle="Official USDA, EIA and FRED prices, plus front-month futures quotes by TradingView (may be delayed)." />
+      <PageHeader title="Dairy & Feed" subtitle="Official USDA, EIA and FRED prices, plus feed and fuel prices by TradingView (may be delayed)." />
       <div className="space-y-10">
         <OfficialDairyGroup />
         <section className="min-w-0">
-          <h2 className="group-label">Futures</h2>
-          <div className="group px-2 py-2"><MarketQuotes groups={[{ name: "Front month", symbols: ITEMS }]} /></div>
-          <div className="group-footer">{TV_LABEL}. Heating oil is shown as a proxy for ULSD/diesel.</div>
+          <h2 className="group-label">Feed &amp; fuel prices</h2>
+          <div className="group px-2 py-2"><MarketQuotes groups={[{ name: "Feed & fuel", symbols: ITEMS }]} /></div>
+          <div className="group-footer">{TV_LABEL}. {CFD_NOTE} Heating oil is a proxy for ULSD/diesel. Class III milk and soybean meal futures aren&apos;t available in free widgets.</div>
         </section>
-        <Group label="Futures charts" footer="Tap a contract for a 3-month chart by TradingView.">
+        <Group label="Charts" footer="Tap a row for a 3-month chart by TradingView.">
           {ITEMS.map((it) => (
             <button key={it.s} className="row row-action w-full text-left" onClick={(e) => setDetail({ origin: { x: e.clientX, y: e.clientY }, title: it.d, source: `${it.s} · ${it.unit} · ${TV_LABEL}`, tv: it.s })}>
               <span className="min-w-0 flex-1"><span className="block font-medium">{it.d}</span><SourceTag>{it.s} · {it.unit}</SourceTag></span>
