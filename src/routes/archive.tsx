@@ -52,7 +52,7 @@ function Archive() {
           </select>
         </label>
       </div>
-      <Group label={`${results.length} report${results.length === 1 ? "" : "s"}` : "Reports"}>
+      <Group label={`${results.length} report${results.length === 1 ? "" : "s"}`}>
         {results.length === 0 ? (
           <div className="row text-muted-foreground">No reports match.</div>
         ) : results.map((r) => (
