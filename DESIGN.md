@@ -46,3 +46,14 @@ Neutral / unavailable = secondary text. Dark mode follows prefers-color-scheme w
 ## Accessibility & responsive
 - WCAG AA contrast, visible accent focus rings, full keyboard navigation, 44px tap targets.
 - Works at 320px and 375px with no horizontal page scroll; tables collapse into grouped lists on mobile.
+
+## Mobile (below 768px)
+
+Mobile is a distinct, native-feeling layout, not the desktop page squeezed down. Desktop is unchanged.
+
+- **Navigation:** fixed bottom tab bar on a translucent material, padded by the safe-area inset, with 5 tabs (line icon + short label): Today, Markets, Rates, Dairy, More. The active tab uses the navy accent. "More" is a grouped-list page with Calendar, Archive, Sources, Privacy, Terms, Accessibility, Contact, Appearance (Auto/Light/Dark) and admin Watchlist / sign-in. No horizontally scrolling top nav on mobile.
+- **Top bar:** slim (44px) bar. The large "Close & Open" wordmark scrolls away and a small centered title fades in, like iOS large titles. The bar is borderless and solid until scrolled.
+- **Today:** compact header (date + "as of" in secondary text, headline at ~28px, summary at body size in primary text) → "Key numbers" swipe strip (140px scroll-snap cards: name, value, change pill, sparkline, source/time; tap → bottom sheet) → sticky segmented control (Brief · Snapshot · Why · Calendar · Business) that scrolls to sections and tracks the scroll position → "What mattered yesterday" as compact numbered rows that expand in place with their source link → market snapshot as grouped lists by region (US, Asia, Europe & futures, Rates, FX, Commodities), never a wide table. The live-markets sidebar is hidden on mobile; the strip replaces it.
+- **Other pages:** grouped lists only; labelled groups collapse with a disclosure chevron; large charts are full-width at 160px tall; tapping a row opens a bottom sheet.
+- **Touch:** tap targets ≥44px; pressed states on pointer-down; horizontal strips use scroll-snap with native momentum; no horizontal page scroll at 320px.
+- **Accessibility:** reduced motion → instant section jumps and no slides; reduced transparency → solid tab bar, top bar and section control; keyboard focus order stays logical (skip link → wordmark → content → tab bar).

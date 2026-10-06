@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState, type ReactNode } from "react";
 import { getHistory, getQuotes, type Quote } from "@/lib/market.functions";
 import { FlagButton } from "./report-issue";
+import { ChevronDown } from "lucide-react";
 
 export const UNAVAILABLE = "Unavailable";
 
@@ -33,12 +34,24 @@ export function PageHeader({ title, subtitle }: { title: string; subtitle?: Reac
   );
 }
 
+/** Grouped inset list. On mobile, labelled groups collapse via a disclosure chevron; desktop is always open. */
 export function Group({ label, footer, children, className = "" }: { label?: ReactNode; footer?: ReactNode; children: ReactNode; className?: string }) {
+  const [open, setOpen] = useState(true);
+  const toggle = () => { if (window.innerWidth < 768) setOpen((o) => !o); };
   return (
     <section className={`min-w-0 ${className}`}>
-      {label && <h2 className="group-label">{label}</h2>}
-      <div className="group">{children}</div>
-      {footer && <div className="group-footer">{footer}</div>}
+      {label && (
+        <h2 className="group-label">
+          <button type="button" className="group-toggle" aria-expanded={open} onClick={toggle}>
+            <span className="min-w-0 flex-1 text-left">{label}</span>
+            <ChevronDown className={`h-4 w-4 shrink-0 transition-transform md:hidden ${open ? "" : "-rotate-90"}`} aria-hidden />
+          </button>
+        </h2>
+      )}
+      <div className={open ? "" : "max-md:hidden"}>
+        <div className="group">{children}</div>
+        {footer && <div className="group-footer">{footer}</div>}
+      </div>
     </section>
   );
 }
@@ -100,7 +113,7 @@ export type Row = { symbol: string; label?: string };
 /** Yahoo yield indices (quoted in percent). Show bp change, never % change. */
 export const YIELD_SYMBOLS = new Set(["^TNX", "^FVX", "^TYX", "^IRX"]);
 
-function BpPill({ bp }: { bp: number | null }) {
+export function BpPill({ bp }: { bp: number | null }) {
   if (bp == null || !isFinite(bp)) return <span className="pill pill-flat">{UNAVAILABLE}</span>;
   const r = Math.round(bp);
   const cls = r > 0 ? "pill-up" : r < 0 ? "pill-down" : "pill-flat";
@@ -203,9 +216,10 @@ export function LineChart({
     setHover(Math.max(0, Math.min(points.length - 1, i)));
   };
   return (
-    <div className="relative inline-block w-full" style={{ maxWidth: width }}>
+    <div className={`relative inline-block w-full ${width >= 300 ? "chart-lg" : ""}`} style={{ maxWidth: width }}>
       <svg
         viewBox={`0 0 ${width} ${height}`}
+        preserveAspectRatio={width >= 300 ? "none" : undefined}
         className="block h-auto w-full touch-none"
         role="img"
         aria-label={`${label}: ${points.length} points, latest ${format(vals.at(-1)!)} on ${points.at(-1)!.label}`}

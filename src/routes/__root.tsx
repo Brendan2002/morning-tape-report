@@ -1,5 +1,6 @@
 import { SiteDisclaimer, NYFED_TERMS } from "@/components/legal";
 import { useSession, useIsAdmin } from "@/components/auth";
+import { TabBar, useScrolled } from "@/components/mobile";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -128,15 +129,22 @@ function Nav() {
   const { session } = useSession();
   const admin = useIsAdmin(session?.user.id);
   const items = NAV.filter((n) => n.to !== "/watchlist" || admin.data === true);
+  const scrolled = useScrolled();
   return (
-    <header className="nav-glass sticky top-0 z-40 border-b border-separator">
-      <div className="mx-auto flex max-w-[1080px] items-center gap-3 px-4 pt-1 md:px-8">
+    <header className={`nav-glass sticky top-0 z-40 border-b pt-[env(safe-area-inset-top)] md:border-separator ${scrolled ? "border-separator" : "max-md:border-transparent max-md:!bg-background max-md:!backdrop-blur-none"}`}>
+      {/* Mobile: slim bar; small centered title appears once the large title scrolls away */}
+      <div className="mobile-bar flex items-center justify-center md:hidden">
+        <Link to="/" className={`mobile-small-title text-[1.0625rem] font-semibold text-foreground no-underline ${scrolled ? "opacity-100" : "pointer-events-none opacity-0"}`} tabIndex={scrolled ? 0 : -1} aria-hidden={!scrolled}>
+          Close & Open
+        </Link>
+      </div>
+      <div className="mx-auto hidden max-w-[1080px] items-center gap-3 px-4 pt-1 md:flex md:px-8">
         <Link to="/" className="font-display text-[20px] font-bold tracking-tight text-foreground no-underline">
           Close & Open
         </Link>
         <div className="ml-auto"><ThemeToggle /></div>
       </div>
-      <nav aria-label="Sections" className="mx-auto max-w-[1080px] overflow-x-auto px-4 pb-2 md:px-8">
+      <nav aria-label="Sections" className="mx-auto hidden max-w-[1080px] overflow-x-auto px-4 pb-2 md:block md:px-8">
         <div className="segmented">
           {items.map((n) => (
             <Link key={n.to} to={n.to} activeOptions={{ exact: n.to === "/" }} activeProps={{ className: "active", "aria-current": "page" }}>
@@ -162,15 +170,19 @@ function RootComponent() {
       <ReportIssueProvider>
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded-lg focus:bg-elevated focus:px-3 focus:py-2">Skip to content</a>
         <Nav />
-        <main id="main" className="mx-auto max-w-[1080px] px-4 py-8 md:px-8 md:py-12">
+        <div className="mx-auto max-w-[1080px] px-4 pt-1 md:hidden">
+          <Link to="/" className="font-display text-[2.125rem] font-bold leading-tight tracking-[-0.017em] text-foreground no-underline">Close & Open</Link>
+        </div>
+        <main id="main" className="mx-auto max-w-[1080px] px-4 py-4 md:px-8 md:py-12">
           <Outlet />
         </main>
-        <footer className="mx-auto max-w-[1080px] px-4 pb-12 text-[13px] text-muted-foreground md:px-8">
+        <footer className="mx-auto max-w-[1080px] px-4 pb-[calc(env(safe-area-inset-bottom)+5.5rem)] text-[13px] text-muted-foreground md:px-8 md:pb-12">
           <SiteDisclaimer />
           <p className="mt-2"><a href={NYFED_TERMS} target="_blank" rel="noopener noreferrer">SOFR and EFFR: Federal Reserve Bank of New York, subject to its Terms of Use</a></p>
           <p className="mt-2">Sources also include EIA, U.S. Treasury and USDA AMS.</p>
           <p className="mt-2 flex flex-wrap gap-x-4"><Link to="/sources">Sources</Link><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link><Link to="/accessibility">Accessibility</Link><Link to="/contact">Contact</Link></p>
         </footer>
+        <TabBar />
       </ReportIssueProvider>
     </QueryClientProvider>
   );
