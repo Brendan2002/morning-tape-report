@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Flag } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { ISSUE_TYPES, submitIssue } from "@/lib/issues.functions";
 import { ResponsiveSheet } from "./sheet";
 
