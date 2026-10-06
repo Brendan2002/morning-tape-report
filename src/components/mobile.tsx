@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { ChevronDown, Ellipsis, Newspaper, Percent, TrendingUp, Wheat } from "lucide-react";
-import { BpPill, ChangePill, LineChart, UNAVAILABLE, YIELD_SYMBOLS, etTime, fmt, signed, useHistory, useQuotes } from "./tape";
-import { ResponsiveSheet } from "./sheet";
-import { FlagButton } from "./report-issue";
+import { KEY_TV, TV_LABEL, TickerTape } from "./tradingview";
 
 /* ---------- Bottom tab bar (mobile only) ---------- */
 
@@ -79,74 +77,14 @@ export function ThemeRow() {
   );
 }
 
-/* ---------- Key numbers strip ---------- */
-
-const KEYS = [
-  { symbol: "^GSPC", label: "S&P 500" },
-  { symbol: "^IXIC", label: "Nasdaq" },
-  { symbol: "^DJI", label: "Dow" },
-  { symbol: "^TNX", label: "10-yr yield" },
-  { symbol: "CL=F", label: "WTI crude", unit: "$/bbl" },
-  { symbol: "DC=F", label: "Class III milk", unit: "$/cwt" },
-  { symbol: "ZC=F", label: "Corn", unit: "¢/bu" },
-];
-const KEY_SYMS = KEYS.map((k) => k.symbol);
+/* ---------- Key numbers (TradingView ticker tape) ---------- */
 
 export function KeyStrip() {
-  const q = useQuotes(KEY_SYMS);
-  const h = useHistory(KEY_SYMS);
-  const [sel, setSel] = useState<string | null>(null);
-  const qBy = new Map((q.data ?? []).map((x) => [x.symbol, x]));
-  const hBy = new Map((h.data ?? []).map((x) => [x.symbol, x.points]));
-  const pts = (s: string) => (hBy.get(s) ?? []).map((p) => ({ label: new Date(p.t * 1000).toLocaleDateString("en-US", { month: "short", day: "numeric" }), v: p.v }));
-  const k = KEYS.find((x) => x.symbol === sel);
-  const kq = sel ? qBy.get(sel) : undefined;
-  const kok = kq && !kq.error && kq.last != null;
-  const isY = sel ? YIELD_SYMBOLS.has(sel) : false;
-  const val = (s: string, x = qBy.get(s)) => (x && !x.error && x.last != null ? (YIELD_SYMBOLS.has(s) ? `${fmt(x.last)}%` : fmt(x.last)) : UNAVAILABLE);
-
   return (
     <section aria-label="Key numbers" className="md:hidden">
       <h2 className="group-label">Key numbers</h2>
-      <div className="snap-strip -mx-4 px-4">
-        {KEYS.map((key) => {
-          const x = qBy.get(key.symbol);
-          const ok = x && !x.error && x.last != null;
-          const yld = YIELD_SYMBOLS.has(key.symbol);
-          const p = pts(key.symbol);
-          return (
-            <button key={key.symbol} className="key-card" onClick={() => setSel(key.symbol)} aria-label={`${key.label}: ${val(key.symbol)}. Open detail`}>
-              <span className="truncate text-[0.8125rem] font-medium">{key.label}</span>
-              <span className={`text-[1.0625rem] font-semibold ${ok ? "" : "text-muted-foreground"}`}>{q.isLoading ? <span className="skel w-16" /> : val(key.symbol)}</span>
-              <span className="[&_.pill]:min-w-0 [&_.pill]:text-[13px]">{yld ? <BpPill bp={ok && x!.change != null ? x!.change * 100 : null} /> : <ChangePill pct={ok ? x!.changePct : null} />}</span>
-              <span className="block h-6 w-full">{p.length > 1 && <LineChart points={p} width={116} height={24} label={`${key.label}, 3 months`} />}</span>
-              <span className="truncate text-[0.6875rem] text-muted-foreground">Yahoo{ok && etTime(x!.marketTime) ? ` · ${etTime(x!.marketTime)}` : ""}</span>
-            </button>
-          );
-        })}
-      </div>
-      <ResponsiveSheet open={!!sel} onOpenChange={(o) => !o && setSel(null)} title={k?.label ?? ""} description={sel ? `${sel} · Yahoo Finance (delayed, unofficial)` : undefined}>
-        {sel && (
-          <div className="space-y-5 pt-4">
-            <div className="flex items-end justify-between gap-3">
-              <div>
-                <div className="text-[2rem] font-bold leading-none">{val(sel)}</div>
-                <div className="mt-1 text-[15px] text-muted-foreground">
-                  {kok ? (isY ? `${signed(kq!.change != null ? Math.round(kq!.change * 100) : null, 0, " bp")} vs prior close` : `${signed(kq!.change)}${k?.unit ? ` ${k.unit}` : ""} vs prior close`) : "\u00a0"}
-                </div>
-              </div>
-              {isY ? <BpPill bp={kok && kq!.change != null ? kq!.change * 100 : null} /> : <ChangePill pct={kok ? kq!.changePct : null} />}
-            </div>
-            <LineChart points={pts(sel)} width={600} height={160} label={`${k?.label}, 3 months`} showValue />
-            <div className="group">
-              <div className="row"><span className="flex-1 text-muted-foreground">As of</span><span>{kok ? etTime(kq!.marketTime) ?? UNAVAILABLE : UNAVAILABLE}</span></div>
-              <div className="row"><span className="flex-1 text-muted-foreground">Comparison</span><span>Prior close</span></div>
-              <div className="row"><span className="flex-1 text-muted-foreground">Chart</span><span>3 months, daily close</span></div>
-              <div className="row !pr-2"><span className="flex-1 text-muted-foreground">Source</span><span>Yahoo Finance</span><FlagButton ctx={{ field: `${k?.label} (${sel})`, displayedValue: val(sel) }} /></div>
-            </div>
-          </div>
-        )}
-      </ResponsiveSheet>
+      <div className="group px-2 py-1"><TickerTape symbols={KEY_TV} /></div>
+      <div className="group-footer">{TV_LABEL}</div>
     </section>
   );
 }

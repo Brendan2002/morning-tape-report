@@ -2,7 +2,8 @@ import { type ReactNode } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ExternalLink } from "lucide-react";
-import { Group, QuoteList } from "./tape";
+import { Group } from "./tape";
+import { KEY_TV, MarketQuotes, TV_LABEL } from "./tradingview";
 import { BriefList, KeyStrip, SectionNav, type BriefItem } from "./mobile";
 import { useReportIssue } from "./report-issue";
 
@@ -17,20 +18,15 @@ export type Report = {
   created_at: string;
 };
 
-export const TAPE = [
-  { symbol: "^GSPC", label: "S&P 500" },
-  { symbol: "^IXIC", label: "Nasdaq" },
-  { symbol: "^DJI", label: "Dow" },
-  { symbol: "^RUT", label: "Russell 2000" },
-  { symbol: "ES=F", label: "S&P 500 futures" },
-  { symbol: "NQ=F", label: "Nasdaq 100 futures" },
-  { symbol: "^TNX", label: "10-yr Treasury yield" },
-  { symbol: "DX-Y.NYB", label: "Dollar index" },
-  { symbol: "EURUSD=X", label: "EUR/USD" },
-  { symbol: "CL=F", label: "WTI crude" },
-  { symbol: "GC=F", label: "Gold" },
-  { symbol: "BTC-USD", label: "Bitcoin" },
-];
+export function LiveMarkets() {
+  return (
+    <section className="min-w-0">
+      <h2 className="group-label">Live markets</h2>
+      <div className="group px-2 py-2"><MarketQuotes groups={[{ name: "Key markets", symbols: KEY_TV }]} /></div>
+      <div className="group-footer">{TV_LABEL}. Yields in percent.</div>
+    </section>
+  );
+}
 
 export const parseSources = (s: unknown): Source[] =>
   Array.isArray(s) ? s.filter((x): x is Source => !!x && typeof x.url === "string" && typeof x.title === "string") : [];
@@ -261,7 +257,7 @@ export function ReportView({ report }: { report: Report }) {
         </div>
       </article>
       <aside className="min-w-0 max-md:hidden">
-        <QuoteList label="Live markets" rows={TAPE} sortable={false} compact footer="Quotes may be delayed. Change vs prior close; yields in basis points." />
+        <LiveMarkets />
       </aside>
     </div>
   );
