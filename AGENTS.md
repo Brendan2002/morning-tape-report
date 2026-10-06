@@ -10,7 +10,8 @@
 <!-- LOVABLE:END -->
 
 ## Close & Open architecture
-- Live market data (Yahoo, cached in memory) and FRED data (never cached or stored, per FRED API terms) are fetched only in server functions (`src/lib/*.functions.ts`) — keeps keys server-side and avoids CORS.
+- Live/delayed quotes and charts come only from TradingView's official embed widgets (`src/components/tradingview.tsx`, loaded client-side, lazy, theme-synced, attribution kept) — licensed for public display; there is no server-side quote endpoint.
+- FRED data (never cached or stored, per FRED API terms) is fetched only in server functions (`src/lib/*.functions.ts`) — keeps keys server-side and avoids CORS.
 - Issue reports are inserted by the `submitIssue` server function using the admin client after an IP-hash rate limit — anonymous users have insert-only access and no read access.
 - Issue notification email goes through the Resend connector when linked; the issue is saved first so email failures never lose reports.
 - Watchlist reads and writes require the `admin` role in `user_roles` (checked via `has_role`) — roles never live on profile rows.
