@@ -1,4 +1,6 @@
-import { Fragment, type ReactNode } from "react";
+import { type ReactNode } from "react";
+import ReactMarkdown, { type Components } from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { ExternalLink } from "lucide-react";
 import { Group, QuoteList } from "./tape";
 import { useReportIssue } from "./report-issue";
@@ -21,7 +23,7 @@ export const TAPE = [
   { symbol: "^RUT", label: "Russell 2000" },
   { symbol: "ES=F", label: "S&P 500 futures" },
   { symbol: "NQ=F", label: "Nasdaq 100 futures" },
-  { symbol: "^TNX", label: "10-yr yield" },
+  { symbol: "^TNX", label: "10-yr Treasury yield" },
   { symbol: "DX-Y.NYB", label: "Dollar index" },
   { symbol: "EURUSD=X", label: "EUR/USD" },
   { symbol: "CL=F", label: "WTI crude" },
@@ -92,26 +94,32 @@ function MdTable({ lines }: { lines: string[] }) {
   );
 }
 
+const MD_COMPONENTS: Components = {
+  a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer">{children}</a>,
+  h1: ({ children }) => <h2>{children}</h2>,
+  h3: ({ children }) => <h3 className="mt-6 mb-2 text-[1.0625rem] font-semibold">{children}</h3>,
+};
+
+/** Report markdown: GFM via react-markdown; tables use our desktop table / mobile grouped list. */
 export function Markdown({ src }: { src: string }) {
-  const blocks = src.replace(/\r/g, "").split(/\n{2,}/);
+  const lines = src.replace(/\r/g, "").split("\n");
+  const parts: { md?: string; table?: string[] }[] = [];
+  let buf: string[] = [];
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i]!.trim().startsWith("|") && /^\s*\|?\s*:?-{3,}/.test(lines[i + 1] ?? "")) {
+      const t: string[] = [];
+      while (i < lines.length && lines[i]!.trim().startsWith("|")) t.push(lines[i++]!);
+      i--;
+      if (buf.length) parts.push({ md: buf.join("\n") }); buf = [];
+      parts.push({ table: t });
+    } else buf.push(lines[i]!);
+  }
+  if (buf.length) parts.push({ md: buf.join("\n") });
   return (
     <div className="report-body">
-      {blocks.map((b, i) => {
-        const lines = b.split("\n");
-        const first = lines[0] ?? "";
-        const isHead = first.startsWith("#");
-        const rest = isHead ? lines.slice(1) : lines;
-        let content: ReactNode = null;
-        if (rest.length >= 2 && rest[0]!.trim().startsWith("|") && /^\s*\|?\s*:?-{3,}/.test(rest[1]!)) content = <MdTable lines={rest} />;
-        else if (rest.length && rest.every((l) => /^[-*]\s/.test(l))) content = <ul>{rest.map((l, j) => <li key={j}>{inline(l.replace(/^[-*]\s/, ""))}</li>)}</ul>;
-        else if (rest.length) content = <p>{inline(rest.join(" "))}</p>;
-        return (
-          <Fragment key={i}>
-            {isHead && <h2>{first.replace(/^#+\s*/, "")}</h2>}
-            {content}
-          </Fragment>
-        );
-      })}
+      {parts.map((p, i) => p.table ? <MdTable key={i} lines={p.table} /> : (
+        <ReactMarkdown key={i} remarkPlugins={[remarkGfm]} components={MD_COMPONENTS}>{p.md!}</ReactMarkdown>
+      ))}
     </div>
   );
 }
@@ -157,7 +165,7 @@ export function ReportView({ report }: { report: Report }) {
         </div>
       </article>
       <aside className="min-w-0">
-        <QuoteList label="Live markets" rows={TAPE} sortable={false} footer="Quotes may be delayed. Change vs prior close." />
+        <QuoteList label="Live markets" rows={TAPE} sortable={false} compact footer="Quotes may be delayed. Change vs prior close; yields in basis points." />
       </aside>
     </div>
   );

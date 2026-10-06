@@ -39,7 +39,7 @@ function Today() {
     return (
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
         <PageHeader title="Today" subtitle="Today's report publishes at 6:30am ET on weekdays." />
-        <QuoteList label="Live markets" rows={TAPE} sortable={false} />
+        <QuoteList label="Live markets" rows={TAPE} sortable={false} compact footer="Quotes may be delayed. Change vs prior close; yields in basis points." />
       </div>
     );
   return <ReportView report={q.data} />;
