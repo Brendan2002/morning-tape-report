@@ -54,7 +54,7 @@
   --up: #1F8A4C;
   --down: #C2362B;
   --nav-bg: rgba(251, 250, 247, 0.72);
-  --sheet-bg: rgba(255, 255, 255, 0.82);
+  --sheet-bg: rgba(255, 255, 255, 0.94);
   --pressed: rgba(118, 118, 128, 0.2);
   color-scheme: light;
 }
@@ -72,7 +72,7 @@
   --up: #30D158;
   --down: #FF453A;
   --nav-bg: rgba(0, 0, 0, 0.72);
-  --sheet-bg: rgba(44, 44, 46, 0.82);
+  --sheet-bg: rgba(44, 44, 46, 0.94);
   --pressed: rgba(118, 118, 128, 0.36);
   color-scheme: dark;
 }
@@ -90,7 +90,7 @@
     --up: #30D158;
     --down: #FF453A;
     --nav-bg: rgba(0, 0, 0, 0.72);
-  --sheet-bg: rgba(44, 44, 46, 0.82);
+  --sheet-bg: rgba(44, 44, 46, 0.94);
   --pressed: rgba(118, 118, 128, 0.36);
     color-scheme: dark;
   }
