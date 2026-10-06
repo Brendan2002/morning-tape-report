@@ -8,9 +8,9 @@ export const Route = createFileRoute("/markets")({
   staticData: { sitemap: true },
   head: () => ({
     meta: [
-      { title: "Markets — Morning Tape" },
+      { title: "Markets — Close & Open" },
       { name: "description", content: "Global indices, futures, currencies, commodities, S&P 500 sectors and top movers." },
-      { property: "og:title", content: "Markets — Morning Tape" },
+      { property: "og:title", content: "Markets — Close & Open" },
       { property: "og:description", content: "Global indices, futures, currencies, commodities, S&P 500 sectors and top movers." },
     ],
   }),

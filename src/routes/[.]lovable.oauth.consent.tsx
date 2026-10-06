@@ -17,10 +17,10 @@ export const Route = createFileRoute("/.lovable/oauth/consent")({
   staticData: { sitemap: false },
   head: () => ({
     meta: [
-      { title: "Authorize app — Morning Tape" },
-      { name: "description", content: "Approve or deny an app connecting to Morning Tape." },
-      { property: "og:title", content: "Authorize app — Morning Tape" },
-      { property: "og:description", content: "Approve or deny an app connecting to Morning Tape." },
+      { title: "Authorize app — Close & Open" },
+      { name: "description", content: "Approve or deny an app connecting to Close & Open." },
+      { property: "og:title", content: "Authorize app — Close & Open" },
+      { property: "og:description", content: "Approve or deny an app connecting to Close & Open." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -66,8 +66,8 @@ function Consent() {
 
   return (
     <div className="max-w-md">
-      <PageHeader title={`Connect ${name}`} subtitle="This app wants to read Morning Tape market data as you." />
-      <Group><div className="row">{name} will be able to use Morning Tape's read-only tools.</div></Group>
+      <PageHeader title={`Connect ${name}`} subtitle="This app wants to read Close & Open market data as you." />
+      <Group><div className="row">{name} will be able to use Close & Open's read-only tools.</div></Group>
       {error && <p role="alert" className="mt-4 px-4 text-[15px] text-down">{error}</p>}
       <div className="mt-4 flex gap-4">
         <button className="btn-primary" disabled={busy} onClick={() => decide(true)}>Approve</button>

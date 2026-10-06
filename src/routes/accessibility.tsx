@@ -3,12 +3,12 @@ import { ContactLink, EmailLink, LegalPage, legalHead, type LegalSection } from 
 
 export const Route = createFileRoute("/accessibility")({
   staticData: { sitemap: true },
-  head: () => legalHead("Accessibility — Morning Tape", "Morning Tape aims to meet WCAG 2.2 level AA. How we test, and how to report a problem."),
+  head: () => legalHead("Accessibility — Close & Open", "Close & Open aims to meet WCAG 2.2 level AA. How we test, and how to report a problem."),
   component: () => <LegalPage title="Accessibility" sections={SECTIONS} />,
 });
 
 const SECTIONS: LegalSection[] = [
-  { title: "Our goal", body: ["Morning Tape aims to conform to WCAG 2.2 level AA. It is not formally certified."] },
+  { title: "Our goal", body: ["Close & Open aims to conform to WCAG 2.2 level AA. It is not formally certified."] },
   { title: "How we test", body: [
     "The site is maintained by one person and tested with keyboard navigation, automated checks, and the reduced-motion, reduced-transparency and increased-contrast settings.",
     "We can't cover every assistive-technology combination.",

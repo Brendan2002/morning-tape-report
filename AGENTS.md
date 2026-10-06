@@ -9,7 +9,7 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-## Morning Tape architecture
+## Close & Open architecture
 - Live market data (Yahoo, cached in memory) and FRED data (never cached or stored, per FRED API terms) are fetched only in server functions (`src/lib/*.functions.ts`) — keeps keys server-side and avoids CORS.
 - Issue reports are inserted by the `submitIssue` server function using the admin client after an IP-hash rate limit — anonymous users have insert-only access and no read access.
 - Issue notification email goes through the Resend connector when linked; the issue is saved first so email failures never lose reports.

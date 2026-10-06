@@ -10,10 +10,10 @@ export const Route = createFileRoute("/archive")({
   staticData: { sitemap: true },
   head: () => ({
     meta: [
-      { title: "Archive — Morning Tape" },
-      { name: "description", content: "Search every past Morning Tape market report by keyword or month." },
-      { property: "og:title", content: "Archive — Morning Tape" },
-      { property: "og:description", content: "Search every past Morning Tape market report by keyword or month." },
+      { title: "Archive — Close & Open" },
+      { name: "description", content: "Search every past Close & Open market report by keyword or month." },
+      { property: "og:title", content: "Archive — Close & Open" },
+      { property: "og:description", content: "Search every past Close & Open market report by keyword or month." },
     ],
   }),
   component: Archive,

@@ -3,12 +3,12 @@ import { ContactLink, EmailLink, FRED_TERMS_URL, FredNotice, LegalPage, legalHea
 
 export const Route = createFileRoute("/terms")({
   staticData: { sitemap: true },
-  head: () => legalHead("Terms of Use — Morning Tape", "Morning Tape is a free, non-commercial market summary for general information. Not investment advice."),
+  head: () => legalHead("Terms of Use — Close & Open", "Close & Open is a free, non-commercial market summary for general information. Not investment advice."),
   component: () => <LegalPage title="Terms of Use" sections={SECTIONS} />,
 });
 
 const SECTIONS: LegalSection[] = [
-  { title: "What Morning Tape is", body: ["A free, non-commercial daily market and economic summary for general information."] },
+  { title: "What Close & Open is", body: ["A free, non-commercial daily market and economic summary for general information."] },
   { title: "Not investment advice", body: [
     "Nothing here is investment, financial, tax, legal or trading advice, or a recommendation to buy or sell anything. \"Our read\" sections are commentary.",
     "Do your own research or consult a licensed professional.",
@@ -23,7 +23,7 @@ const SECTIONS: LegalSection[] = [
   ] },
   { title: "Acceptable use", body: ["Don't disrupt the site, scrape it abusively, submit spam or abusive issue reports, or break the law."] },
   { title: "Intellectual property", body: [
-    "The Morning Tape name, design and written reports belong to the creator. Underlying data belongs to its owners.",
+    "The Close & Open name, design and written reports belong to the creator. Underlying data belongs to its owners.",
     "No commercial redistribution without permission.",
   ] },
   { title: "Disclaimer of warranties", body: ["The site is provided \"as is\", without warranties of any kind."] },

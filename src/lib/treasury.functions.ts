@@ -12,7 +12,7 @@ let cache: { at: number; v: CurveSeries[] } | null = null;
 async function yearCsv(year: number): Promise<string | null> {
   const url = `https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/${year}/all?type=daily_treasury_yield_curve&field_tdr_date_value=${year}&page&_format=csv`;
   try {
-    const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0 (MorningTape)" } });
+    const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0 (CloseAndOpen)" } });
     if (!res.ok) return null;
     const t = await res.text();
     return t.startsWith("Date") ? t : null;

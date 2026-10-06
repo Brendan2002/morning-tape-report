@@ -5,7 +5,7 @@ import { useReportIssue } from "@/components/report-issue";
 
 export const Route = createFileRoute("/contact")({
   staticData: { sitemap: true },
-  head: () => legalHead("Contact — Morning Tape", "How to reach Morning Tape: send a message through the Report an issue form."),
+  head: () => legalHead("Contact — Close & Open", "How to reach Close & Open: send a message through the Report an issue form."),
   component: Contact,
 });
 

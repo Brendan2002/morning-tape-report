@@ -8,10 +8,10 @@ export const Route = createFileRoute("/login")({
   staticData: { sitemap: false },
   head: () => ({
     meta: [
-      { title: "Admin sign in — Morning Tape" },
-      { name: "description", content: "Sign in to manage the Morning Tape watchlist." },
-      { property: "og:title", content: "Admin sign in — Morning Tape" },
-      { property: "og:description", content: "Sign in to manage the Morning Tape watchlist." },
+      { title: "Admin sign in — Close & Open" },
+      { name: "description", content: "Sign in to manage the Close & Open watchlist." },
+      { property: "og:title", content: "Admin sign in — Close & Open" },
+      { property: "og:description", content: "Sign in to manage the Close & Open watchlist." },
       { name: "robots", content: "noindex" },
     ],
   }),

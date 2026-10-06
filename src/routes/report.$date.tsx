@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ReportView, type Report } from "@/components/report";
 import { ErrorRow, PageHeader, SkeletonRows } from "@/components/tape";
 
-const SITE = "https://morning-tape-report.lovable.app";
+const SITE = "https://closeandopen.com";
 
 const reportQuery = (date: string) =>
   queryOptions({
@@ -27,8 +27,8 @@ export const Route = createFileRoute("/report/$date")({
   },
   head: ({ params, loaderData }) => {
     const url = `${SITE}/report/${params.date}`;
-    const title = loaderData ? `${loaderData.headline} — Morning Tape` : `Report for ${params.date} — Morning Tape`;
-    const description = loaderData?.summary || `Morning Tape market report for ${params.date}.`;
+    const title = loaderData ? `${loaderData.headline} — Close & Open` : `Report for ${params.date} — Close & Open`;
+    const description = loaderData?.summary || `Close & Open market report for ${params.date}.`;
     return {
       meta: [
         { title },
@@ -51,8 +51,8 @@ export const Route = createFileRoute("/report/$date")({
               datePublished: loaderData.created_at,
               dateModified: loaderData.created_at,
               mainEntityOfPage: url,
-              author: { "@type": "Organization", name: "Morning Tape", url: SITE },
-              publisher: { "@type": "Organization", name: "Morning Tape", url: SITE },
+              author: { "@type": "Organization", name: "Close & Open", url: SITE },
+              publisher: { "@type": "Organization", name: "Close & Open", url: SITE },
             }),
           }]
         : [],

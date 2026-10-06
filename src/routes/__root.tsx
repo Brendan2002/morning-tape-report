@@ -45,10 +45,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { title: "Morning Tape" },
-      { property: "og:site_name", content: "Morning Tape" },
-      { name: "application-name", content: "Morning Tape" },
-      { name: "apple-mobile-web-app-title", content: "Morning Tape" },
+      { title: "Close & Open" },
+      { property: "og:site_name", content: "Close & Open" },
+      { name: "application-name", content: "Close & Open" },
+      { name: "apple-mobile-web-app-title", content: "Close & Open" },
       { name: "description", content: "A daily morning market report with markets, rates, calendar and sources." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -128,7 +128,7 @@ function Nav() {
     <header className="nav-glass sticky top-0 z-40 border-b border-separator">
       <div className="mx-auto flex max-w-[1080px] items-center gap-3 px-4 pt-1 md:px-8">
         <Link to="/" className="font-display text-[20px] font-bold tracking-tight text-foreground no-underline">
-          Morning Tape
+          Close & Open
         </Link>
         <div className="ml-auto"><ThemeToggle /></div>
       </div>

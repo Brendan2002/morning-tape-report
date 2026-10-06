@@ -9,9 +9,9 @@ export const Route = createFileRoute("/watchlist")({
   staticData: { sitemap: false },
   head: () => ({
     meta: [
-      { title: "Watchlist — Morning Tape" },
+      { title: "Watchlist — Close & Open" },
       { name: "description", content: "A curated watchlist of stocks and ETFs with live quotes." },
-      { property: "og:title", content: "Watchlist — Morning Tape" },
+      { property: "og:title", content: "Watchlist — Close & Open" },
       { property: "og:description", content: "A curated watchlist of stocks and ETFs with live quotes." },
       { name: "robots", content: "noindex" },
     ],
