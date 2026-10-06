@@ -10,33 +10,115 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ArchiveRouteImport } from './routes/archive'
+import { Route as CalendarRouteImport } from './routes/calendar'
+import { Route as MacroRouteImport } from './routes/macro'
+import { Route as MarketsRouteImport } from './routes/markets'
+import { Route as WatchlistRouteImport } from './routes/watchlist'
+import { Route as ReportDateRouteImport } from './routes/report.$date'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArchiveRoute = ArchiveRouteImport.update({
+  id: '/archive',
+  path: '/archive',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalendarRoute = CalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MacroRoute = MacroRouteImport.update({
+  id: '/macro',
+  path: '/macro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketsRoute = MarketsRouteImport.update({
+  id: '/markets',
+  path: '/markets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WatchlistRoute = WatchlistRouteImport.update({
+  id: '/watchlist',
+  path: '/watchlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportDateRoute = ReportDateRouteImport.update({
+  id: '/report/$date',
+  path: '/report/$date',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/archive': typeof ArchiveRoute
+  '/calendar': typeof CalendarRoute
+  '/macro': typeof MacroRoute
+  '/markets': typeof MarketsRoute
+  '/watchlist': typeof WatchlistRoute
+  '/report/$date': typeof ReportDateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/archive': typeof ArchiveRoute
+  '/calendar': typeof CalendarRoute
+  '/macro': typeof MacroRoute
+  '/markets': typeof MarketsRoute
+  '/watchlist': typeof WatchlistRoute
+  '/report/$date': typeof ReportDateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/archive': typeof ArchiveRoute
+  '/calendar': typeof CalendarRoute
+  '/macro': typeof MacroRoute
+  '/markets': typeof MarketsRoute
+  '/watchlist': typeof WatchlistRoute
+  '/report/$date': typeof ReportDateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/archive'
+    | '/calendar'
+    | '/macro'
+    | '/markets'
+    | '/watchlist'
+    | '/report/$date'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/archive'
+    | '/calendar'
+    | '/macro'
+    | '/markets'
+    | '/watchlist'
+    | '/report/$date'
+  id:
+    | '__root__'
+    | '/'
+    | '/archive'
+    | '/calendar'
+    | '/macro'
+    | '/markets'
+    | '/watchlist'
+    | '/report/$date'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ArchiveRoute: typeof ArchiveRoute
+  CalendarRoute: typeof CalendarRoute
+  MacroRoute: typeof MacroRoute
+  MarketsRoute: typeof MarketsRoute
+  WatchlistRoute: typeof WatchlistRoute
+  ReportDateRoute: typeof ReportDateRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +130,59 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/archive': {
+      id: '/archive'
+      path: '/archive'
+      fullPath: '/archive'
+      preLoaderRoute: typeof ArchiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calendar': {
+      id: '/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof CalendarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/macro': {
+      id: '/macro'
+      path: '/macro'
+      fullPath: '/macro'
+      preLoaderRoute: typeof MacroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/markets': {
+      id: '/markets'
+      path: '/markets'
+      fullPath: '/markets'
+      preLoaderRoute: typeof MarketsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/watchlist': {
+      id: '/watchlist'
+      path: '/watchlist'
+      fullPath: '/watchlist'
+      preLoaderRoute: typeof WatchlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/report/$date': {
+      id: '/report/$date'
+      path: '/report/$date'
+      fullPath: '/report/$date'
+      preLoaderRoute: typeof ReportDateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ArchiveRoute: ArchiveRoute,
+  CalendarRoute: CalendarRoute,
+  MacroRoute: MacroRoute,
+  MarketsRoute: MarketsRoute,
+  WatchlistRoute: WatchlistRoute,
+  ReportDateRoute: ReportDateRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
