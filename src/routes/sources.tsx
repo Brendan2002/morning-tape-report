@@ -11,10 +11,10 @@ export const Route = createFileRoute("/sources")({
   staticData: { sitemap: true },
   head: () => ({
     meta: [
-      { title: "Sources & Methodology — Morning Tape" },
-      { name: "description", content: "Every source cited in Morning Tape reports, our data providers, and how we handle data." },
-      { property: "og:title", content: "Sources & Methodology — Morning Tape" },
-      { property: "og:description", content: "Every source cited in Morning Tape reports, our data providers, and how we handle data." },
+      { title: "Sources & Methodology — Close & Open" },
+      { name: "description", content: "Every source cited in Close & Open reports, our data providers, and how we handle data." },
+      { property: "og:title", content: "Sources & Methodology — Close & Open" },
+      { property: "og:description", content: "Every source cited in Close & Open reports, our data providers, and how we handle data." },
     ],
   }),
   component: Sources,

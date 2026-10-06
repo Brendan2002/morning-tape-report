@@ -16,7 +16,7 @@ const toReportJson = (r: ReportRow) => ({
   body_markdown: r.body_md,
   sources: toSources(r.sources),
   published_at: r.created_at,
-  url: `https://morning-tape-report.lovable.app/report/${r.report_date}`,
+  url: `https://closeandopen.com/report/${r.report_date}`,
 });
 
 const render = (r: ReturnType<typeof toReportJson>) =>
@@ -25,7 +25,7 @@ const render = (r: ReturnType<typeof toReportJson>) =>
 export const getLatestReport = defineTool({
   name: "get_latest_report",
   title: "Get latest morning report",
-  description: "Return the most recent Morning Tape daily market report (headline, summary, full text and sources).",
+  description: "Return the most recent Close & Open daily market report (headline, summary, full text and sources).",
   inputSchema: {},
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: async () => {
@@ -42,7 +42,7 @@ export const getLatestReport = defineTool({
 export const getReport = defineTool({
   name: "get_report",
   title: "Get report by date",
-  description: "Return the Morning Tape market report for a specific date (YYYY-MM-DD).",
+  description: "Return the Close & Open market report for a specific date (YYYY-MM-DD).",
   inputSchema: { date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).describe("Report date, YYYY-MM-DD.") },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: async ({ date }) => {
@@ -59,7 +59,7 @@ export const getReport = defineTool({
 export const searchReports = defineTool({
   name: "search_reports",
   title: "Search report archive",
-  description: "List past Morning Tape reports, newest first, optionally filtered by keyword and/or month.",
+  description: "List past Close & Open reports, newest first, optionally filtered by keyword and/or month.",
   inputSchema: {
     query: z.string().trim().max(100).optional().describe("Keyword to match in headline, summary or text."),
     month: z.string().regex(/^\d{4}-\d{2}$/).optional().describe("Month filter, YYYY-MM."),

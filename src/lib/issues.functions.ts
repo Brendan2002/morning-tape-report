@@ -77,7 +77,7 @@ export const submitIssue = createServerFn({ method: "POST" })
     const to = process.env["ISSUE_NOTIFY_EMAIL"] ?? "bvc2002@icloud.com";
     if (lovableKey && resendKey) {
       const label = ISSUE_TYPES[data.issue_type];
-      const subject = `Morning Tape issue: ${label} — ${row.field ?? row.page_url}`;
+      const subject = `Close & Open issue: ${label} — ${row.field ?? row.page_url}`;
       const lines: [string, string | null][] = [
         ["Type", label],
         ["Page", row.page_url],
@@ -98,7 +98,7 @@ export const submitIssue = createServerFn({ method: "POST" })
             "X-Connection-Api-Key": resendKey,
           },
           body: JSON.stringify({
-            from: "Morning Tape <onboarding@resend.dev>",
+            from: "Close & Open <onboarding@resend.dev>",
             to: [to],
             reply_to: row.reporter_email ?? undefined,
             subject,

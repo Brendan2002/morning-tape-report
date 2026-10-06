@@ -9,9 +9,9 @@ export const Route = createFileRoute("/calendar")({
   staticData: { sitemap: true },
   head: () => ({
     meta: [
-      { title: "Economic Calendar — Morning Tape" },
+      { title: "Economic Calendar — Close & Open" },
       { name: "description", content: "Economic releases and central bank events for the next 7 days." },
-      { property: "og:title", content: "Economic Calendar — Morning Tape" },
+      { property: "og:title", content: "Economic Calendar — Close & Open" },
       { property: "og:description", content: "Economic releases and central bank events for the next 7 days." },
     ],
   }),
@@ -61,7 +61,7 @@ function CalendarPage() {
                         <div key={k} className="flex gap-1"><dt className="text-muted-foreground">{k}</dt><dd>{v ?? "—"}</dd></div>
                       ))}
                     </dl>
-                    <SourceTag>Morning Tape calendar · updated {new Date(e.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</SourceTag>
+                    <SourceTag>Close & Open calendar · updated {new Date(e.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</SourceTag>
                   </div>
                   <FlagButton ctx={{ field: `Calendar: ${e.title}`, displayedValue: `Prior ${e.prior ?? "—"} / Fcst ${e.forecast ?? "—"} / Actual ${e.actual ?? "—"}` }} />
                 </div>

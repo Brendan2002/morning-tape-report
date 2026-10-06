@@ -3,14 +3,14 @@ import { ContactLink, EmailLink, LegalPage, legalHead, type LegalSection } from 
 
 export const Route = createFileRoute("/privacy")({
   staticData: { sitemap: true },
-  head: () => legalHead("Privacy Policy — Morning Tape", "How Morning Tape handles data: no account needed, no ad or analytics tracking, and only what you choose to send in issue reports."),
+  head: () => legalHead("Privacy Policy — Close & Open", "How Close & Open handles data: no account needed, no ad or analytics tracking, and only what you choose to send in issue reports."),
   component: () => <LegalPage title="Privacy Policy" sections={SECTIONS} />,
 });
 
 const SECTIONS: LegalSection[] = [
-  { title: "Who is responsible", body: [<>Morning Tape is run by an independent creator. You can reach us through the Report an issue form on the <ContactLink /> page.</>] },
+  { title: "Who is responsible", body: [<>Close & Open is run by an independent creator. You can reach us through the Report an issue form on the <ContactLink /> page.</>] },
   { title: "What we don't collect by default", body: [
-    "You can read everything on Morning Tape without an account and without giving any personal information.",
+    "You can read everything on Close & Open without an account and without giving any personal information.",
     "We don't sell personal information and we don't do behavioural advertising.",
   ] },
   { title: "What data is involved", body: [
@@ -40,8 +40,8 @@ const SECTIONS: LegalSection[] = [
   ] },
   { title: "International processing", body: ["Our providers may process data outside your country under their own terms."] },
   { title: "Your privacy rights", body: [<>Depending on where you live, you can request access, correction, deletion, restriction, objection or portability under applicable law. Ask via the <ContactLink /> page.</>] },
-  { title: "Analytics", body: ["Morning Tape does not currently use any analytics or tracking service."] },
-  { title: "Children's privacy", body: ["Morning Tape is not directed at children under 13, and we don't knowingly collect their data."] },
+  { title: "Analytics", body: ["Close & Open does not currently use any analytics or tracking service."] },
+  { title: "Children's privacy", body: ["Close & Open is not directed at children under 13, and we don't knowingly collect their data."] },
   { title: "Changes to this policy", body: ["Changes are reflected by updating the \"Last updated\" date above."] },
   { title: "Contact", body: [<>Email <EmailLink />, or use the <ContactLink /> page.</>] },
 ];

@@ -12,9 +12,9 @@ export const Route = createFileRoute("/macro")({
   staticData: { sitemap: true },
   head: () => ({
     meta: [
-      { title: "Macro & Rates — Morning Tape" },
+      { title: "Macro & Rates — Close & Open" },
       { name: "description", content: "Treasury yield curve, SOFR, fed funds, inflation, jobs, mortgage rates and diesel from FRED." },
-      { property: "og:title", content: "Macro & Rates — Morning Tape" },
+      { property: "og:title", content: "Macro & Rates — Close & Open" },
       { property: "og:description", content: "Treasury yield curve, SOFR, fed funds, inflation, jobs, mortgage rates and diesel from FRED." },
     ],
   }),

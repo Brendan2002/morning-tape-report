@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://morning-tape-report.lovable.app/sitemap.xml
+Sitemap: https://closeandopen.com/sitemap.xml

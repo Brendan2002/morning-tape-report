@@ -11,9 +11,9 @@ export const Route = createFileRoute("/dairy")({
   staticData: { sitemap: true },
   head: () => ({
     meta: [
-      { title: "Dairy & Feed — Morning Tape" },
+      { title: "Dairy & Feed — Close & Open" },
       { name: "description", content: "Class III milk, corn, soybeans, soybean meal, wheat, diesel and live cattle prices." },
-      { property: "og:title", content: "Dairy & Feed — Morning Tape" },
+      { property: "og:title", content: "Dairy & Feed — Close & Open" },
       { property: "og:description", content: "Class III milk, corn, soybeans, soybean meal, wheat, diesel and live cattle prices." },
     ],
   }),

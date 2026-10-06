@@ -1,6 +1,6 @@
-# Morning Tape — Design System
+# Close & Open — Design System
 
-Apple-style UI patterns (iOS/macOS Settings, Stocks, apple.com) with Morning Tape colors. Learn from Apple's patterns; never copy Apple branding, logos or imagery.
+Apple-style UI patterns (iOS/macOS Settings, Stocks, apple.com) with Close & Open colors. Learn from Apple's patterns; never copy Apple branding, logos or imagery.
 
 ## Data rules (non-negotiable)
 - Every number shows: as-of time, comparison period (e.g. "vs prior close") and source.
@@ -36,7 +36,7 @@ Neutral / unavailable = secondary text. Dark mode follows prefers-color-scheme w
 ## Components
 - Grouped inset lists are the primary container — not card grids. Rows: label left, value right, chevron for drill-in.
 - Change badges like Stocks: rounded pill, green/red fill, white text, tabular figures.
-- Sticky translucent top nav (`backdrop-filter: saturate(180%) blur(20px)`), left-aligned wordmark "Morning Tape", segmented control for sections.
+- Sticky translucent top nav (`backdrop-filter: saturate(180%) blur(20px)`), left-aligned wordmark "Close & Open", segmented control for sections.
 - Large left-aligned page titles with date beneath in secondary text. No centered heroes, gradients, decorative elements, or three-column feature grids.
 - Primary button: filled navy pill. Secondary: plain accent text button.
 - Sheets slide up from the bottom on mobile; centered dialog on desktop.

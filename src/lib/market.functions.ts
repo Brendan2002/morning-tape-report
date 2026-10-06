@@ -22,7 +22,7 @@ const STALE_SECONDS = 5 * 24 * 3600; // older than 5 days → treat as unavailab
 async function yahoo(symbol: string, range: string) {
   const res = await fetch(
     `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=${range}&interval=1d`,
-    { headers: { "User-Agent": "Mozilla/5.0 (MorningTape)" } },
+    { headers: { "User-Agent": "Mozilla/5.0 (CloseAndOpen)" } },
   );
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const json: any = await res.json();

@@ -1,6 +1,6 @@
 # Morning Market Brief
 
-Build "Morning Tape" — a personal finance-overview site whose centerpiece is a daily morning market report (recap of the prior trading day + what it means), plus a market dashboard, macro/rates section, economic calendar, report archive and a personal watchlist. Enable Lovable Cloud (database + edge functions).
+Build "Close & Open" — a personal finance-overview site whose centerpiece is a daily morning market report (recap of the prior trading day + what it means), plus a market dashboard, macro/rates section, economic calendar, report archive and a personal watchlist. Enable Lovable Cloud (database + edge functions).
 
 ## Design system (follow strictly — newspaper/broadsheet feel, NOT a SaaS dashboard)
 - Palette: paper background #F7F5F0, ink #141414, secondary text #5C5A55, hairline rules #DAD6CC, one accent #1F3A5F (navy) for links/active nav. Up = #1E7B4A, down = #B3261E — used ONLY for price changes, nowhere else. Provide a dark mode: background #121212, ink #EDEAE3, rules #2C2C2A, accent #8FB3E0, up #4CC38A, down #F2726B.
@@ -27,7 +27,7 @@ Seed one sample report row dated yesterday clearly marked "Sample report" so the
 
 This project was built with [Lovable](https://lovable.dev).
 
-**Live app**: https://morning-tape-report.lovable.app
+**Live app**: https://closeandopen.com
 
 ## Build with Lovable
 

@@ -8,9 +8,9 @@ export const Route = createFileRoute("/")({
   staticData: { sitemap: true },
   head: () => ({
     meta: [
-      { title: "Daily Stock Market Recap — Morning Tape" },
+      { title: "Daily Stock Market Recap — Close & Open" },
       { name: "description", content: "Today's morning market report: the prior trading day's recap and what it means." },
-      { property: "og:title", content: "Daily Stock Market Recap — Morning Tape" },
+      { property: "og:title", content: "Daily Stock Market Recap — Close & Open" },
       { property: "og:description", content: "Today's morning market report: the prior trading day's recap and what it means." },
     ],
   }),
