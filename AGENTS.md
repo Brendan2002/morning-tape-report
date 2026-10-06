@@ -18,3 +18,4 @@
 - The MCP server (`src/lib/mcp/`, mounted at `/mcp` by `mcpPlugin`) requires OAuth (Cloud auth as the authorization server, consent page at `/.lovable/oauth/consent`) and tools still read only public data via the anon client — keeps the endpoint from being an open proxy.
 
 - FRED fetches are restricted to the `ALLOWED_FRED_SERIES` allowlist in `src/lib/macro.functions.ts` — stops the server's API key being used for arbitrary series.
+- Official non-FRED sources (NY Fed, U.S. Treasury, EIA, USDA AMS, USDA AgTransport) are fetched in `src/lib/{nyfed,treasury,ag}.functions.ts`, caching only successful responses in memory — a failed call after expiry shows "Unavailable", never a carried-forward value.

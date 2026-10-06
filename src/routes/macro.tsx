@@ -4,8 +4,8 @@ import { ErrorRow, Group, LineChart, PageHeader, SkeletonRows, SourceTag, UNAVAI
 import { FlagButton } from "@/components/report-issue";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getNyFedRates, type NyFedRate } from "@/lib/nyfed.functions";
-import { SiteDisclaimer } from "@/components/legal";
+import { getTreasuryCurve } from "@/lib/treasury.functions";
+import { NyFedSection } from "@/components/nyfed";
 import { diff, sinceYears, useMacro, valueAt, yoy, type Pt } from "@/components/macro";
 
 export const Route = createFileRoute("/macro")({
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/macro")({
 const CURVE = [["DGS1MO", "1M"], ["DGS3MO", "3M"], ["DGS6MO", "6M"], ["DGS1", "1Y"], ["DGS2", "2Y"], ["DGS5", "5Y"], ["DGS10", "10Y"], ["DGS30", "30Y"]] as const;
 const PANEL = ["CPIAUCSL", "CPILFESL", "UNRATE", "PAYEMS", "MORTGAGE30US", "GASDESW"] as const;
 
-function Curve({ by }: { by: Map<string, Pt[]> }) {
+function Curve({ by, official }: { by: Map<string, Pt[]>; official: boolean }) {
   const [hover, setHover] = useState<number | null>(null);
   const pts = CURVE.map(([id, label]) => {
     const s = by.get(id) ?? [];
@@ -80,7 +80,7 @@ function Curve({ by }: { by: Map<string, Pt[]> }) {
             <div className="row !pr-2" key={p.id}>
               <div className="min-w-0 flex-1">
                 <div className="font-medium">{p.label} Treasury</div>
-                <SourceTag>U.S. Treasury via FRED ({p.id}){p.latest ? ` · ${shortDate(p.latest.date)}` : ""}</SourceTag>
+                <SourceTag>{official ? "U.S. Treasury" : `U.S. Treasury via FRED (${p.id})`}{p.latest ? ` · ${shortDate(p.latest.date)}` : ""}</SourceTag>
               </div>
               <div className="text-right">
                 <div>{p.latest ? `${fmt(p.latest.value)}%` : UNAVAILABLE}</div>
@@ -91,7 +91,7 @@ function Curve({ by }: { by: Map<string, Pt[]> }) {
           );
         })}
       </div>
-      <p className="group-footer">Daily constant-maturity yields. Source: U.S. Treasury via FRED.</p>
+      <p className="group-footer">{official ? "Daily par yield curve rates. Source: U.S. Treasury (home.treasury.gov)." : "Daily constant-maturity yields. Source: U.S. Treasury via FRED (Treasury site unavailable)."}</p>
     </section>
   );
 }
@@ -140,50 +140,16 @@ function Panel({ by }: { by: Map<string, Pt[]> }) {
   );
 }
 
-const RATE_LABEL: Record<NyFedRate["id"], string> = {
-  SOFR: "SOFR (Secured Overnight Financing Rate)",
-  EFFR: "EFFR (Effective federal funds rate)",
-};
-
-function NyFedRates() {
-  const fn = useServerFn(getNyFedRates);
-  const q = useQuery({ queryKey: ["nyfed"], queryFn: () => fn(), staleTime: 5 * 60_000, retry: 1 });
-  return (
-    <section>
-      <Group
-        label="Reference rates"
-        footer={<>As of = the NY Fed's effective date. Day-over-day change is our calculation vs the prior published day. LIBOR ceased on Sep 30, 2024.</>}
-      >
-        {q.isLoading ? <SkeletonRows rows={2} /> : q.isError ? <ErrorRow message="couldn't reach the NY Fed" onRetry={() => q.refetch()} /> : (q.data ?? []).map((r) => (
-          <div className="row !pr-2" key={r.id}>
-            <div className="min-w-0 flex-1">
-              <div className="font-medium">{RATE_LABEL[r.id]}</div>
-              <SourceTag>NY Fed{r.effectiveDate ? ` · as of ${shortDate(r.effectiveDate)}` : ""}</SourceTag>
-            </div>
-            <div className="text-right">
-              <div className={r.available ? "" : "text-muted-foreground"}>{r.available && r.rate != null ? `${fmt(r.rate)}%` : UNAVAILABLE}</div>
-              {r.available && (
-                <div className="text-[13px] text-muted-foreground">
-                  {r.priorRate != null && r.priorDate ? `prior ${fmt(r.priorRate)}% (${shortDate(r.priorDate)})` : "prior unavailable"}
-                  {r.change != null ? ` · ${signed(r.change)} pp, our calculation` : ""}
-                </div>
-              )}
-            </div>
-            <FlagButton ctx={{ field: r.id, displayedValue: r.available && r.rate != null ? `${fmt(r.rate)}%` : UNAVAILABLE }} />
-          </div>
-        ))}
-      </Group>
-      <div className="group-footer mt-2"><SiteDisclaimer /></div>
-    </section>
-  );
-}
-
 function Macro() {
   const q = useMacro([...CURVE.map((c) => c[0]), ...PANEL]);
   const by = new Map((q.data ?? []).map((s) => [s.id, s.points]));
+  const tFn = useServerFn(getTreasuryCurve);
+  const t = useQuery({ queryKey: ["treasury-curve"], queryFn: () => tFn(), staleTime: 10 * 60_000, retry: 1 });
+  const official = !!t.data;
+  const curveBy = official ? new Map(t.data!.map((x) => [x.id, x.points])) : by;
   return (
     <>
-      <PageHeader title="Macro & Rates" subtitle="Original agency data via FRED, fetched fresh on each visit." />
+      <PageHeader title="Macro & Rates" subtitle="U.S. Treasury, NY Fed and original agency data via FRED." />
       {q.isLoading ? (
         <div className="space-y-8"><div className="group"><SkeletonRows rows={8} /></div><div className="group"><SkeletonRows rows={8} /></div></div>
       ) : q.isError ? (
@@ -191,9 +157,9 @@ function Macro() {
           <ErrorRow message={/FRED_API_KEY/.test((q.error as Error).message) ? "economic data source isn't configured yet" : "couldn't reach FRED"} onRetry={() => q.refetch()} />
         </div>
       ) : (
-        <div className="space-y-10"><Curve by={by} /><Panel by={by} /></div>
+        <div className="space-y-10"><Curve by={curveBy} official={official} /><Panel by={by} /></div>
       )}
-      <div className="mt-10"><NyFedRates /></div>
+      <div className="mt-10"><NyFedSection /></div>
     </>
   );
 }

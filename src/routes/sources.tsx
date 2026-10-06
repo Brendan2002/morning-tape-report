@@ -4,6 +4,7 @@ import { ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { domainOf, parseSources } from "@/components/report";
 import { FredNotice } from "@/components/legal";
+import { NyFedNotice } from "@/components/nyfed";
 import { ErrorRow, Group, PageHeader, SkeletonRows, shortDate } from "@/components/tape";
 
 export const Route = createFileRoute("/sources")({
@@ -21,13 +22,17 @@ export const Route = createFileRoute("/sources")({
 
 const PROVIDERS = [
   { name: "Yahoo Finance", body: "Index, futures, currency, commodity and stock quotes. Unofficial and typically delayed 10–20 minutes or more; futures show the front-month contract. Change is vs the prior close/settle." },
-  { name: "FRED (Federal Reserve Bank of St. Louis)", body: "Treasury yields, inflation, jobs, mortgage rates and diesel prices, republished from the original agencies (Treasury, BLS, Freddie Mac, EIA). Shown with each observation date." },
-  { name: "NY Fed", body: "Publishes SOFR and the effective federal funds rate (EFFR). We read both directly from the NY Fed Markets API, cached up to 1 hour; the day-over-day change is our calculation." },
+  { name: "Federal Reserve Bank of New York", body: "SOFR, EFFR (with the Fed's target range), OBFR, TGCR, BGCR, SOFR averages and index, overnight reverse repo results, SOMA holdings and agency MBS operations, read directly from the NY Fed Markets API." },
+  { name: "U.S. Treasury", body: "Official daily par yield curve rates, the primary source for the yield curve. FRED is used only if Treasury's site can't be reached." },
+  { name: "FRED (Federal Reserve Bank of St. Louis)", body: "Inflation, jobs and mortgage rates, republished from the original agencies (BLS, Freddie Mac). Fetched fresh, never stored." },
+  { name: "EIA (U.S. Energy Information Administration)", body: "Weekly retail on-highway diesel prices for the U.S. and PADD regions, via the EIA API." },
+  { name: "USDA AMS Dairy Market News", body: "Announced federal milk order class prices and product averages, and CME cash dairy prices (cheese, butter, nonfat dry milk, dry whey)." },
+  { name: "USDA AgTransport", body: "Weekly regional diesel prices and quarterly grain truck rates relevant to agricultural freight." },
 ];
 const RULES = [
   "Every number shows when it was observed (as-of time), what it's compared against, and where it came from.",
   "If a value can't be fetched or confirmed, we show \"Unavailable\" — never an estimate or an old value presented as current.",
-  "Quotes are cached for up to 5 minutes; economic data from FRED is fetched fresh and never stored.",
+  "Quotes are cached for up to 5 minutes; NY Fed, Treasury, EIA and USDA data for up to a few hours; FRED data is fetched fresh and never stored.",
   "No LIBOR: it ceased on Sep 30, 2024. We use SOFR and EFFR.",
 ];
 
@@ -74,7 +79,7 @@ function Sources() {
             </div>
           ))}
         </Group>
-        <Group label="FRED notice"><div className="row text-[15px]"><FredNotice /></div></Group>
+        <Group label="Data notices"><div className="row text-[15px]"><FredNotice /></div><div className="row text-[15px]"><NyFedNotice /></div></Group>
         <Group label="Methodology" footer={<>Found a problem? Use "Report an issue" on any report or the flag on any number. <Link to="/">Back to today</Link></>}>
           {RULES.map((r) => <div className="row text-[15px]" key={r}>{r}</div>)}
         </Group>
