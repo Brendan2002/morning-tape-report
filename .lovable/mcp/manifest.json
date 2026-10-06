@@ -1,0 +1,201 @@
+{
+  "version": 1,
+  "sdk_version": "3.0.5",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "morning-market-brief",
+      "version": "0.1.0",
+      "title": "Morning Market Brief"
+    },
+    "tools": [
+      {
+        "name": "get_latest_report",
+        "title": "Get latest morning report",
+        "description": "Return the most recent Morning Tape daily market report (headline, summary, full text and sources).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {},
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_report",
+        "title": "Get report by date",
+        "description": "Return the Morning Tape market report for a specific date (YYYY-MM-DD).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "date": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "description": "Report date, YYYY-MM-DD."
+            }
+          },
+          "required": [
+            "date"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "search_reports",
+        "title": "Search report archive",
+        "description": "List past Morning Tape reports, newest first, optionally filtered by keyword and/or month.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "maxLength": 100,
+              "description": "Keyword to match in headline, summary or text."
+            },
+            "month": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}$",
+              "description": "Month filter, YYYY-MM."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 10,
+              "description": "Maximum results (1–50)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_economic_calendar",
+        "title": "Get economic calendar",
+        "description": "List scheduled economic releases and central bank events for the next N days (times in ET).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "days": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 30,
+              "default": 7,
+              "description": "How many days ahead (1–30)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_quotes",
+        "title": "Get market quotes",
+        "description": "Get delayed quotes (last, change vs prior close, % change, as-of time) for Yahoo Finance symbols such as ^GSPC, AAPL, ES=F, EURUSD=X.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "symbols": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 20
+              },
+              "minItems": 1,
+              "maxItems": 25,
+              "description": "Yahoo Finance symbols."
+            }
+          },
+          "required": [
+            "symbols"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_economic_data",
+        "title": "Get economic data (FRED)",
+        "description": "Latest and prior observations from FRED for Treasury yields, SOFR, EFFR, unemployment, CPI, payrolls, mortgage rates and diesel. LIBOR is not available (discontinued).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "series": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "DGS1MO",
+                  "DGS3MO",
+                  "DGS6MO",
+                  "DGS1",
+                  "DGS2",
+                  "DGS5",
+                  "DGS10",
+                  "DGS30",
+                  "SOFR",
+                  "EFFR",
+                  "DFF",
+                  "UNRATE",
+                  "CPIAUCSL",
+                  "CPILFESL",
+                  "PAYEMS",
+                  "MORTGAGE30US",
+                  "GASDESW"
+                ]
+              },
+              "minItems": 1,
+              "maxItems": 17,
+              "description": "FRED series IDs."
+            }
+          },
+          "required": [
+            "series"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
