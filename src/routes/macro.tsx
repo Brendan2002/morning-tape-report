@@ -18,7 +18,7 @@ export const Route = createFileRoute("/macro")({
 });
 
 const CURVE = [["DGS1MO", "1M"], ["DGS3MO", "3M"], ["DGS6MO", "6M"], ["DGS1", "1Y"], ["DGS2", "2Y"], ["DGS5", "5Y"], ["DGS10", "10Y"], ["DGS30", "30Y"]] as const;
-const PANEL = ["CPIAUCSL", "CPILFESL", "UNRATE", "PAYEMS", "EFFR", "DFF", "SOFR", "MORTGAGE30US", "GASDESW"];
+const PANEL = ["CPIAUCSL", "CPILFESL", "UNRATE", "PAYEMS", "EFFR", "DFF", "SOFR", "MORTGAGE30US", "GASDESW"] as const;
 
 function Curve({ by }: { by: Map<string, Pt[]> }) {
   const [hover, setHover] = useState<number | null>(null);

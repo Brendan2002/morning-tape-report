@@ -15,9 +15,10 @@ export const Route = createFileRoute("/login")({
       { name: "robots", content: "noindex" },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>): { next?: string } => ({
-    next: typeof s.next === "string" && s.next.startsWith("/") && !s.next.startsWith("//") ? s.next : undefined,
-  }),
+  validateSearch: (s: Record<string, unknown>): { next?: string | undefined } => {
+    const n = s["next"];
+    return { next: typeof n === "string" && n.startsWith("/") && !n.startsWith("//") ? n : undefined };
+  },
   component: Login,
 });
 
