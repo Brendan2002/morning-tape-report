@@ -8,30 +8,20 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Go home
-          </Link>
-        </div>
+    <Shell>
+      <div className="py-16">
+        <p className="label-caps">404</p>
+        <h1 className="mt-2 font-serif text-[28px]">Page not found</h1>
+        <Link to="/" className="mt-4 inline-block underline">Back to today's report</Link>
       </div>
-    </div>
+    </Shell>
   );
 }
 
@@ -41,35 +31,13 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
-
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
-        </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button
-            onClick={() => {
-              router.invalidate();
-              reset();
-            }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Try again
-          </button>
-          <a
-            href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-          >
-            Go home
-          </a>
-        </div>
+    <Shell>
+      <div className="py-16">
+        <h1 className="font-serif text-[28px]">This page didn't load</h1>
+        <button className="mt-4 text-link underline" onClick={() => { router.invalidate(); reset(); }}>Try again</button>
       </div>
-    </div>
+    </Shell>
   );
 }
 
@@ -78,20 +46,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Morning Tape — Daily market report" },
+      { name: "description", content: "A daily morning market report, dashboard, rates and calendar." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:card", content: "summary" },
     ],
     links: [
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: appCss,
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap",
       },
+      { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
@@ -115,13 +82,74 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+const NAV = [
+  { to: "/", label: "Today" },
+  { to: "/markets", label: "Markets" },
+  { to: "/macro", label: "Macro & Rates" },
+  { to: "/calendar", label: "Calendar" },
+  { to: "/archive", label: "Archive" },
+  { to: "/watchlist", label: "Watchlist" },
+] as const;
+
+function Stamp() {
+  const [now, setNow] = useState<Date | null>(null);
+  useEffect(() => {
+    setNow(new Date());
+    const t = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(t);
+  }, []);
+  if (!now) return <span className="num text-xs text-muted-foreground">&nbsp;</span>;
+  const date = now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric", timeZone: "America/New_York" });
+  const time = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "America/New_York" });
+  return (
+    <span className="text-xs text-muted-foreground">
+      {date} · <span className="num">as of {time} ET</span>
+    </span>
+  );
+}
+
+function Shell({ children }: { children: ReactNode }) {
+  return (
+    <div className="mx-auto max-w-[1200px] px-4 md:px-8">
+      <header className="pt-6 md:pt-8">
+        <div className="flex flex-wrap items-end justify-between gap-2 pb-3">
+          <Link to="/" className="font-serif text-[28px] font-semibold leading-none text-foreground no-underline md:text-[40px]">
+            Morning Tape
+          </Link>
+          <Stamp />
+        </div>
+        <nav className="rule-double border-b border-rule">
+          <ul className="flex flex-wrap gap-x-4 gap-y-1 py-2 text-sm md:gap-x-6">
+            {NAV.map((n) => (
+              <li key={n.to}>
+                <Link
+                  to={n.to}
+                  activeOptions={{ exact: n.to === "/" }}
+                  className="text-foreground no-underline hover:text-link"
+                  activeProps={{ className: "text-link font-semibold underline underline-offset-4" }}
+                >
+                  {n.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </header>
+      <main className="py-6 md:py-8">{children}</main>
+      <footer className="border-t border-rule py-6 text-xs text-muted-foreground">
+        Morning Tape · Market data may be delayed. Not investment advice.
+      </footer>
+    </div>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <Shell>
+        <Outlet />
+      </Shell>
     </QueryClientProvider>
   );
 }
