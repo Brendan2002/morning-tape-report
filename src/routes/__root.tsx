@@ -1,3 +1,4 @@
+import { FredNotice } from "@/components/legal";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -152,8 +153,9 @@ function RootComponent() {
           <Outlet />
         </main>
         <footer className="mx-auto max-w-[1080px] px-4 pb-12 text-[13px] text-muted-foreground md:px-8">
-          Quotes from Yahoo Finance may be delayed and are unofficial. Economic data from FRED. Not investment advice.{" "}
-          <Link to="/sources">Sources & methodology</Link>
+          <p><FredNotice /></p>
+          <p className="mt-2">Quotes from Yahoo Finance may be delayed and are unofficial. Economic data from original agencies via FRED. Not investment advice.</p>
+          <p className="mt-2 flex flex-wrap gap-x-4"><Link to="/sources">Sources & methodology</Link><Link to="/terms">Terms</Link><Link to="/privacy">Privacy</Link></p>
         </footer>
       </ReportIssueProvider>
     </QueryClientProvider>

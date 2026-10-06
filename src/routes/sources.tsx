@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { domainOf, parseSources } from "@/components/report";
+import { FredNotice } from "@/components/legal";
 import { ErrorRow, Group, PageHeader, SkeletonRows, shortDate } from "@/components/tape";
 
 export const Route = createFileRoute("/sources")({
@@ -26,7 +27,7 @@ const PROVIDERS = [
 const RULES = [
   "Every number shows when it was observed (as-of time), what it's compared against, and where it came from.",
   "If a value can't be fetched or confirmed, we show \"Unavailable\" — never an estimate or an old value presented as current.",
-  "Quotes are cached for up to 5 minutes; economic data for up to 6 hours.",
+  "Quotes are cached for up to 5 minutes; economic data from FRED is fetched fresh and never stored.",
   "No LIBOR: it ceased on Sep 30, 2024. We use SOFR and EFFR.",
 ];
 
@@ -73,6 +74,7 @@ function Sources() {
             </div>
           ))}
         </Group>
+        <Group label="FRED notice"><div className="row text-[15px]"><FredNotice /></div></Group>
         <Group label="Methodology" footer={<>Found a problem? Use "Report an issue" on any report or the flag on any number. <Link to="/">Back to today</Link></>}>
           {RULES.map((r) => <div className="row text-[15px]" key={r}>{r}</div>)}
         </Group>

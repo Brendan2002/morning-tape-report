@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Flag } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { ISSUE_TYPES, submitIssue } from "@/lib/issues.functions";
 import { ResponsiveSheet } from "./sheet";
 
@@ -137,7 +138,7 @@ function IssueForm({ ctx, onDone }: { ctx: IssueContext; onDone: () => void }) {
       </div>
 
       <div>
-        <label htmlFor="issue-email" className="group-label block px-0">Email (optional, for follow-up)</label>
+        <label htmlFor="issue-email" className="group-label block px-0">Email (optional, for follow-up) · <Link to="/privacy" className="normal-case">Privacy</Link></label>
         <input id="issue-email" type="email" className="field" value={email} maxLength={255} onChange={(e) => setEmail(e.target.value)} aria-invalid={!!emailErr} autoComplete="email" />
         {emailErr && <p className="mt-1 text-[13px] text-down">{emailErr}</p>}
       </div>

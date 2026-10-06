@@ -76,7 +76,7 @@ function Curve({ by }: { by: Map<string, Pt[]> }) {
             <div className="row !pr-2" key={p.id}>
               <div className="min-w-0 flex-1">
                 <div className="font-medium">{p.label} Treasury</div>
-                <SourceTag>FRED {p.id}{p.latest ? ` · ${shortDate(p.latest.date)}` : ""}</SourceTag>
+                <SourceTag>U.S. Treasury via FRED ({p.id}){p.latest ? ` · ${shortDate(p.latest.date)}` : ""}</SourceTag>
               </div>
               <div className="text-right">
                 <div>{p.latest ? `${fmt(p.latest.value)}%` : UNAVAILABLE}</div>
@@ -144,7 +144,7 @@ function Macro() {
   const by = new Map((q.data ?? []).map((s) => [s.id, s.points]));
   return (
     <>
-      <PageHeader title="Macro & Rates" subtitle="Federal Reserve Economic Data (FRED). Cached up to 6 hours." />
+      <PageHeader title="Macro & Rates" subtitle="Original agency data via FRED, fetched fresh on each visit." />
       {q.isLoading ? (
         <div className="space-y-8"><div className="group"><SkeletonRows rows={8} /></div><div className="group"><SkeletonRows rows={8} /></div></div>
       ) : q.isError ? (

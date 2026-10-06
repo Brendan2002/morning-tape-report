@@ -62,6 +62,11 @@ const SERIES = {
   PAYEMS: "Nonfarm payrolls (thousands)", MORTGAGE30US: "30-year mortgage rate (%)", GASDESW: "US on-highway diesel ($/gal)",
 } as const;
 type SeriesId = keyof typeof SERIES;
+const AGENCY: Record<SeriesId, string> = {
+  DGS1MO: "U.S. Treasury", DGS3MO: "U.S. Treasury", DGS6MO: "U.S. Treasury", DGS1: "U.S. Treasury", DGS2: "U.S. Treasury",
+  DGS5: "U.S. Treasury", DGS10: "U.S. Treasury", DGS30: "U.S. Treasury", SOFR: "NY Fed", EFFR: "NY Fed", DFF: "Federal Reserve",
+  UNRATE: "BLS", CPIAUCSL: "BLS", CPILFESL: "BLS", PAYEMS: "BLS", MORTGAGE30US: "Freddie Mac", GASDESW: "EIA",
+};
 
 export const getEconomicData = defineTool({
   name: "get_economic_data",
@@ -82,10 +87,10 @@ export const getEconomicData = defineTool({
         available: !!last,
         latest: last ? { date: last.date, value: last.value } : null,
         prior: prior ? { date: prior.date, value: prior.value } : null,
-        source: "FRED, Federal Reserve Bank of St. Louis",
+        source: `${AGENCY[s.id as SeriesId]} via FRED`,
       };
     });
-    const text = rows.map((r) => r.latest ? `${r.id} — ${r.description}: ${r.latest.value} on ${r.latest.date}${r.prior ? ` (prior ${r.prior.value} on ${r.prior.date})` : ""} · FRED` : `${r.id}: Unavailable`).join("\n");
+    const text = rows.map((r) => r.latest ? `${r.id} — ${r.description}: ${r.latest.value} on ${r.latest.date}${r.prior ? ` (prior ${r.prior.value} on ${r.prior.date})` : ""} · ${r.source}` : `${r.id}: Unavailable`).join("\n");
     return { content: [{ type: "text", text }], structuredContent: { series: rows } };
   },
 });

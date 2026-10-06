@@ -9,7 +9,8 @@ export function useMacro(ids: (typeof ALLOWED_FRED_SERIES)[number][]) {
   return useQuery({
     queryKey: ["macro", ids],
     queryFn: () => fn({ data: { ids } }),
-    staleTime: 60 * 60_000,
+    staleTime: 0,
+    gcTime: 0,
     retry: 1,
   });
 }

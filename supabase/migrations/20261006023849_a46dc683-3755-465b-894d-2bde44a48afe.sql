@@ -1,0 +1,1 @@
+DELETE FROM public.issue_reports WHERE id IN ('d622f611-78eb-4483-9617-fd62d1165b88','f121891f-58a5-4b33-bdb3-c1e4749d4700','7e9f80ba-eb47-4a45-8719-cfb143a0b252');
