@@ -14,7 +14,96 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      calendar_events: {
+        Row: {
+          actual: string | null
+          created_at: string
+          event_date: string
+          event_time: string | null
+          forecast: string | null
+          id: string
+          importance: number
+          prior: string | null
+          region: string | null
+          title: string
+        }
+        Insert: {
+          actual?: string | null
+          created_at?: string
+          event_date: string
+          event_time?: string | null
+          forecast?: string | null
+          id?: string
+          importance?: number
+          prior?: string | null
+          region?: string | null
+          title: string
+        }
+        Update: {
+          actual?: string | null
+          created_at?: string
+          event_date?: string
+          event_time?: string | null
+          forecast?: string | null
+          id?: string
+          importance?: number
+          prior?: string | null
+          region?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
+      reports: {
+        Row: {
+          body_md: string
+          created_at: string
+          headline: string
+          id: string
+          report_date: string
+          sources: Json
+          summary: string
+        }
+        Insert: {
+          body_md?: string
+          created_at?: string
+          headline: string
+          id?: string
+          report_date: string
+          sources?: Json
+          summary?: string
+        }
+        Update: {
+          body_md?: string
+          created_at?: string
+          headline?: string
+          id?: string
+          report_date?: string
+          sources?: Json
+          summary?: string
+        }
+        Relationships: []
+      }
+      watchlist: {
+        Row: {
+          added_at: string
+          id: string
+          note: string | null
+          symbol: string
+        }
+        Insert: {
+          added_at?: string
+          id?: string
+          note?: string | null
+          symbol: string
+        }
+        Update: {
+          added_at?: string
+          id?: string
+          note?: string | null
+          symbol?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
