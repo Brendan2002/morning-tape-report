@@ -74,7 +74,9 @@ function BottomSheet({
   children: ReactNode;
 }) {
   const [mounted, setMounted] = useState(open);
-  const sheet = useRef<HTMLDivElement>(null);
+  const sheet = useRef<HTMLDivElement | null>(null);
+  // Radix portals mount a tick later; track the node so enter runs once it exists.
+  const [node, setNode] = useState<HTMLDivElement | null>(null);
   const overlay = useRef<HTMLDivElement>(null);
   const y = useRef(0); // current offset in px (0 = fully open)
   const raf = useRef(0);
@@ -126,7 +128,7 @@ function BottomSheet({
 
   // Enter / exit
   useLayoutEffect(() => {
-    if (!mounted || !sheet.current) return;
+    if (!mounted || !node) return;
     if (open) {
       if (reducedMotion()) return fade(1);
       if (!raf.current && y.current === 0) paint(height()); // first frame: start off-screen
@@ -134,12 +136,12 @@ function BottomSheet({
     } else {
       const v = releaseV.current;
       releaseV.current = 0;
-      const finish = () => { raf.current = 0; y.current = 0; setMounted(false); };
+      const finish = () => { raf.current = 0; y.current = 0; sheet.current = null; setNode(null); setMounted(false); };
       if (reducedMotion()) fade(0, finish);
       else springTo(height(), v, finish); // exit down the same path it came up
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, mounted]);
+  }, [open, mounted, node]);
 
   useEffect(() => () => cancelAnimationFrame(raf.current), []);
 
@@ -185,7 +187,7 @@ function BottomSheet({
         <DialogPrimitive.Overlay forceMount ref={overlay} className="sheet-overlay fixed inset-0 z-50" style={{ opacity: 0 }} />
         <DialogPrimitive.Content
           forceMount
-          ref={sheet}
+          ref={(el) => { sheet.current = el; setNode(el); }}
           className="material sheet fixed inset-x-0 bottom-0 z-50 flex max-h-[90vh] flex-col rounded-t-xl outline-none"
           style={{ transform: "translate3d(0,100%,0)", pointerEvents: open ? "auto" : "none" }}
           aria-describedby={description ? undefined : ""}
