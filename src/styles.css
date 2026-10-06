@@ -114,10 +114,6 @@
     .nav-glass { background: var(--color-background) !important; backdrop-filter: none !important; }
     .material { background: var(--color-elevated) !important; backdrop-filter: none !important; }
   }
-  @media (prefers-contrast: more) {
-    :root { --separator: rgba(60, 60, 67, 0.45); --secondary-ink: #4A4A4F; }
-    :root.dark { --separator: rgba(140, 140, 146, 0.8); --secondary-ink: #C7C7CC; }
-  }
   :focus-visible { outline: 2px solid var(--color-link); outline-offset: 2px; border-radius: 6px; }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -206,4 +202,13 @@
   .report-body p { margin: 0 0 16px; }
   .report-body ul { margin: 0 0 16px; padding-left: 20px; list-style: disc; }
   .report-body li { margin-bottom: 4px; }
+}
+
+/* Increased contrast: stronger separators and secondary text (unlayered so it beats theme tokens). */
+@media (prefers-contrast: more) {
+  :root:root { --separator: rgba(60, 60, 67, 0.45); --secondary-ink: #4A4A4F; }
+  :root:root.dark { --separator: rgba(140, 140, 146, 0.8); --secondary-ink: #C7C7CC; }
+}
+@media (prefers-contrast: more) and (prefers-color-scheme: dark) {
+  :root:root:not(.light) { --separator: rgba(140, 140, 146, 0.8); --secondary-ink: #C7C7CC; }
 }
