@@ -22,7 +22,7 @@ export function LiveMarkets() {
   return (
     <section className="min-w-0">
       <h2 className="group-label">Live markets</h2>
-      <div className="group px-2 py-2"><MarketQuotes groups={[{ name: "Key markets", symbols: KEY_TV }]} height={56 + KEY_TV.length * 36} /></div>
+      <div className="group px-2 py-2"><MarketQuotes groups={[{ name: "Key markets", symbols: KEY_TV }]} height={62 + KEY_TV.length * 37} /></div>
       <div className="group-footer">{TV_LABEL}. {CFD_NOTE} Treasury yields: see Macro &amp; Rates.</div>
     </section>
   );
