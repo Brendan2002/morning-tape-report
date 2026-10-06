@@ -74,7 +74,7 @@ export const submitIssue = createServerFn({ method: "POST" })
     let emailStatus = "skipped_not_configured";
     const lovableKey = process.env["LOVABLE_API_KEY"];
     const resendKey = process.env["RESEND_API_KEY"];
-    const to = process.env["ISSUE_NOTIFY_EMAIL"] ?? "bridle_07limps@icloud.com";
+    const to = process.env["ISSUE_NOTIFY_EMAIL"] ?? "bvc2002@icloud.com";
     if (lovableKey && resendKey) {
       const label = ISSUE_TYPES[data.issue_type];
       const subject = `Morning Tape issue: ${label} — ${row.field ?? row.page_url}`;
