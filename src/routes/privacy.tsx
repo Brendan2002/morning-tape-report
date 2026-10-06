@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ContactLink, EmailLink, LegalPage, legalHead, type LegalSection } from "@/components/legal";
+import { ContactLink, EmailLink, SupportEmailLink, LegalPage, legalHead, type LegalSection } from "@/components/legal";
 
 export const Route = createFileRoute("/privacy")({
   staticData: { sitemap: true },
@@ -8,7 +8,7 @@ export const Route = createFileRoute("/privacy")({
 });
 
 const SECTIONS: LegalSection[] = [
-  { title: "Who is responsible", body: [<>Close & Open is run by an independent creator. You can reach us through the Report an issue form on the <ContactLink /> page.</>] },
+  { title: "Who is responsible", body: [<>Close & Open is run by an independent creator. You can reach us at <EmailLink /> or through the Report an issue form on the <ContactLink /> page.</>] },
   { title: "What we don't collect by default", body: [
     "You can read everything on Close & Open without an account and without giving any personal information.",
     "We don't sell personal information and we don't do behavioural advertising.",
@@ -41,7 +41,7 @@ const SECTIONS: LegalSection[] = [
     "Economic data comes from FRED, the Federal Reserve Bank of New York, the U.S. Treasury, EIA, USDA AMS (DataMart and Dairy Market News) and USDA AgTransport. Our servers don't send them any information about you.",
   ] },
   { title: "International processing", body: ["Our providers may process data outside your country under their own terms."] },
-  { title: "Your privacy rights", body: [<>Depending on where you live, you can request access, correction, deletion, restriction, objection or portability under applicable law. Ask via the <ContactLink /> page.</>] },
+  { title: "Your privacy rights", body: [<>Depending on where you live, you can request access, correction, deletion, restriction, objection or portability under applicable law. Email <SupportEmailLink />, or ask via the <ContactLink /> page.</>] },
   { title: "Analytics", body: ["Close & Open does not run its own analytics or tracking. Embedded TradingView widgets may collect usage data under TradingView's own policy (see above)."] },
   { title: "Children's privacy", body: ["Close & Open is not directed at children under 13, and we don't knowingly collect their data."] },
   { title: "Changes to this policy", body: ["Changes are reflected by updating the \"Last updated\" date above."] },
