@@ -3,7 +3,7 @@ import { ContactLink, EmailLink, LegalPage, legalHead, type LegalSection } from 
 
 export const Route = createFileRoute("/privacy")({
   staticData: { sitemap: true },
-  head: () => legalHead("Privacy Policy — Close & Open", "How Close & Open handles data: no account needed, no ad or analytics tracking of our own, and only what you choose to send in issue reports."),
+  head: () => legalHead("Privacy Policy — Close & Open", "How Close & Open handles data: no account needed, no ad or analytics tracking of our own, and only what you choose to send in issue reports.", "/privacy"),
   component: () => <LegalPage title="Privacy Policy" sections={SECTIONS} />,
 });
 

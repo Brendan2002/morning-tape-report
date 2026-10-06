@@ -15,7 +15,11 @@ export const Route = createFileRoute("/sources")({
       { name: "description", content: "Every source cited in Close & Open reports, our data providers, and how we handle data." },
       { property: "og:title", content: "Sources & Methodology — Close & Open" },
       { property: "og:description", content: "Every source cited in Close & Open reports, our data providers, and how we handle data." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://closeandopen.com/sources" },
+      { name: "twitter:card", content: "summary" },
     ],
+    links: [{ rel: "canonical", href: "https://closeandopen.com/sources" }],
   }),
   component: Sources,
 });

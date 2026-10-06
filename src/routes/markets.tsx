@@ -10,7 +10,11 @@ export const Route = createFileRoute("/markets")({
       { name: "description", content: "Global indices, futures, currencies, commodities, S&P 500 sector heatmap and top movers." },
       { property: "og:title", content: "Markets — Close & Open" },
       { property: "og:description", content: "Global indices, futures, currencies, commodities, S&P 500 sector heatmap and top movers." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://closeandopen.com/markets" },
+      { name: "twitter:card", content: "summary" },
     ],
+    links: [{ rel: "canonical", href: "https://closeandopen.com/markets" }],
   }),
   component: Markets,
 });

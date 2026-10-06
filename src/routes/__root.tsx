@@ -47,11 +47,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { title: "Close & Open" },
       { property: "og:site_name", content: "Close & Open" },
       { name: "application-name", content: "Close & Open" },
       { name: "apple-mobile-web-app-title", content: "Close & Open" },
-      { name: "description", content: "A daily morning market report with markets, rates, calendar and sources." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

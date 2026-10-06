@@ -3,7 +3,7 @@ import { ContactLink, EmailLink, FRED_TERMS_URL, FredNotice, LegalPage, legalHea
 
 export const Route = createFileRoute("/terms")({
   staticData: { sitemap: true },
-  head: () => legalHead("Terms of Use — Close & Open", "Close & Open is a free, non-commercial market summary for general information. Not investment advice."),
+  head: () => legalHead("Terms of Use — Close & Open", "Close & Open is a free, non-commercial market summary for general information. Not investment advice.", "/terms"),
   component: () => <LegalPage title="Terms of Use" sections={SECTIONS} />,
 });
 
