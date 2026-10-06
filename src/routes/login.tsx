@@ -74,3 +74,16 @@ function Login() {
     </div>
   );
 }
+
+// Only allow same-origin relative paths; resolve against a fixed origin so backslashes/encodings can't escape.
+function safeNext(n: unknown): string | undefined {
+  if (typeof n !== "string" || !n.startsWith("/") || n.startsWith("//") || /[\\\u0000-\u001f]/.test(n)) return undefined;
+  try {
+    const base = "https://local.invalid";
+    const u = new URL(n, base);
+    if (u.origin !== base) return undefined;
+    return u.pathname + u.search + u.hash;
+  } catch {
+    return undefined;
+  }
+}
