@@ -3,8 +3,7 @@ import { z } from "zod";
 
 export type Series = { id: string; points: { date: string; value: number }[]; error?: string };
 
-const cache = new Map<string, { at: number; s: Series }>();
-const TTL = 6 * 60 * 60 * 1000;
+// FRED API terms: no caching or storing of FRED data — fetched fresh on every request.
 
 // Only series the site actually displays may be fetched with the server's FRED key.
 export const ALLOWED_FRED_SERIES = [
@@ -22,18 +21,15 @@ export async function fetchFredSeries(ids: string[]): Promise<Series[]> {
   const startStr = start.toISOString().slice(0, 10);
   return Promise.all(
     ids.map(async (id): Promise<Series> => {
-      const hit = cache.get(id);
-      if (hit && Date.now() - hit.at < TTL) return hit.s;
       try {
         const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${encodeURIComponent(id)}&api_key=${key}&file_type=json&observation_start=${startStr}`;
-        const res = await fetch(url);
+        const res = await fetch(url, { cache: "no-store" });
         if (!res.ok) return { id, points: [], error: `HTTP ${res.status}` };
         const j: any = await res.json();
         const points = (j.observations ?? [])
           .filter((o: any) => o.value !== ".")
           .map((o: any) => ({ date: o.date, value: Number(o.value) }));
         const s = { id, points };
-        cache.set(id, { at: Date.now(), s });
         return s;
       } catch (e) {
         return { id, points: [], error: e instanceof Error ? e.message : "failed" };
