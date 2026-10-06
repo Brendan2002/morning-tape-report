@@ -1,3 +1,6 @@
+import type { ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
+import { Group, PageHeader } from "@/components/tape";
 export const FRED_TERMS_URL = "https://fred.stlouisfed.org/docs/api/terms_of_use.html";
 
 export function FredNotice() {
@@ -6,4 +9,36 @@ export function FredNotice() {
       This product uses the FRED® API but is not endorsed or certified by the Federal Reserve Bank of St. Louis.
     </a>
   );
+}
+
+
+export const LEGAL_UPDATED = "October 6, 2026";
+
+export const ContactLink = () => <Link to="/contact">Contact</Link>;
+
+export type LegalSection = { title: string; body: ReactNode[] };
+
+export function LegalPage({ title, sections }: { title: string; sections: LegalSection[] }) {
+  return (
+    <div className="max-w-2xl">
+      <PageHeader title={title} subtitle={`Last updated: ${LEGAL_UPDATED}`} />
+      <div className="space-y-6">
+        {sections.map((s, i) => (
+          <Group key={s.title} label={`${i + 1}. ${s.title}`}>
+            {s.body.map((b, j) => <div key={j} className="row !block text-[0.9375rem]">{b}</div>)}
+          </Group>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function legalHead(title: string, description: string) {
+  return {
+    meta: [
+      { title }, { name: "description", content: description },
+      { property: "og:title", content: title }, { property: "og:description", content: description },
+      { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+    ],
+  };
 }

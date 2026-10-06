@@ -1,35 +1,35 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Group, PageHeader } from "@/components/tape";
-import { FRED_TERMS_URL, FredNotice } from "@/components/legal";
-
-const T = "Terms of Use — Morning Tape";
-const D = "Morning Tape is a free, non-commercial, informational market report. Not investment advice.";
+import { ContactLink, FRED_TERMS_URL, FredNotice, LegalPage, legalHead, type LegalSection } from "@/components/legal";
 
 export const Route = createFileRoute("/terms")({
   staticData: { sitemap: true },
-  head: () => ({
-    meta: [
-      { title: T }, { name: "description", content: D },
-      { property: "og:title", content: T }, { property: "og:description", content: D },
-      { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
-    ],
-  }),
-  component: Terms,
+  head: () => legalHead("Terms of Use — Morning Tape", "Morning Tape is a free, non-commercial market summary for general information. Not investment advice."),
+  component: () => <LegalPage title="Terms of Use" sections={SECTIONS} />,
 });
 
-function Terms() {
-  return (
-    <div className="max-w-2xl">
-      <PageHeader title="Terms of Use" />
-      <Group>
-        <div className="row text-[15px]">Morning Tape is free and non-commercial. It is provided for information only.</div>
-        <div className="row text-[15px]">Nothing on this site is investment, financial, tax or legal advice. Data may be delayed, incomplete or unavailable.</div>
-        <div className="row !block text-[15px]">
-          By using this site you agree to be bound by the{" "}
-          <a href={FRED_TERMS_URL} target="_blank" rel="noopener noreferrer">FRED® API Terms of Use</a>.
-        </div>
-        <div className="row text-[15px]"><FredNotice /></div>
-      </Group>
-    </div>
-  );
-}
+const SECTIONS: LegalSection[] = [
+  { title: "What Morning Tape is", body: ["A free, non-commercial daily market and economic summary for general information."] },
+  { title: "Not investment advice", body: [
+    "Nothing here is investment, financial, tax, legal or trading advice, or a recommendation to buy or sell anything. \"Our read\" sections are commentary.",
+    "Do your own research or consult a licensed professional.",
+  ] },
+  { title: "Data accuracy", body: [
+    "Data comes from third parties. It may be delayed, incomplete, revised or unavailable, and is not guaranteed.",
+    "Prices from Yahoo Finance are unofficial and may be delayed.",
+  ] },
+  { title: "Third-party data terms", body: [
+    <>By using this site you agree to be bound by the <a href={FRED_TERMS_URL} target="_blank" rel="noopener noreferrer">FRED® API Terms of Use</a>.</>,
+    <FredNotice />,
+  ] },
+  { title: "Acceptable use", body: ["Don't disrupt the site, scrape it abusively, submit spam or abusive issue reports, or break the law."] },
+  { title: "Intellectual property", body: [
+    "The Morning Tape name, design and written reports belong to the creator. Underlying data belongs to its owners.",
+    "No commercial redistribution without permission.",
+  ] },
+  { title: "Disclaimer of warranties", body: ["The site is provided \"as is\", without warranties of any kind."] },
+  { title: "Limitation of liability", body: ["We are not liable for losses from use of, or reliance on, the site, including trading or business decisions."] },
+  { title: "Your consumer rights", body: ["Consumer protections that can't be waived under the law that applies to you are not affected."] },
+  { title: "Governing law", body: ["These terms are governed by the laws of the State of Connecticut, USA."] },
+  { title: "Changes to these terms", body: ["Continued use of the site means you accept the current terms. When they change, the \"Last updated\" date changes."] },
+  { title: "Contact", body: [<>Use the <ContactLink /> page.</>] },
+];
