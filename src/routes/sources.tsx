@@ -6,6 +6,7 @@ import { domainOf, parseSources } from "@/components/report";
 import { ErrorRow, Group, PageHeader, SkeletonRows, shortDate } from "@/components/tape";
 
 export const Route = createFileRoute("/sources")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Sources & Methodology — Morning Tape" },

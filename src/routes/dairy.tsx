@@ -7,6 +7,7 @@ import { ResponsiveSheet } from "@/components/sheet";
 import { sinceYears, useMacro } from "@/components/macro";
 
 export const Route = createFileRoute("/dairy")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Dairy & Feed — Morning Tape" },

@@ -6,12 +6,14 @@ import { ErrorRow, Group, PageHeader, QuoteList, SkeletonRows } from "@/componen
 import { useIsAdmin, useSession } from "@/components/auth";
 
 export const Route = createFileRoute("/watchlist")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Watchlist — Morning Tape" },
       { name: "description", content: "A curated watchlist of stocks and ETFs with live quotes." },
       { property: "og:title", content: "Watchlist — Morning Tape" },
       { property: "og:description", content: "A curated watchlist of stocks and ETFs with live quotes." },
+      { name: "robots", content: "noindex" },
     ],
   }),
   component: Watchlist,
