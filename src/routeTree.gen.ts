@@ -10,8 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AccessibilityRouteImport } from './routes/accessibility'
 import { Route as ArchiveRouteImport } from './routes/archive'
 import { Route as CalendarRouteImport } from './routes/calendar'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DairyRouteImport } from './routes/dairy'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MacroRouteImport } from './routes/macro'
@@ -31,6 +33,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccessibilityRoute = AccessibilityRouteImport.update({
+  id: '/accessibility',
+  path: '/accessibility',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ArchiveRoute = ArchiveRouteImport.update({
   id: '/archive',
   path: '/archive',
@@ -39,6 +46,11 @@ const ArchiveRoute = ArchiveRouteImport.update({
 const CalendarRoute = CalendarRouteImport.update({
   id: '/calendar',
   path: '/calendar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DairyRoute = DairyRouteImport.update({
@@ -110,8 +122,10 @@ const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/accessibility': typeof AccessibilityRoute
   '/archive': typeof ArchiveRoute
   '/calendar': typeof CalendarRoute
+  '/contact': typeof ContactRoute
   '/dairy': typeof DairyRoute
   '/login': typeof LoginRoute
   '/macro': typeof MacroRoute
@@ -128,8 +142,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/accessibility': typeof AccessibilityRoute
   '/archive': typeof ArchiveRoute
   '/calendar': typeof CalendarRoute
+  '/contact': typeof ContactRoute
   '/dairy': typeof DairyRoute
   '/login': typeof LoginRoute
   '/macro': typeof MacroRoute
@@ -147,8 +163,10 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/accessibility': typeof AccessibilityRoute
   '/archive': typeof ArchiveRoute
   '/calendar': typeof CalendarRoute
+  '/contact': typeof ContactRoute
   '/dairy': typeof DairyRoute
   '/login': typeof LoginRoute
   '/macro': typeof MacroRoute
@@ -167,8 +185,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/accessibility'
     | '/archive'
     | '/calendar'
+    | '/contact'
     | '/dairy'
     | '/login'
     | '/macro'
@@ -185,8 +205,10 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/accessibility'
     | '/archive'
     | '/calendar'
+    | '/contact'
     | '/dairy'
     | '/login'
     | '/macro'
@@ -203,8 +225,10 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/accessibility'
     | '/archive'
     | '/calendar'
+    | '/contact'
     | '/dairy'
     | '/login'
     | '/macro'
@@ -222,8 +246,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccessibilityRoute: typeof AccessibilityRoute
   ArchiveRoute: typeof ArchiveRoute
   CalendarRoute: typeof CalendarRoute
+  ContactRoute: typeof ContactRoute
   DairyRoute: typeof DairyRoute
   LoginRoute: typeof LoginRoute
   MacroRoute: typeof MacroRoute
@@ -248,6 +274,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/accessibility': {
+      id: '/accessibility'
+      path: '/accessibility'
+      fullPath: '/accessibility'
+      preLoaderRoute: typeof AccessibilityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/archive': {
       id: '/archive'
       path: '/archive'
@@ -260,6 +293,13 @@ declare module '@tanstack/react-router' {
       path: '/calendar'
       fullPath: '/calendar'
       preLoaderRoute: typeof CalendarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dairy': {
@@ -358,8 +398,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccessibilityRoute: AccessibilityRoute,
   ArchiveRoute: ArchiveRoute,
   CalendarRoute: CalendarRoute,
+  ContactRoute: ContactRoute,
   DairyRoute: DairyRoute,
   LoginRoute: LoginRoute,
   MacroRoute: MacroRoute,
