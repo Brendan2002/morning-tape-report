@@ -104,7 +104,9 @@ async function classPrices() {
     };
     let rows: any[] = await get(year);
     if (rows.length < 2) rows = [...rows, ...(await get(year - 1))];
-    const toDate = (r: any) => { const [m, , y] = String(r.week_ending_date ?? "").split("/"); return y && m ? `${y}-${m}` : ""; };
+    const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    // The pricing month is report_year + report_month (week_ending_date can fall in the next month).
+    const toDate = (r: any) => { const i = MONTHS.indexOf(String(r.report_month ?? "").slice(0, 3)); return r.report_year && i >= 0 ? `${r.report_year}-${String(i + 1).padStart(2, "0")}` : ""; };
     rows = rows.filter((r) => toDate(r)).sort((a, b) => (toDate(a) < toDate(b) ? 1 : -1));
     const [a, b] = rows;
     if (!a) return null;
