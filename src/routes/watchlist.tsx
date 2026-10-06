@@ -1,16 +1,17 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ErrorLine, QuoteTable, SectionLabel, Skeleton } from "@/components/tape";
+import { ErrorRow, Group, PageHeader, QuoteList, SkeletonRows } from "@/components/tape";
+import { useIsAdmin, useSession } from "@/components/auth";
 
 export const Route = createFileRoute("/watchlist")({
   head: () => ({
     meta: [
       { title: "Watchlist — Morning Tape" },
-      { name: "description", content: "Your personal watchlist with live quotes." },
+      { name: "description", content: "A curated watchlist of stocks and ETFs with live quotes." },
       { property: "og:title", content: "Watchlist — Morning Tape" },
-      { property: "og:description", content: "Your personal watchlist with live quotes." },
+      { property: "og:description", content: "A curated watchlist of stocks and ETFs with live quotes." },
     ],
   }),
   component: Watchlist,
@@ -18,6 +19,9 @@ export const Route = createFileRoute("/watchlist")({
 
 function Watchlist() {
   const qc = useQueryClient();
+  const { session } = useSession();
+  const admin = useIsAdmin(session?.user.id);
+  const isAdmin = !!admin.data;
   const [val, setVal] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const q = useQuery({
@@ -31,7 +35,7 @@ function Watchlist() {
   const add = useMutation({
     mutationFn: async (symbol: string) => {
       const { error } = await supabase.from("watchlist").insert({ symbol });
-      if (error) throw new Error(error.code === "23505" ? `${symbol} is already on your watchlist.` : error.message);
+      if (error) throw new Error(error.code === "23505" ? `${symbol} is already on the watchlist.` : error.message);
     },
     onSuccess: () => { setVal(""); qc.invalidateQueries({ queryKey: ["watchlist"] }); },
     onError: (e: Error) => setErr(e.message),
@@ -43,55 +47,54 @@ function Watchlist() {
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["watchlist"] }),
   });
-
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     const s = val.trim().toUpperCase();
     if (!s) return setErr("Enter a symbol.");
     if (s.length > 15) return setErr("Symbols are at most 15 characters.");
     if (!/^[A-Z0-9.^=\-]+$/.test(s)) return setErr("Use letters, numbers and . ^ = - only.");
-    if (q.data?.some((w) => w.symbol === s)) return setErr(`${s} is already on your watchlist.`);
+    if (q.data?.some((w) => w.symbol === s)) return setErr(`${s} is already on the watchlist.`);
     setErr(null);
     add.mutate(s);
   };
-
   const idBySym = new Map((q.data ?? []).map((w) => [w.symbol, w.id]));
+
   return (
-    <div className="max-w-[760px]">
-      <SectionLabel>Watchlist</SectionLabel>
-      <form onSubmit={submit} className="mb-4 flex flex-wrap items-center gap-2" noValidate>
-        <label htmlFor="sym" className="sr-only">Symbol</label>
-        <input
-          id="sym"
-          value={val}
-          maxLength={15}
-          onChange={(e) => { setVal(e.target.value.toUpperCase()); setErr(null); }}
-          placeholder="Add symbol, e.g. TSLA"
-          className="num h-8 w-48 rounded-sm border border-rule bg-background px-2 text-sm outline-none focus:border-link"
-          aria-invalid={!!err}
-          aria-describedby="sym-err"
-        />
-        <button type="submit" disabled={add.isPending} className="h-8 rounded-sm border border-foreground px-3 text-sm hover:bg-wash disabled:opacity-50">
-          {add.isPending ? "Adding…" : "Add"}
-        </button>
-        {err && <p id="sym-err" className="w-full text-sm text-link" role="alert">{err}</p>}
-      </form>
-      {q.isLoading ? <Skeleton rows={5} /> : q.isError ? <ErrorLine message={(q.error as Error).message} onRetry={() => q.refetch()} /> : q.data!.length === 0 ? (
-        <p className="py-4 text-muted-foreground">Your watchlist is empty.</p>
-      ) : (
-        <QuoteTable
-          rows={q.data!.map((w) => ({ symbol: w.symbol }))}
-          extraCol={(r) => (
-            <button
-              onClick={() => remove.mutate(idBySym.get(r.symbol)!)}
-              className="text-xs text-muted-foreground underline hover:text-foreground"
-              aria-label={`Remove ${r.symbol}`}
-            >
-              Remove
-            </button>
-          )}
-        />
-      )}
-    </div>
+    <>
+      <PageHeader title="Watchlist" subtitle="Quotes via Yahoo Finance, may be delayed. Change vs prior close." />
+      <div className="max-w-[760px] space-y-8">
+        {isAdmin && (
+          <form onSubmit={submit} noValidate>
+            <label htmlFor="sym" className="group-label block">Add a symbol</label>
+            <div className="flex gap-2">
+              <input
+                id="sym" value={val} maxLength={15}
+                onChange={(e) => { setVal(e.target.value.toUpperCase()); setErr(null); }}
+                placeholder="e.g. TSLA" className="field flex-1"
+                aria-invalid={!!err} aria-describedby={err ? "sym-err" : undefined}
+              />
+              <button type="submit" className="btn-primary" disabled={add.isPending}>{add.isPending ? "Adding…" : "Add"}</button>
+            </div>
+            {err && <p id="sym-err" className="mt-1 px-4 text-[13px] text-down" role="alert">{err}</p>}
+          </form>
+        )}
+        {q.isLoading ? <div className="group"><SkeletonRows rows={5} /></div> : q.isError ? <div className="group"><ErrorRow onRetry={() => q.refetch()} /></div> : q.data!.length === 0 ? (
+          <Group><div className="row text-muted-foreground">The watchlist is empty.</div></Group>
+        ) : (
+          <QuoteList
+            label="Symbols"
+            rows={q.data!.map((w) => ({ symbol: w.symbol }))}
+            extra={isAdmin ? (r) => (
+              <button onClick={() => remove.mutate(idBySym.get(r.symbol)!)} className="btn-text shrink-0 !text-[15px] !text-down" aria-label={`Remove ${r.symbol}`}>Remove</button>
+            ) : undefined}
+          />
+        )}
+        {!isAdmin && (
+          <p className="px-4 text-[13px] text-muted-foreground">
+            Editing the watchlist is limited to admins. {session ? "Your account isn't an admin." : <Link to="/login">Admin sign in</Link>}
+          </p>
+        )}
+      </div>
+    </>
   );
 }
