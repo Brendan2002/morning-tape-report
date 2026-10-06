@@ -3,7 +3,7 @@ import { ContactLink, EmailLink, LegalPage, legalHead, type LegalSection } from 
 
 export const Route = createFileRoute("/privacy")({
   staticData: { sitemap: true },
-  head: () => legalHead("Privacy Policy — Close & Open", "How Close & Open handles data: no account needed, no ad or analytics tracking, and only what you choose to send in issue reports."),
+  head: () => legalHead("Privacy Policy — Close & Open", "How Close & Open handles data: no account needed, no ad or analytics tracking of our own, and only what you choose to send in issue reports."),
   component: () => <LegalPage title="Privacy Policy" sections={SECTIONS} />,
 });
 
@@ -42,7 +42,7 @@ const SECTIONS: LegalSection[] = [
   ] },
   { title: "International processing", body: ["Our providers may process data outside your country under their own terms."] },
   { title: "Your privacy rights", body: [<>Depending on where you live, you can request access, correction, deletion, restriction, objection or portability under applicable law. Ask via the <ContactLink /> page.</>] },
-  { title: "Analytics", body: ["Close & Open does not currently use any analytics or tracking service."] },
+  { title: "Analytics", body: ["Close & Open does not run its own analytics or tracking. Embedded TradingView widgets may collect usage data under TradingView's own policy (see above)."] },
   { title: "Children's privacy", body: ["Close & Open is not directed at children under 13, and we don't knowingly collect their data."] },
   { title: "Changes to this policy", body: ["Changes are reflected by updating the \"Last updated\" date above."] },
   { title: "Contact", body: [<>Email <EmailLink />, or use the <ContactLink /> page.</>] },
