@@ -6,7 +6,15 @@ export type Series = { id: string; points: { date: string; value: number }[]; er
 const cache = new Map<string, { at: number; s: Series }>();
 const TTL = 6 * 60 * 60 * 1000;
 
+// Only series the site actually displays may be fetched with the server's FRED key.
+export const ALLOWED_FRED_SERIES = [
+  "DGS1MO", "DGS3MO", "DGS6MO", "DGS1", "DGS2", "DGS5", "DGS10", "DGS30",
+  "SOFR", "EFFR", "DFF", "UNRATE", "CPIAUCSL", "CPILFESL", "PAYEMS", "MORTGAGE30US", "GASDESW",
+] as const;
+const ALLOWED = new Set<string>(ALLOWED_FRED_SERIES);
+
 export async function fetchFredSeries(ids: string[]): Promise<Series[]> {
+  ids = [...new Set(ids)].filter((id) => ALLOWED.has(id));
   const key = process.env["FRED_API_KEY"];
   if (!key) throw new Error("FRED_API_KEY is not configured");
   const start = new Date();
@@ -17,7 +25,7 @@ export async function fetchFredSeries(ids: string[]): Promise<Series[]> {
       const hit = cache.get(id);
       if (hit && Date.now() - hit.at < TTL) return hit.s;
       try {
-        const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${id}&api_key=${key}&file_type=json&observation_start=${startStr}`;
+        const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${encodeURIComponent(id)}&api_key=${key}&file_type=json&observation_start=${startStr}`;
         const res = await fetch(url);
         if (!res.ok) return { id, points: [], error: `HTTP ${res.status}` };
         const j: any = await res.json();
@@ -35,5 +43,5 @@ export async function fetchFredSeries(ids: string[]): Promise<Series[]> {
 }
 
 export const getMacro = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ ids: z.array(z.string().regex(/^[A-Z0-9]{2,20}$/)).max(20) }).parse(d))
+  .inputValidator((d) => z.object({ ids: z.array(z.enum(ALLOWED_FRED_SERIES)).max(ALLOWED_FRED_SERIES.length) }).parse(d))
   .handler(async ({ data }) => fetchFredSeries(data.ids));
