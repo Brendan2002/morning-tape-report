@@ -59,7 +59,7 @@ function Dairy() {
                   onClick={() => pts.length > 1 && setDetail({ title: it.label, points: pts, format: (v) => `${fmt(v)} ${it.unit}`, source: `${it.symbol} · Yahoo Finance · 3 months, daily close` })}
                   aria-label={`${it.label}: open 3-month chart`}
                 >
-                  <div className="min-w-0 flex-1 basis-full sm:basis-auto">
+                  <div className="min-w-0 [flex:1_1_100%] sm:[flex:1_1_0%]">
                     <div className="font-medium">{it.label}</div>
                     <SourceTag>{it.symbol} · Yahoo Finance{asOf ? ` · ${asOf}` : ""}</SourceTag>
                   </div>

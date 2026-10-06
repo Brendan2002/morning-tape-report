@@ -103,7 +103,7 @@ export function QuoteRow({ r, q, after, onClick, reportDate }: { r: Row; q?: Quo
   const asOf = ok ? etTime(q!.marketTime) : null;
   const inner = (
     <>
-      <div className="min-w-0 flex-1 basis-full text-left sm:basis-auto">
+      <div className="min-w-0 text-left [flex:1_1_100%] sm:[flex:1_1_0%]">
         <div className="truncate font-medium">{name}</div>
         <SourceTag>
           {r.symbol} · Yahoo Finance{asOf ? ` · ${asOf}` : ""}

@@ -119,7 +119,7 @@ function Panel({ by }: { by: Map<string, Pt[]> }) {
         const spark = sinceYears(r.pts, 2).map((p) => ({ label: shortDate(p.date, r.monthly), v: p.value }));
         return (
           <div className="row !pr-2 flex-wrap sm:flex-nowrap" key={r.label}>
-            <div className="min-w-0 flex-1 basis-full sm:basis-auto">
+            <div className="min-w-0 [flex:1_1_100%] sm:[flex:1_1_0%]">
               <div className="font-medium">{r.label}</div>
               <SourceTag>{r.source}{last ? ` · ${shortDate(last.date, r.monthly)}` : ""}</SourceTag>
             </div>
