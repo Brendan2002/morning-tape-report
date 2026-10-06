@@ -16,6 +16,7 @@ import { Route as DairyRouteImport } from './routes/dairy'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MacroRouteImport } from './routes/macro'
 import { Route as MarketsRouteImport } from './routes/markets'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SourcesRouteImport } from './routes/sources'
 import { Route as WatchlistRouteImport } from './routes/watchlist'
 import { Route as ReportDateRouteImport } from './routes/report.$date'
@@ -55,6 +56,11 @@ const MarketsRoute = MarketsRouteImport.update({
   path: '/markets',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SourcesRoute = SourcesRouteImport.update({
   id: '/sources',
   path: '/sources',
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/macro': typeof MacroRoute
   '/markets': typeof MarketsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sources': typeof SourcesRoute
   '/watchlist': typeof WatchlistRoute
   '/report/$date': typeof ReportDateRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/macro': typeof MacroRoute
   '/markets': typeof MarketsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sources': typeof SourcesRoute
   '/watchlist': typeof WatchlistRoute
   '/report/$date': typeof ReportDateRoute
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/macro': typeof MacroRoute
   '/markets': typeof MarketsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sources': typeof SourcesRoute
   '/watchlist': typeof WatchlistRoute
   '/report/$date': typeof ReportDateRoute
@@ -118,6 +127,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/macro'
     | '/markets'
+    | '/sitemap.xml'
     | '/sources'
     | '/watchlist'
     | '/report/$date'
@@ -130,6 +140,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/macro'
     | '/markets'
+    | '/sitemap.xml'
     | '/sources'
     | '/watchlist'
     | '/report/$date'
@@ -142,6 +153,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/macro'
     | '/markets'
+    | '/sitemap.xml'
     | '/sources'
     | '/watchlist'
     | '/report/$date'
@@ -155,6 +167,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   MacroRoute: typeof MacroRoute
   MarketsRoute: typeof MarketsRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SourcesRoute: typeof SourcesRoute
   WatchlistRoute: typeof WatchlistRoute
   ReportDateRoute: typeof ReportDateRoute
@@ -211,6 +224,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sources': {
       id: '/sources'
       path: '/sources'
@@ -243,6 +263,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   MacroRoute: MacroRoute,
   MarketsRoute: MarketsRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SourcesRoute: SourcesRoute,
   WatchlistRoute: WatchlistRoute,
   ReportDateRoute: ReportDateRoute,
