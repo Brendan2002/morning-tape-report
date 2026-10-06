@@ -16,7 +16,11 @@ export const Route = createFileRoute("/dairy")({
       { name: "description", content: "Class III milk, corn, soybeans, soybean meal, wheat, diesel and live cattle prices." },
       { property: "og:title", content: "Dairy & Feed — Close & Open" },
       { property: "og:description", content: "Class III milk, corn, soybeans, soybean meal, wheat, diesel and live cattle prices." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://closeandopen.com/dairy" },
+      { name: "twitter:card", content: "summary" },
     ],
+    links: [{ rel: "canonical", href: "https://closeandopen.com/dairy" }],
   }),
   component: Dairy,
 });

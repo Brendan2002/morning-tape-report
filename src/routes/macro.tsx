@@ -16,7 +16,11 @@ export const Route = createFileRoute("/macro")({
       { name: "description", content: "Treasury yield curve, SOFR, fed funds, inflation, jobs, mortgage rates and diesel from FRED." },
       { property: "og:title", content: "Macro & Rates — Close & Open" },
       { property: "og:description", content: "Treasury yield curve, SOFR, fed funds, inflation, jobs, mortgage rates and diesel from FRED." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://closeandopen.com/macro" },
+      { name: "twitter:card", content: "summary" },
     ],
+    links: [{ rel: "canonical", href: "https://closeandopen.com/macro" }],
   }),
   component: Macro,
 });

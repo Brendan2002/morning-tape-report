@@ -36,12 +36,14 @@ export function LegalPage({ title, sections }: { title: string; sections: LegalS
   );
 }
 
-export function legalHead(title: string, description: string) {
+export function legalHead(title: string, description: string, path: string) {
+  const url = `https://closeandopen.com${path}`;
   return {
+    links: [{ rel: "canonical", href: url }],
     meta: [
       { title }, { name: "description", content: description },
       { property: "og:title", content: title }, { property: "og:description", content: description },
-      { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+      { property: "og:type", content: "website" }, { property: "og:url", content: url }, { name: "twitter:card", content: "summary" },
     ],
   };
 }

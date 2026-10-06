@@ -3,7 +3,7 @@ import { ContactLink, EmailLink, LegalPage, legalHead, type LegalSection } from 
 
 export const Route = createFileRoute("/accessibility")({
   staticData: { sitemap: true },
-  head: () => legalHead("Accessibility — Close & Open", "Close & Open aims to meet WCAG 2.2 level AA. How we test, and how to report a problem."),
+  head: () => legalHead("Accessibility — Close & Open", "Close & Open aims to meet WCAG 2.2 level AA. How we test, and how to report a problem.", "/accessibility"),
   component: () => <LegalPage title="Accessibility" sections={SECTIONS} />,
 });
 
