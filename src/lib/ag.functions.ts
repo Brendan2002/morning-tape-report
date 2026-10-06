@@ -168,3 +168,89 @@ export const getDairyPrices = createServerFn({ method: "GET" }).handler(async ()
     cme: { configured: !!key, available: cme.some((r) => r.value != null), rows: cme },
   };
 });
+
+/* ---------------- USDA AMS DataMart (LMPR/DPMRP/FMMOS, no key) ---------------- */
+
+const DM = "https://mpr.datamart.ams.usda.gov/services/v1.1/reports";
+const MONTHS3 = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const mdyToIso = (s: unknown) => { const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(String(s ?? "")); return m ? `${m[3]}-${m[1]}-${m[2]}` : ""; };
+const isoToMdy = (d: Date) => `${String(d.getUTCMonth() + 1).padStart(2, "0")}/${String(d.getUTCDate()).padStart(2, "0")}/${d.getUTCFullYear()}`;
+const numC = (x: unknown) => num(typeof x === "string" ? x.replace(/,/g, "") : x);
+async function dmGet(path: string): Promise<any[]> {
+  const res = await fetch(`${DM}/${path}`, { headers: { Accept: "application/json" } });
+  if (!res.ok) return [];
+  const j: any = await res.json();
+  return Array.isArray(j?.results) ? j.results : [];
+}
+
+export type OfficialWeekly = { label: string; value: number | null; prior: number | null; date: string | null; priorDate: string | null; history: { date: string; v: number }[] };
+export type OfficialMonthly = { label: string; value: number | null; prior: number | null; month: string | null; priorMonth: string | null };
+export type OfficialDairy = {
+  products: { available: boolean; rows: OfficialWeekly[] };
+  classes: { available: boolean; month: string | null; rows: OfficialMonthly[] };
+  advanced: { available: boolean; month: string | null; rows: OfficialMonthly[] };
+};
+
+const DPMRP = [
+  { label: "Cheddar blocks (40 lb)", section: "40 Pound Block Cheddar Cheese Prices and Sales", key: "cheese_40_Price" },
+  { label: "Cheddar barrels (500 lb)", section: "500 Pound Barrel Cheddar Cheese Prices, Sales, and Moisture Content", key: "cheese_500_Price" },
+  { label: "Butter", section: "Butter Prices and Sales", key: "Butter_Price" },
+  { label: "Nonfat dry milk", section: "Nonfat Dry Milk Prices and Sales", key: "nonfat_milk_Price" },
+  { label: "Dry whey", section: "Dry Whey Prices and Sales", key: "whey_Price" },
+];
+
+async function dpmrp(): Promise<OfficialWeekly[] | null> {
+  return cached("dm-2993", 6 * HOUR, async () => {
+    const end = new Date(); const start = new Date(end.getTime() - 140 * 86400_000);
+    const range = `week_ending_date=${isoToMdy(start)}:${isoToMdy(end)}`;
+    const out: OfficialWeekly[] = [];
+    for (const p of DPMRP) { // sequential: light request volume
+      const rows = await dmGet(`2993/${encodeURIComponent(p.section)}?q=${range}`);
+      // Newer reports revise earlier weeks: keep the value from the newest report per data week.
+      const byWeek = new Map<string, { rep: string; v: number }>();
+      for (const r of rows) {
+        const wk = mdyToIso(r["Week Ending Date"]), rep = mdyToIso(r.week_ending_date), v = numC(r[p.key]);
+        if (!wk || !rep || v == null) continue;
+        const cur = byWeek.get(wk);
+        if (!cur || rep > cur.rep) byWeek.set(wk, { rep, v });
+      }
+      const hist = [...byWeek.entries()].sort(([a], [b]) => (a < b ? -1 : 1)).map(([date, x]) => ({ date, v: x.v })).slice(-12);
+      const last = hist.at(-1), prev = hist.at(-2);
+      out.push({ label: p.label, value: last?.v ?? null, prior: prev?.v ?? null, date: last?.date ?? null, priorDate: prev?.date ?? null, history: hist });
+    }
+    return out.some((r) => r.value != null) ? out : null;
+  });
+}
+
+async function fmmo(slug: string, section: string, fields: { label: string; key: string }[]) {
+  return cached(`dm-${slug}`, 6 * HOUR, async () => {
+    const year = new Date().getUTCFullYear();
+    const ym = (r: any) => { const i = MONTHS3.indexOf(String(r.report_month ?? "").slice(0, 3)); return r.report_year && i >= 0 ? `${r.report_year}-${String(i + 1).padStart(2, "0")}` : ""; };
+    const avg = (rows: any[]) => rows.filter((r) => r.MarketingArea === "All Market Average" && ym(r));
+    let rows = avg(await dmGet(`${slug}/${encodeURIComponent(section)}?q=report_year=${year}`));
+    if (rows.length < 2) rows = [...rows, ...avg(await dmGet(`${slug}/${encodeURIComponent(section)}?q=report_year=${year - 1}`))];
+    rows.sort((a, b) => (ym(a) < ym(b) ? 1 : -1));
+    const [a, b] = rows;
+    if (!a) return null;
+    return {
+      month: ym(a),
+      rows: fields.map((f) => ({ label: f.label, value: numC(a[f.key]), prior: b ? numC(b[f.key]) : null, month: ym(a), priorMonth: b ? ym(b) : null })),
+    };
+  });
+}
+
+export const getOfficialDairy = createServerFn({ method: "GET" }).handler(async (): Promise<OfficialDairy> => {
+  const products = await dpmrp().catch(() => null);
+  const classes = await fmmo("3355", "Final Class Prices by Order", [
+    { label: "Class I", key: "ClassIWhole" }, { label: "Class II", key: "ClassIIWhole" },
+    { label: "Class III", key: "ClassIIIWhole" }, { label: "Class IV", key: "ClassIVWhole" },
+  ]).catch(() => null);
+  const advanced = await fmmo("3354", "Advanced Class Prices by Order", [
+    { label: "Advanced Class I", key: "Price_Whole" },
+  ]).catch(() => null);
+  return {
+    products: products ? { available: true, rows: products } : { available: false, rows: [] },
+    classes: classes ? { available: true, ...classes } : { available: false, month: null, rows: [] },
+    advanced: advanced ? { available: true, ...advanced } : { available: false, month: null, rows: [] },
+  };
+});
