@@ -26,6 +26,7 @@ const PROVIDERS = [
   { name: "U.S. Treasury", body: "Official daily par yield curve rates, the primary source for the yield curve. FRED is used only if Treasury's site can't be reached." },
   { name: "FRED (Federal Reserve Bank of St. Louis)", body: "Inflation, jobs and mortgage rates, republished from the original agencies (BLS, Freddie Mac). Fetched fresh, never stored." },
   { name: "EIA (U.S. Energy Information Administration)", body: "Weekly retail on-highway diesel prices for the U.S. and PADD regions, via the EIA API." },
+  { name: "USDA AMS DataMart (DPMRP / FMMOS)", body: "Primary source for official dairy prices: weekly national cheese, butter, nonfat dry milk and dry whey prices (Dairy Product Mandatory Reporting Program), and final and advanced federal milk order class prices. Public, no key; cached up to 6 hours." },
   { name: "USDA AMS Dairy Market News", body: "Announced federal milk order class prices and product averages, and CME cash dairy prices (cheese, butter, nonfat dry milk, dry whey)." },
   { name: "USDA AgTransport", body: "Weekly regional diesel prices and quarterly grain truck rates relevant to agricultural freight." },
 ];

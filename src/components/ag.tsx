@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getDairyPrices, getEiaDiesel, getFreight, type DairyPrice } from "@/lib/ag.functions";
+import { getDairyPrices, getEiaDiesel, getFreight, getOfficialDairy, type DairyPrice, type OfficialMonthly } from "@/lib/ag.functions";
 import { ErrorRow, Group, LineChart, SkeletonRows, SourceTag, UNAVAILABLE, fmt, shortDate, signed } from "./tape";
 import { FlagButton } from "./report-issue";
 
@@ -105,10 +105,10 @@ export function DairyPricesGroups() {
   const SRC = "USDA AMS Dairy Market News";
   return (
     <>
-      <Group label="Announced class prices" footer="Federal milk order class and product price averages for the month; change vs prior month. Source: USDA AMS (Announcement of Class and Component Prices).">
+      <Group label="Monthly product price averages" footer="Federal milk order product price averages for the month; change vs prior month. Source: USDA AMS (Announcement of Class and Component Prices).">
         {q.isLoading ? <SkeletonRows rows={4} /> : q.isError ? <ErrorRow onRetry={() => q.refetch()} /> : !d?.classes.available ? (
           <div className="row"><span className="flex-1">Class prices</span><span className="text-muted-foreground">{UNAVAILABLE}</span></div>
-        ) : d.classes.rows.map((r) => <PriceRow key={r.label} r={r} source="USDA AMS" monthly />)}
+        ) : d.classes.rows.filter((r) => !r.label.startsWith("Class")).map((r) => <PriceRow key={r.label} r={r} source="USDA AMS" monthly />)}
       </Group>
       <Group label="CME cash dairy prices" footer={`Daily CME spot (cash) trading; change vs prior session. Source: ${SRC}.`}>
         {q.isLoading ? <SkeletonRows rows={4} /> : q.isError ? <ErrorRow onRetry={() => q.refetch()} /> : !d?.cme.configured ? (
@@ -116,5 +116,57 @@ export function DairyPricesGroups() {
         ) : d.cme.rows.map((r) => <PriceRow key={r.label} r={r} source={SRC} />)}
       </Group>
     </>
+  );
+}
+
+function MonthlyRow({ r, note }: { r: OfficialMonthly; note: string }) {
+  const val = r.value != null ? `$${fmt(r.value)}/cwt` : UNAVAILABLE;
+  return (
+    <div className="row !pr-2">
+      <div className="min-w-0 flex-1">
+        <div className="font-medium leading-snug">{r.label} <span className="text-muted-foreground font-normal">({note})</span></div>
+        <SourceTag>USDA AMS (FMMOS){r.month ? ` · ${monthLabel(r.month)}` : ""}</SourceTag>
+      </div>
+      <div className="shrink-0 text-right">
+        <div className={r.value != null ? "" : "text-muted-foreground"}>{val}</div>
+        <div className="text-[13px] text-muted-foreground">{r.value != null && r.prior != null && r.priorMonth ? `${signed(r.value - r.prior)} vs ${monthLabel(r.priorMonth)}` : "\u00a0"}</div>
+      </div>
+      <FlagButton ctx={{ field: `${r.label} (${note}, USDA AMS)`, displayedValue: val }} />
+    </div>
+  );
+}
+
+export function OfficialDairyGroup() {
+  const fn = useServerFn(getOfficialDairy);
+  const q = useQuery({ queryKey: ["ams-official-dairy"], queryFn: () => fn(), staleTime: 60 * 60_000, retry: 1 });
+  const d = q.data;
+  const na = (label: string) => <div className="row"><span className="flex-1">{label}</span><span className="text-muted-foreground">{UNAVAILABLE}</span></div>;
+  return (
+    <Group label="Official dairy prices (USDA)" footer="Weekly national product prices from USDA's Dairy Product Mandatory Reporting Program, change vs prior week. Federal milk order class prices are all-market averages in $/cwt, change vs prior month; advanced Class I is for the coming month. Source: USDA AMS DataMart.">
+      {q.isLoading ? <SkeletonRows rows={8} /> : q.isError ? <ErrorRow onRetry={() => q.refetch()} /> : (
+        <>
+          {!d?.products.available ? na("Weekly dairy product prices") : d.products.rows.map((r) => {
+            const val = r.value != null ? `$${fmt(r.value, 4)}/lb` : UNAVAILABLE;
+            const spark = r.history.map((p) => ({ label: shortDate(p.date), v: p.v }));
+            return (
+              <div className="row !pr-2" key={r.label}>
+                <div className="min-w-0 flex-1">
+                  <div className="font-medium leading-snug">{r.label}</div>
+                  <SourceTag>USDA AMS (DPMRP){r.date ? ` · week ending ${shortDate(r.date)}` : ""}</SourceTag>
+                </div>
+                {spark.length > 1 && <div className="hidden w-[96px] shrink-0 sm:block"><LineChart points={spark} width={96} height={28} label={`${r.label}, 12 weeks`} format={(v) => `$${fmt(v, 4)}`} /></div>}
+                <div className="shrink-0 text-right">
+                  <div className={r.value != null ? "" : "text-muted-foreground"}>{val}</div>
+                  <div className="text-[13px] text-muted-foreground">{r.value != null && r.prior != null ? `${signed(r.value - r.prior, 4)} vs prior week` : "\u00a0"}</div>
+                </div>
+                <FlagButton ctx={{ field: `${r.label} (USDA DPMRP)`, displayedValue: val }} />
+              </div>
+            );
+          })}
+          {!d?.classes.available ? na("Federal order class prices") : d.classes.rows.map((r) => <MonthlyRow key={r.label} r={r} note="final" />)}
+          {!d?.advanced.available ? na("Advanced Class I price") : d.advanced.rows.map((r) => <MonthlyRow key={r.label} r={r} note="announced" />)}
+        </>
+      )}
+    </Group>
   );
 }
