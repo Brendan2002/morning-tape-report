@@ -26,6 +26,7 @@ function Watchlist() {
   const [err, setErr] = useState<string | null>(null);
   const q = useQuery({
     queryKey: ["watchlist"],
+    enabled: isAdmin,
     queryFn: async () => {
       const { data, error } = await supabase.from("watchlist").select("*").order("added_at");
       if (error) throw error;
@@ -57,6 +58,17 @@ function Watchlist() {
     setErr(null);
     add.mutate(s);
   };
+  if (!isAdmin)
+    return (
+      <>
+        <PageHeader title="Watchlist" subtitle="The watchlist is private to admins." />
+        <Group>
+          <div className="row text-[15px]">
+            {admin.isLoading ? "Checking access…" : session ? "Your account isn't an admin." : <span>Sign in as an admin to view and edit the watchlist. <Link to="/login">Admin sign in</Link></span>}
+          </div>
+        </Group>
+      </>
+    );
   const idBySym = new Map((q.data ?? []).map((w) => [w.symbol, w.id]));
 
   return (
