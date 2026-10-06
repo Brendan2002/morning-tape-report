@@ -5,7 +5,7 @@ import { ChangePill, ErrorRow, Group, LineChart, PageHeader, SkeletonRows, Sourc
 import { FlagButton } from "@/components/report-issue";
 import { ResponsiveSheet } from "@/components/sheet";
 import { sinceYears, useMacro } from "@/components/macro";
-import { DairyPricesGroups, EiaDieselGroup, FreightGroup, useEiaDiesel } from "@/components/ag";
+import { DairyPricesGroups, OfficialDairyGroup, EiaDieselGroup, FreightGroup, useEiaDiesel } from "@/components/ag";
 
 export const Route = createFileRoute("/dairy")({
   staticData: { sitemap: true },
@@ -50,6 +50,7 @@ function Dairy() {
     <>
       <PageHeader title="Dairy & Feed" subtitle="Front-month futures via Yahoo Finance (delayed). Change vs prior settle. Tap a row for a 3-month chart." />
       <div className="space-y-10">
+        <OfficialDairyGroup />
         <Group label="Futures" footer="Settlement and quotes are unofficial and may be delayed. Heating oil (HO) is shown as a proxy for ULSD/diesel.">
           {q.isLoading ? <SkeletonRows rows={7} /> : q.isError ? <ErrorRow onRetry={() => q.refetch()} /> : ITEMS.map((it) => {
             const x = qBy.get(it.symbol);
