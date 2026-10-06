@@ -12,8 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ArchiveRouteImport } from './routes/archive'
 import { Route as CalendarRouteImport } from './routes/calendar'
+import { Route as DairyRouteImport } from './routes/dairy'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as MacroRouteImport } from './routes/macro'
 import { Route as MarketsRouteImport } from './routes/markets'
+import { Route as SourcesRouteImport } from './routes/sources'
 import { Route as WatchlistRouteImport } from './routes/watchlist'
 import { Route as ReportDateRouteImport } from './routes/report.$date'
 
@@ -32,6 +35,16 @@ const CalendarRoute = CalendarRouteImport.update({
   path: '/calendar',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DairyRoute = DairyRouteImport.update({
+  id: '/dairy',
+  path: '/dairy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MacroRoute = MacroRouteImport.update({
   id: '/macro',
   path: '/macro',
@@ -40,6 +53,11 @@ const MacroRoute = MacroRouteImport.update({
 const MarketsRoute = MarketsRouteImport.update({
   id: '/markets',
   path: '/markets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SourcesRoute = SourcesRouteImport.update({
+  id: '/sources',
+  path: '/sources',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WatchlistRoute = WatchlistRouteImport.update({
@@ -57,8 +75,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/archive': typeof ArchiveRoute
   '/calendar': typeof CalendarRoute
+  '/dairy': typeof DairyRoute
+  '/login': typeof LoginRoute
   '/macro': typeof MacroRoute
   '/markets': typeof MarketsRoute
+  '/sources': typeof SourcesRoute
   '/watchlist': typeof WatchlistRoute
   '/report/$date': typeof ReportDateRoute
 }
@@ -66,8 +87,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/archive': typeof ArchiveRoute
   '/calendar': typeof CalendarRoute
+  '/dairy': typeof DairyRoute
+  '/login': typeof LoginRoute
   '/macro': typeof MacroRoute
   '/markets': typeof MarketsRoute
+  '/sources': typeof SourcesRoute
   '/watchlist': typeof WatchlistRoute
   '/report/$date': typeof ReportDateRoute
 }
@@ -76,8 +100,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/archive': typeof ArchiveRoute
   '/calendar': typeof CalendarRoute
+  '/dairy': typeof DairyRoute
+  '/login': typeof LoginRoute
   '/macro': typeof MacroRoute
   '/markets': typeof MarketsRoute
+  '/sources': typeof SourcesRoute
   '/watchlist': typeof WatchlistRoute
   '/report/$date': typeof ReportDateRoute
 }
@@ -87,8 +114,11 @@ export interface FileRouteTypes {
     | '/'
     | '/archive'
     | '/calendar'
+    | '/dairy'
+    | '/login'
     | '/macro'
     | '/markets'
+    | '/sources'
     | '/watchlist'
     | '/report/$date'
   fileRoutesByTo: FileRoutesByTo
@@ -96,8 +126,11 @@ export interface FileRouteTypes {
     | '/'
     | '/archive'
     | '/calendar'
+    | '/dairy'
+    | '/login'
     | '/macro'
     | '/markets'
+    | '/sources'
     | '/watchlist'
     | '/report/$date'
   id:
@@ -105,8 +138,11 @@ export interface FileRouteTypes {
     | '/'
     | '/archive'
     | '/calendar'
+    | '/dairy'
+    | '/login'
     | '/macro'
     | '/markets'
+    | '/sources'
     | '/watchlist'
     | '/report/$date'
   fileRoutesById: FileRoutesById
@@ -115,8 +151,11 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ArchiveRoute: typeof ArchiveRoute
   CalendarRoute: typeof CalendarRoute
+  DairyRoute: typeof DairyRoute
+  LoginRoute: typeof LoginRoute
   MacroRoute: typeof MacroRoute
   MarketsRoute: typeof MarketsRoute
+  SourcesRoute: typeof SourcesRoute
   WatchlistRoute: typeof WatchlistRoute
   ReportDateRoute: typeof ReportDateRoute
 }
@@ -144,6 +183,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CalendarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dairy': {
+      id: '/dairy'
+      path: '/dairy'
+      fullPath: '/dairy'
+      preLoaderRoute: typeof DairyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/macro': {
       id: '/macro'
       path: '/macro'
@@ -156,6 +209,13 @@ declare module '@tanstack/react-router' {
       path: '/markets'
       fullPath: '/markets'
       preLoaderRoute: typeof MarketsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sources': {
+      id: '/sources'
+      path: '/sources'
+      fullPath: '/sources'
+      preLoaderRoute: typeof SourcesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/watchlist': {
@@ -179,8 +239,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ArchiveRoute: ArchiveRoute,
   CalendarRoute: CalendarRoute,
+  DairyRoute: DairyRoute,
+  LoginRoute: LoginRoute,
   MacroRoute: MacroRoute,
   MarketsRoute: MarketsRoute,
+  SourcesRoute: SourcesRoute,
   WatchlistRoute: WatchlistRoute,
   ReportDateRoute: ReportDateRoute,
 }

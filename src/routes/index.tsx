@@ -2,15 +2,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ReportView, TAPE, type Report } from "@/components/report";
-import { ErrorLine, QuoteTable, SectionLabel, Skeleton } from "@/components/tape";
+import { ErrorRow, PageHeader, QuoteList, SkeletonRows } from "@/components/tape";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Today — Morning Tape" },
-      { name: "description", content: "Today's morning market report: yesterday's recap and what it means." },
+      { name: "description", content: "Today's morning market report: the prior trading day's recap and what it means." },
       { property: "og:title", content: "Today — Morning Tape" },
-      { property: "og:description", content: "Today's morning market report: yesterday's recap and what it means." },
+      { property: "og:description", content: "Today's morning market report: the prior trading day's recap and what it means." },
     ],
   }),
   component: Today,
@@ -25,13 +25,20 @@ function Today() {
       return data as Report | null;
     },
   });
-  if (q.isLoading) return <Skeleton rows={8} />;
-  if (q.isError) return <ErrorLine message={(q.error as Error).message} onRetry={() => q.refetch()} />;
+  if (q.isLoading)
+    return (
+      <div className="space-y-4" aria-busy="true">
+        <span className="skel !h-10 w-3/4" />
+        <span className="skel w-1/3" />
+        <div className="group"><SkeletonRows rows={6} /></div>
+      </div>
+    );
+  if (q.isError) return <div className="group"><ErrorRow message="the report couldn't be loaded" onRetry={() => q.refetch()} /></div>;
   if (!q.data)
     return (
-      <div className="grid gap-8 md:grid-cols-[65fr_35fr]">
-        <p className="py-12 font-serif text-[20px] italic text-muted-foreground">Today's report publishes at 6:30am ET on weekdays.</p>
-        <aside><SectionLabel>The Tape</SectionLabel><QuoteTable rows={TAPE} /></aside>
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
+        <PageHeader title="Today" subtitle="Today's report publishes at 6:30am ET on weekdays." />
+        <QuoteList label="Live markets" rows={TAPE} sortable={false} />
       </div>
     );
   return <ReportView report={q.data} />;

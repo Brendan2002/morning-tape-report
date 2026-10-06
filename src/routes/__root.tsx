@@ -9,19 +9,18 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
+import { Moon, Sun, Monitor } from "lucide-react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { ReportIssueProvider } from "@/components/report-issue";
 
 function NotFoundComponent() {
   return (
-    <Shell>
-      <div className="py-16">
-        <p className="label-caps">404</p>
-        <h1 className="mt-2 font-serif text-[28px]">Page not found</h1>
-        <Link to="/" className="mt-4 inline-block underline">Back to today's report</Link>
-      </div>
-    </Shell>
+    <div className="py-16">
+      <h1 className="large-title">Page not found</h1>
+      <Link to="/" className="btn-text mt-4">Back to today's report</Link>
+    </div>
   );
 }
 
@@ -32,12 +31,10 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
   return (
-    <Shell>
-      <div className="py-16">
-        <h1 className="font-serif text-[28px]">This page didn't load</h1>
-        <button className="mt-4 text-link underline" onClick={() => { router.invalidate(); reset(); }}>Try again</button>
-      </div>
-    </Shell>
+    <div className="py-16">
+      <h1 className="large-title">This page didn't load</h1>
+      <button className="btn-text mt-4" onClick={() => { router.invalidate(); reset(); }}>Try again</button>
+    </div>
   );
 }
 
@@ -45,19 +42,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { title: "Morning Tape — Daily market report" },
-      { name: "description", content: "A daily morning market report, dashboard, rates and calendar." },
+      { name: "description", content: "A daily morning market report with markets, rates, calendar and sources." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap",
-      },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" },
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
@@ -68,10 +62,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
+const THEME_SCRIPT = `try{var t=localStorage.getItem('mt-theme');if(t==='dark'||t==='light')document.documentElement.classList.add(t)}catch(e){}`;
+
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
         <HeadContent />
       </head>
       <body>
@@ -86,60 +83,60 @@ const NAV = [
   { to: "/", label: "Today" },
   { to: "/markets", label: "Markets" },
   { to: "/macro", label: "Macro & Rates" },
+  { to: "/dairy", label: "Dairy & Feed" },
   { to: "/calendar", label: "Calendar" },
   { to: "/archive", label: "Archive" },
   { to: "/watchlist", label: "Watchlist" },
+  { to: "/sources", label: "Sources" },
 ] as const;
 
-function Stamp() {
-  const [now, setNow] = useState<Date | null>(null);
+type Theme = "system" | "light" | "dark";
+function ThemeToggle() {
+  const [theme, setTheme] = useState<Theme>("system");
   useEffect(() => {
-    setNow(new Date());
-    const t = setInterval(() => setNow(new Date()), 60_000);
-    return () => clearInterval(t);
+    const t = localStorage.getItem("mt-theme");
+    if (t === "light" || t === "dark") setTheme(t);
   }, []);
-  if (!now) return <span className="num text-xs text-muted-foreground">&nbsp;</span>;
-  const date = now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric", timeZone: "America/New_York" });
-  const time = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "America/New_York" });
+  const next = () => {
+    const n: Theme = theme === "system" ? "light" : theme === "light" ? "dark" : "system";
+    setTheme(n);
+    const el = document.documentElement;
+    el.classList.remove("light", "dark");
+    if (n === "system") localStorage.removeItem("mt-theme");
+    else { el.classList.add(n); localStorage.setItem("mt-theme", n); }
+  };
+  const Icon = theme === "light" ? Sun : theme === "dark" ? Moon : Monitor;
   return (
-    <span className="text-xs text-muted-foreground">
-      {date} · <span className="num">as of {time} ET</span>
-    </span>
+    <button
+      onClick={next}
+      className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-foreground hover:bg-fill"
+      aria-label={`Appearance: ${theme}. Switch appearance`}
+      title={`Appearance: ${theme}`}
+    >
+      <Icon className="h-5 w-5" aria-hidden />
+    </button>
   );
 }
 
-function Shell({ children }: { children: ReactNode }) {
+function Nav() {
   return (
-    <div className="mx-auto max-w-[1200px] px-4 md:px-8">
-      <header className="pt-6 md:pt-8">
-        <div className="flex flex-wrap items-end justify-between gap-2 pb-3">
-          <Link to="/" className="font-serif text-[28px] font-semibold leading-none text-foreground no-underline md:text-[40px]">
-            Morning Tape
-          </Link>
-          <Stamp />
+    <header className="nav-glass sticky top-0 z-40 border-b border-separator">
+      <div className="mx-auto flex max-w-[1080px] items-center gap-3 px-4 pt-1 md:px-8">
+        <Link to="/" className="font-display text-[20px] font-bold tracking-tight text-foreground no-underline">
+          Morning Tape
+        </Link>
+        <div className="ml-auto"><ThemeToggle /></div>
+      </div>
+      <nav aria-label="Sections" className="mx-auto max-w-[1080px] overflow-x-auto px-4 pb-2 md:px-8">
+        <div className="segmented">
+          {NAV.map((n) => (
+            <Link key={n.to} to={n.to} activeOptions={{ exact: n.to === "/" }} activeProps={{ className: "active", "aria-current": "page" }}>
+              {n.label}
+            </Link>
+          ))}
         </div>
-        <nav className="rule-double border-b border-rule">
-          <ul className="flex flex-wrap gap-x-4 gap-y-1 py-2 text-sm md:gap-x-6">
-            {NAV.map((n) => (
-              <li key={n.to}>
-                <Link
-                  to={n.to}
-                  activeOptions={{ exact: n.to === "/" }}
-                  className="text-foreground no-underline hover:text-link"
-                  activeProps={{ className: "text-link font-semibold underline underline-offset-4" }}
-                >
-                  {n.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </header>
-      <main className="py-6 md:py-8">{children}</main>
-      <footer className="border-t border-rule py-6 text-xs text-muted-foreground">
-        Morning Tape · Market data may be delayed. Not investment advice.
-      </footer>
-    </div>
+      </nav>
+    </header>
   );
 }
 
@@ -147,9 +144,17 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      <Shell>
-        <Outlet />
-      </Shell>
+      <ReportIssueProvider>
+        <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded-lg focus:bg-elevated focus:px-3 focus:py-2">Skip to content</a>
+        <Nav />
+        <main id="main" className="mx-auto max-w-[1080px] px-4 py-8 md:px-8 md:py-12">
+          <Outlet />
+        </main>
+        <footer className="mx-auto max-w-[1080px] px-4 pb-12 text-[13px] text-muted-foreground md:px-8">
+          Quotes from Yahoo Finance may be delayed and are unofficial. Economic data from FRED. Not investment advice.{" "}
+          <Link to="/sources">Sources & methodology</Link>
+        </footer>
+      </ReportIssueProvider>
     </QueryClientProvider>
   );
 }

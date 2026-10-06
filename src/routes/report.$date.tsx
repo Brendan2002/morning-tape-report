@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ReportView, type Report } from "@/components/report";
-import { ErrorLine, Skeleton } from "@/components/tape";
+import { ErrorRow, PageHeader, SkeletonRows } from "@/components/tape";
 
 export const Route = createFileRoute("/report/$date")({
   head: ({ params }) => ({
@@ -26,8 +26,8 @@ function ReportPage() {
       return data as Report | null;
     },
   });
-  if (q.isLoading) return <Skeleton rows={8} />;
-  if (q.isError) return <ErrorLine message={(q.error as Error).message} onRetry={() => q.refetch()} />;
-  if (!q.data) return <p className="py-12 text-muted-foreground">No report for {date}. <Link to="/archive">See the archive</Link>.</p>;
+  if (q.isLoading) return <div className="group"><SkeletonRows rows={6} /></div>;
+  if (q.isError) return <div className="group"><ErrorRow message="the report couldn't be loaded" onRetry={() => q.refetch()} /></div>;
+  if (!q.data) return <><PageHeader title="No report" subtitle={`There's no report for ${date}.`} /><Link to="/archive" className="btn-text">Browse the archive</Link></>;
   return <ReportView report={q.data} />;
 }
