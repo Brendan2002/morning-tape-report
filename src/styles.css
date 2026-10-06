@@ -98,7 +98,7 @@
 
 @layer base {
   * { border-color: var(--color-border); }
-  html, body { overflow-x: hidden; }
+  html, body { overflow-x: clip; }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
