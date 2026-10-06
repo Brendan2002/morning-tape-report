@@ -97,41 +97,53 @@ export function useHistory(symbols: string[]) {
 
 export type Row = { symbol: string; label?: string };
 
-export function QuoteRow({ r, q, after, onClick, reportDate }: { r: Row; q?: Quote | undefined; after?: ReactNode; onClick?: (() => void) | undefined; reportDate?: string | undefined }) {
+/** Yahoo yield indices (quoted in percent). Show bp change, never % change. */
+export const YIELD_SYMBOLS = new Set(["^TNX", "^FVX", "^TYX", "^IRX"]);
+
+function BpPill({ bp }: { bp: number | null }) {
+  if (bp == null || !isFinite(bp)) return <span className="pill pill-flat">{UNAVAILABLE}</span>;
+  const r = Math.round(bp);
+  const cls = r > 0 ? "pill-up" : r < 0 ? "pill-down" : "pill-flat";
+  return <span className={`pill ${cls}`}>{signed(r, 0, " bp")}</span>;
+}
+
+export function QuoteRow({ r, q, after, onClick, reportDate, compact = false }: { r: Row; q?: Quote | undefined; after?: ReactNode; onClick?: (() => void) | undefined; reportDate?: string | undefined; compact?: boolean }) {
   const name = r.label ?? q?.name ?? r.symbol;
   const ok = q && !q.error && q.last != null;
   const asOf = ok ? etTime(q!.marketTime) : null;
+  const isYield = YIELD_SYMBOLS.has(r.symbol);
+  const bp = ok && q!.change != null ? q!.change * 100 : null;
+  const value = ok ? (isYield ? `${fmt(q!.last)}%` : fmt(q!.last)) : UNAVAILABLE;
+  const changeText = !ok ? "\u00a0" : isYield ? `${signed(bp != null ? Math.round(bp) : null, 0, " bp")}${compact ? "" : " vs prior close"}` : `${signed(q!.change)}${compact ? "" : " vs prior close"}`;
+  const tag = `${r.symbol} · Yahoo Finance${asOf ? ` · ${asOf}` : ""}`;
   const inner = (
     <>
-      <div className="min-w-0 text-left [flex:1_1_100%] sm:[flex:1_1_0%]">
-        <div className="truncate font-medium">{name}</div>
-        <SourceTag>
-          {r.symbol} · Yahoo Finance{asOf ? ` · ${asOf}` : ""}
-        </SourceTag>
+      <div className={`min-w-0 text-left ${compact ? "flex-1" : "[flex:1_1_100%] sm:[flex:1_1_0%]"}`}>
+        <div className="font-medium leading-snug">{name}</div>
+        <div className="truncate text-[0.75rem] text-muted-foreground" title={tag}>{tag}</div>
       </div>
       {after}
-      <div className="ml-auto text-right">
-        <div className={ok ? "" : "text-muted-foreground"}>{ok ? fmt(q!.last) : UNAVAILABLE}</div>
-        <div className="text-[13px] text-muted-foreground">{ok ? `${signed(q!.change)} vs prior close` : "\u00a0"}</div>
+      <div className="ml-auto shrink-0 text-right">
+        <div className={ok ? "" : "text-muted-foreground"}>{value}</div>
+        <div className="text-[13px] text-muted-foreground">{changeText}</div>
       </div>
-      <ChangePill pct={ok ? q!.changePct : null} />
+      {isYield ? <BpPill bp={bp} /> : <ChangePill pct={ok ? q!.changePct : null} />}
     </>
   );
+  const wrap = compact ? "flex min-w-0 flex-1 items-center gap-3" : "flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1 sm:flex-nowrap";
   return (
     <div className="row !pr-2">
       {onClick ? (
-        <button onClick={onClick} className="-my-2 flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1 rounded-lg py-2 text-left sm:flex-nowrap">
-          {inner}
-        </button>
+        <button onClick={onClick} className={`-my-2 rounded-lg py-2 text-left ${wrap}`}>{inner}</button>
       ) : (
-        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1 sm:flex-nowrap">{inner}</div>
+        <div className={wrap}>{inner}</div>
       )}
-      <FlagButton ctx={{ field: `${name} (${r.symbol})`, displayedValue: ok ? `${fmt(q!.last)} (${signed(q!.changePct, 2, "%")})` : UNAVAILABLE, reportDate }} />
+      <FlagButton ctx={{ field: `${name} (${r.symbol})`, displayedValue: ok ? (isYield ? `${value} (${signed(bp != null ? Math.round(bp) : null, 0, " bp")})` : `${value} (${signed(q!.changePct, 2, "%")})`) : UNAVAILABLE, reportDate }} />
     </div>
   );
 }
 
-export function QuoteList({ rows, label, footer, extra, sortable = true }: { rows: Row[]; label?: ReactNode; footer?: ReactNode; extra?: ((r: Row) => ReactNode) | undefined; sortable?: boolean }) {
+export function QuoteList({ rows, label, footer, extra, sortable = true, compact = false }: { rows: Row[]; label?: ReactNode; footer?: ReactNode; extra?: ((r: Row) => ReactNode) | undefined; sortable?: boolean; compact?: boolean }) {
   const symbols = useMemo(() => rows.map((r) => r.symbol), [rows]);
   const q = useQuotes(symbols);
   const [sort, setSort] = useState<"default" | "pct">("default");
@@ -151,7 +163,7 @@ export function QuoteList({ rows, label, footer, extra, sortable = true }: { row
       </div>
       <div className="group">
         {q.isLoading ? <SkeletonRows rows={Math.min(rows.length, 6)} /> : q.isError ? <ErrorRow message={(q.error as Error)?.message} onRetry={() => q.refetch()} /> : (
-          data.map((r) => <QuoteRow key={r.symbol} r={r} q={bySym.get(r.symbol)} after={extra?.(r)} />)
+          data.map((r) => <QuoteRow key={r.symbol} r={r} q={bySym.get(r.symbol)} after={extra?.(r)} compact={compact} />)
         )}
       </div>
       {footer && <div className="group-footer">{footer}</div>}
