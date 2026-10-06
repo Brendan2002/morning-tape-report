@@ -69,10 +69,10 @@ export function ThemeRow() {
   };
   return (
     <div className="row">
-      <span className="flex-1">Appearance</span>
-      <div className="segmented" role="group" aria-label="Appearance">
+      <span className="min-w-0 flex-1">Appearance</span>
+      <div className="segmented shrink-0" role="group" aria-label="Appearance">
         {(["system", "light", "dark"] as const).map((t) => (
-          <button key={t} data-active={theme === t} aria-pressed={theme === t} onClick={() => pick(t)} className="!min-h-[36px] capitalize">{t}</button>
+          <button key={t} data-active={theme === t} aria-pressed={theme === t} onClick={() => pick(t)} className="!min-h-[36px] !px-2.5">{t === "system" ? "Auto" : t === "light" ? "Light" : "Dark"}</button>
         ))}
       </div>
     </div>

@@ -244,3 +244,6 @@
   @media (prefers-reduced-motion: reduce) { .snap-strip { scroll-behavior: auto; } }
   @media (prefers-reduced-transparency: reduce) { .tabbar, .section-nav { background: var(--color-background) !important; backdrop-filter: none !important; } }
 }
+@layer components {
+  .report-body h2.group-label { font-size: 0.8125rem; line-height: 1.38; font-weight: 400; letter-spacing: 0.02em; margin: 0; padding: 0 16px 6px; color: var(--color-muted-foreground); }
+}
