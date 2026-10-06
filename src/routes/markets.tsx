@@ -47,7 +47,7 @@ function Sectors() {
               <div className="truncate text-[15px] font-medium">{r.label}</div>
               <SourceTag>{r.symbol}</SourceTag>
             </div>
-            <div className="relative h-4 w-[25%] shrink-0 sm:w-auto sm:flex-1" aria-hidden>
+            <div className="relative h-4 w-[18%] shrink-0 sm:w-auto sm:flex-1" aria-hidden>
               <div className="absolute inset-y-0 left-1/2 border-l border-separator" />
               {p != null && (
                 <div
