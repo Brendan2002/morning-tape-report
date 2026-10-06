@@ -144,6 +144,12 @@ function Nav() {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  // iOS Safari only applies :active on touch when a touch listener exists — gives pressed states on pointer-down.
+  useEffect(() => {
+    const noop = () => {};
+    document.addEventListener("touchstart", noop, { passive: true });
+    return () => document.removeEventListener("touchstart", noop);
+  }, []);
   return (
     <QueryClientProvider client={queryClient}>
       <ReportIssueProvider>
