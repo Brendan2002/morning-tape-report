@@ -149,7 +149,7 @@ function Macro() {
   const curveBy = official ? new Map(t.data!.map((x) => [x.id, x.points])) : by;
   return (
     <>
-      <PageHeader title="Macro & Rates" subtitle="Original agency data via FRED, fetched fresh on each visit." />
+      <PageHeader title="Macro & Rates" subtitle="U.S. Treasury, NY Fed and original agency data via FRED." />
       {q.isLoading ? (
         <div className="space-y-8"><div className="group"><SkeletonRows rows={8} /></div><div className="group"><SkeletonRows rows={8} /></div></div>
       ) : q.isError ? (

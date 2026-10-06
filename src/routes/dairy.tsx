@@ -5,6 +5,7 @@ import { ChangePill, ErrorRow, Group, LineChart, PageHeader, SkeletonRows, Sourc
 import { FlagButton } from "@/components/report-issue";
 import { ResponsiveSheet } from "@/components/sheet";
 import { sinceYears, useMacro } from "@/components/macro";
+import { DairyPricesGroups, EiaDieselGroup, FreightGroup, useEiaDiesel } from "@/components/ag";
 
 export const Route = createFileRoute("/dairy")({
   staticData: { sitemap: true },
@@ -37,6 +38,7 @@ function Dairy() {
   const q = useQuotes(SYMS);
   const h = useHistory(SYMS);
   const m = useMacro(["GASDESW"]);
+  const eia = useEiaDiesel();
   const [detail, setDetail] = useState<Detail | null>(null);
   const qBy = new Map((q.data ?? []).map((x) => [x.symbol, x]));
   const hBy = new Map((h.data ?? []).map((x) => [x.symbol, x.points]));
@@ -81,7 +83,9 @@ function Dairy() {
           })}
         </Group>
 
-        <Group label="Retail diesel" footer="Weekly U.S. No. 2 diesel retail price, all types. Change vs prior week.">
+        <DairyPricesGroups />
+        {eia.data?.available ? <EiaDieselGroup data={eia.data} /> : (
+        <Group label="Retail diesel" footer="Weekly U.S. No. 2 diesel retail price, all types. Change vs prior week. EIA direct data unavailable; shown via FRED.">
           {m.isLoading ? <SkeletonRows rows={1} /> : m.isError || !dLast ? (
             <ErrorRow message={m.isError && /FRED_API_KEY/.test((m.error as Error).message) ? "economic data source isn't configured yet" : undefined} onRetry={() => m.refetch()} />
           ) : (
@@ -106,6 +110,8 @@ function Dairy() {
             </div>
           )}
         </Group>
+        )}
+        <FreightGroup />
       </div>
 
       <ResponsiveSheet open={!!detail} onOpenChange={(o) => !o && setDetail(null)} title={detail?.title ?? ""} description={detail?.source} origin={detail?.origin}>
