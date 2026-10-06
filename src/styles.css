@@ -215,3 +215,32 @@
 @media (prefers-contrast: more) and (prefers-color-scheme: dark) {
   :root:root:not(.light) { --separator: rgba(140, 140, 146, 0.8); --secondary-ink: #C7C7CC; }
 }
+
+/* ---------- Mobile (<768px): native-app chrome ---------- */
+@layer components {
+  .group-toggle { display: flex; width: 100%; align-items: center; gap: 8px; text-transform: inherit; letter-spacing: inherit; color: inherit; font: inherit; cursor: default; }
+  @media (max-width: 767px) {
+    .group-toggle { min-height: 44px; margin-top: -12px; margin-bottom: -6px; cursor: pointer; }
+    .large-title { font-size: 2rem; }
+    .report-headline { font-size: 1.75rem !important; line-height: 1.15 !important; letter-spacing: -0.012em !important; }
+    .chart-lg { max-width: none !important; }
+    .chart-lg svg { height: 160px !important; }
+    .report-section { scroll-margin-top: calc(env(safe-area-inset-top) + 104px); }
+  }
+  .tabbar { padding-bottom: env(safe-area-inset-bottom); }
+  .tab { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 50px; padding-top: 4px;
+    font-size: 0.625rem; font-weight: 500; letter-spacing: 0.01em; color: var(--color-muted-foreground); text-decoration: none; transition: opacity 150ms ease-out; }
+  .tab:active { opacity: .5; transition: none; }
+  .tab-on { color: var(--color-link); }
+  .mobile-bar { height: 44px; }
+  .mobile-small-title { transition: opacity 200ms ease-out; }
+  .section-nav { top: calc(env(safe-area-inset-top) + 44px); }
+  .snap-strip { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 16px; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; scrollbar-width: none; padding-bottom: 4px; }
+  .snap-strip::-webkit-scrollbar, .section-nav .segmented::-webkit-scrollbar { display: none; }
+  .section-nav .segmented { scrollbar-width: none; }
+  .key-card { flex: 0 0 140px; scroll-snap-align: start; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-height: 44px; padding: 10px 12px;
+    border-radius: 12px; background: var(--color-surface); text-align: left; transition: background-color 150ms ease-out; }
+  .key-card:active { background: var(--pressed); transition: none; }
+  @media (prefers-reduced-motion: reduce) { .snap-strip { scroll-behavior: auto; } }
+  @media (prefers-reduced-transparency: reduce) { .tabbar, .section-nav { background: var(--color-background) !important; backdrop-filter: none !important; } }
+}
