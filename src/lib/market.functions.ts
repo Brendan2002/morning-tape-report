@@ -31,7 +31,7 @@ async function yahoo(symbol: string, range: string) {
   return r;
 }
 
-async function fetchQuote(symbol: string): Promise<Quote> {
+export async function fetchQuote(symbol: string): Promise<Quote> {
   const hit = qCache.get(symbol);
   if (hit && Date.now() - hit.at < TTL) return hit.q;
   const empty: Quote = { symbol, name: null, last: null, change: null, changePct: null, prevClose: null, marketTime: null };
@@ -62,7 +62,7 @@ async function fetchQuote(symbol: string): Promise<Quote> {
   }
 }
 
-async function fetchHistory(symbol: string): Promise<History> {
+export async function fetchHistory(symbol: string): Promise<History> {
   const hit = hCache.get(symbol);
   if (hit && Date.now() - hit.at < TTL) return hit.h;
   try {
