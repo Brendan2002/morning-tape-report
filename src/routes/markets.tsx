@@ -43,11 +43,11 @@ function Sectors() {
         const p = r.q && !r.q.error ? r.q.changePct : null;
         return (
           <div className="row !pr-2" key={r.symbol}>
-            <div className="w-[42%] min-w-0 shrink-0">
+            <div className="min-w-0 flex-1 sm:w-[42%] sm:flex-none">
               <div className="truncate text-[15px] font-medium">{r.label}</div>
               <SourceTag>{r.symbol}</SourceTag>
             </div>
-            <div className="relative h-4 flex-1" aria-hidden>
+            <div className="relative h-4 w-[25%] shrink-0 sm:w-auto sm:flex-1" aria-hidden>
               <div className="absolute inset-y-0 left-1/2 border-l border-separator" />
               {p != null && (
                 <div

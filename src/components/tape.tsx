@@ -103,14 +103,14 @@ export function QuoteRow({ r, q, after, onClick, reportDate }: { r: Row; q?: Quo
   const asOf = ok ? etTime(q!.marketTime) : null;
   const inner = (
     <>
-      <div className="min-w-0 flex-1 text-left">
+      <div className="min-w-0 flex-1 basis-full text-left sm:basis-auto">
         <div className="truncate font-medium">{name}</div>
         <SourceTag>
           {r.symbol} · Yahoo Finance{asOf ? ` · ${asOf}` : ""}
         </SourceTag>
       </div>
       {after}
-      <div className="text-right">
+      <div className="ml-auto text-right">
         <div className={ok ? "" : "text-muted-foreground"}>{ok ? fmt(q!.last) : UNAVAILABLE}</div>
         <div className="text-[13px] text-muted-foreground">{ok ? `${signed(q!.change)} vs prior close` : "\u00a0"}</div>
       </div>
@@ -120,11 +120,11 @@ export function QuoteRow({ r, q, after, onClick, reportDate }: { r: Row; q?: Quo
   return (
     <div className="row !pr-2">
       {onClick ? (
-        <button onClick={onClick} className="-my-2 flex min-w-0 flex-1 items-center gap-3 rounded-lg py-2 text-left">
+        <button onClick={onClick} className="-my-2 flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1 rounded-lg py-2 text-left sm:flex-nowrap">
           {inner}
         </button>
       ) : (
-        <div className="flex min-w-0 flex-1 items-center gap-3">{inner}</div>
+        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1 sm:flex-nowrap">{inner}</div>
       )}
       <FlagButton ctx={{ field: `${name} (${r.symbol})`, displayedValue: ok ? `${fmt(q!.last)} (${signed(q!.changePct, 2, "%")})` : UNAVAILABLE, reportDate }} />
     </div>
