@@ -57,7 +57,6 @@
   color-scheme: light;
 }
 
-@define-mixin dark {}
 :root.dark {
   --background: #000000;
   --surface: #1C1C1E;
