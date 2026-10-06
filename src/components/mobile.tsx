@@ -169,6 +169,7 @@ export function SectionNav({ items }: { items: { key: string; label: string }[] 
     return () => io.disconnect();
   }, [items]);
   useEffect(() => {
+    if (active === items[0]?.key) { if (bar.current) bar.current.scrollLeft = 0; return; }
     const b = bar.current, el = b?.querySelector<HTMLElement>(`[data-key="${active}"]`);
     if (b && el && (el.offsetLeft < b.scrollLeft || el.offsetLeft + el.offsetWidth > b.scrollLeft + b.clientWidth)) b.scrollLeft = el.offsetLeft - 8;
   }, [active]);
