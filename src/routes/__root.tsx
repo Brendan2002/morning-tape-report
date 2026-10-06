@@ -1,6 +1,6 @@
+import { FredNotice } from "@/components/legal";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
-import { FredNotice } from "@/components/legal";
   Outlet,
   Link,
   createRootRouteWithContext,

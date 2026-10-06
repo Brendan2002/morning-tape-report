@@ -17,8 +17,10 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as MacroRouteImport } from './routes/macro'
 import { Route as MarketsRouteImport } from './routes/markets'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SourcesRouteImport } from './routes/sources'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WatchlistRouteImport } from './routes/watchlist'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as ReportDateRouteImport } from './routes/report.$date'
@@ -64,6 +66,11 @@ const McpRoute = McpRouteImport.update({
   path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -72,6 +79,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const SourcesRoute = SourcesRouteImport.update({
   id: '/sources',
   path: '/sources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WatchlistRoute = WatchlistRouteImport.update({
@@ -105,8 +117,10 @@ export interface FileRoutesByFullPath {
   '/macro': typeof MacroRoute
   '/markets': typeof MarketsRoute
   '/mcp': typeof McpRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sources': typeof SourcesRoute
+  '/terms': typeof TermsRoute
   '/watchlist': typeof WatchlistRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/report/$date': typeof ReportDateRoute
@@ -121,8 +135,10 @@ export interface FileRoutesByTo {
   '/macro': typeof MacroRoute
   '/markets': typeof MarketsRoute
   '/mcp': typeof McpRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sources': typeof SourcesRoute
+  '/terms': typeof TermsRoute
   '/watchlist': typeof WatchlistRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/report/$date': typeof ReportDateRoute
@@ -138,8 +154,10 @@ export interface FileRoutesById {
   '/macro': typeof MacroRoute
   '/markets': typeof MarketsRoute
   '/mcp': typeof McpRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sources': typeof SourcesRoute
+  '/terms': typeof TermsRoute
   '/watchlist': typeof WatchlistRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/report/$date': typeof ReportDateRoute
@@ -156,8 +174,10 @@ export interface FileRouteTypes {
     | '/macro'
     | '/markets'
     | '/mcp'
+    | '/privacy'
     | '/sitemap.xml'
     | '/sources'
+    | '/terms'
     | '/watchlist'
     | '/.well-known/oauth-protected-resource'
     | '/report/$date'
@@ -172,8 +192,10 @@ export interface FileRouteTypes {
     | '/macro'
     | '/markets'
     | '/mcp'
+    | '/privacy'
     | '/sitemap.xml'
     | '/sources'
+    | '/terms'
     | '/watchlist'
     | '/.well-known/oauth-protected-resource'
     | '/report/$date'
@@ -188,8 +210,10 @@ export interface FileRouteTypes {
     | '/macro'
     | '/markets'
     | '/mcp'
+    | '/privacy'
     | '/sitemap.xml'
     | '/sources'
+    | '/terms'
     | '/watchlist'
     | '/.well-known/oauth-protected-resource'
     | '/report/$date'
@@ -205,8 +229,10 @@ export interface RootRouteChildren {
   MacroRoute: typeof MacroRoute
   MarketsRoute: typeof MarketsRoute
   McpRoute: typeof McpRoute
+  PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SourcesRoute: typeof SourcesRoute
+  TermsRoute: typeof TermsRoute
   WatchlistRoute: typeof WatchlistRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   ReportDateRoute: typeof ReportDateRoute
@@ -271,6 +297,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -283,6 +316,13 @@ declare module '@tanstack/react-router' {
       path: '/sources'
       fullPath: '/sources'
       preLoaderRoute: typeof SourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/watchlist': {
@@ -325,8 +365,10 @@ const rootRouteChildren: RootRouteChildren = {
   MacroRoute: MacroRoute,
   MarketsRoute: MarketsRoute,
   McpRoute: McpRoute,
+  PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SourcesRoute: SourcesRoute,
+  TermsRoute: TermsRoute,
   WatchlistRoute: WatchlistRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
