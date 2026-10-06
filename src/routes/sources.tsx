@@ -22,7 +22,7 @@ export const Route = createFileRoute("/sources")({
 const PROVIDERS = [
   { name: "Yahoo Finance", body: "Index, futures, currency, commodity and stock quotes. Unofficial and typically delayed 10–20 minutes or more; futures show the front-month contract. Change is vs the prior close/settle." },
   { name: "FRED (Federal Reserve Bank of St. Louis)", body: "Treasury yields, inflation, jobs, mortgage rates and diesel prices, republished from the original agencies (Treasury, BLS, Freddie Mac, EIA). Shown with each observation date." },
-  { name: "NY Fed", body: "Publishes SOFR and the effective federal funds rate (EFFR). We read both through FRED." },
+  { name: "NY Fed", body: "Publishes SOFR and the effective federal funds rate (EFFR). We read both directly from the NY Fed Markets API, cached up to 1 hour; the day-over-day change is our calculation." },
 ];
 const RULES = [
   "Every number shows when it was observed (as-of time), what it's compared against, and where it came from.",
