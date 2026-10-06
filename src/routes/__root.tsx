@@ -45,7 +45,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { title: "Morning Tape — Daily market report" },
+      { title: "Morning Tape" },
+      { property: "og:site_name", content: "Morning Tape" },
+      { name: "application-name", content: "Morning Tape" },
+      { name: "apple-mobile-web-app-title", content: "Morning Tape" },
       { name: "description", content: "A daily morning market report with markets, rates, calendar and sources." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
