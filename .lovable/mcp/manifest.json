@@ -19,7 +19,7 @@
       {
         "name": "get_latest_report",
         "title": "Get latest morning report",
-        "description": "Return the most recent Morning Tape daily market report (headline, summary, full text and sources).",
+        "description": "Return the most recent Close & Open daily market report (headline, summary, full text and sources).",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
@@ -36,7 +36,7 @@
       {
         "name": "get_report",
         "title": "Get report by date",
-        "description": "Return the Morning Tape market report for a specific date (YYYY-MM-DD).",
+        "description": "Return the Close & Open market report for a specific date (YYYY-MM-DD).",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
@@ -62,7 +62,7 @@
       {
         "name": "search_reports",
         "title": "Search report archive",
-        "description": "List past Morning Tape reports, newest first, optionally filtered by keyword and/or month.",
+        "description": "List past Close & Open reports, newest first, optionally filtered by keyword and/or month.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
