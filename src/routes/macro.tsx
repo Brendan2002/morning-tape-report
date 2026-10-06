@@ -2,6 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { ErrorRow, Group, LineChart, PageHeader, SkeletonRows, SourceTag, UNAVAILABLE, fmt, shortDate, signed } from "@/components/tape";
 import { FlagButton } from "@/components/report-issue";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { getNyFedRates, type NyFedRate } from "@/lib/nyfed.functions";
+import { SiteDisclaimer } from "@/components/legal";
 import { diff, sinceYears, useMacro, valueAt, yoy, type Pt } from "@/components/macro";
 
 export const Route = createFileRoute("/macro")({
@@ -18,7 +22,7 @@ export const Route = createFileRoute("/macro")({
 });
 
 const CURVE = [["DGS1MO", "1M"], ["DGS3MO", "3M"], ["DGS6MO", "6M"], ["DGS1", "1Y"], ["DGS2", "2Y"], ["DGS5", "5Y"], ["DGS10", "10Y"], ["DGS30", "30Y"]] as const;
-const PANEL = ["CPIAUCSL", "CPILFESL", "UNRATE", "PAYEMS", "EFFR", "DFF", "SOFR", "MORTGAGE30US", "GASDESW"] as const;
+const PANEL = ["CPIAUCSL", "CPILFESL", "UNRATE", "PAYEMS", "MORTGAGE30US", "GASDESW"] as const;
 
 function Curve({ by }: { by: Map<string, Pt[]> }) {
   const [hover, setHover] = useState<number | null>(null);
@@ -96,7 +100,6 @@ type PanelRow = { label: string; pts: Pt[]; fmtV: (v: number) => string; chUnit:
 
 function Panel({ by }: { by: Map<string, Pt[]> }) {
   const g = (id: string) => by.get(id) ?? [];
-  const effr = g("EFFR").length ? { pts: g("EFFR"), src: "NY Fed via FRED (EFFR)" } : { pts: g("DFF"), src: "Fed via FRED (DFF)" };
   const payrollChg = diff(g("PAYEMS"));
   const pct = (v: number) => `${fmt(v)}%`;
   const rows: PanelRow[] = [
@@ -104,8 +107,6 @@ function Panel({ by }: { by: Map<string, Pt[]> }) {
     { label: "Core CPI, year over year", pts: yoy(g("CPILFESL")), fmtV: pct, chUnit: " pp", source: "BLS via FRED (CPILFESL)", monthly: true },
     { label: "Unemployment rate", pts: g("UNRATE"), fmtV: (v) => `${fmt(v, 1)}%`, chUnit: " pp", source: "BLS via FRED (UNRATE)", monthly: true, chDigits: 1 },
     { label: "Nonfarm payrolls, monthly change", pts: payrollChg, fmtV: (v) => `${v > 0 ? "+" : ""}${fmt(v, 0)}K`, chUnit: "K", source: "BLS via FRED (PAYEMS)", monthly: true, chDigits: 0 },
-    { label: "Effective fed funds rate", pts: effr.pts, fmtV: pct, chUnit: " pp", source: effr.src },
-    { label: "SOFR", pts: g("SOFR"), fmtV: pct, chUnit: " pp", source: "NY Fed via FRED (SOFR)" },
     { label: "30-year mortgage rate", pts: g("MORTGAGE30US"), fmtV: pct, chUnit: " pp", source: "Freddie Mac via FRED (MORTGAGE30US)" },
     { label: "US on-highway diesel", pts: g("GASDESW"), fmtV: (v) => `$${fmt(v, 3)}/gal`, chUnit: "", source: "EIA via FRED (GASDESW)", chDigits: 3 },
   ];
@@ -139,6 +140,44 @@ function Panel({ by }: { by: Map<string, Pt[]> }) {
   );
 }
 
+const RATE_LABEL: Record<NyFedRate["id"], string> = {
+  SOFR: "SOFR (Secured Overnight Financing Rate)",
+  EFFR: "EFFR (Effective federal funds rate)",
+};
+
+function NyFedRates() {
+  const fn = useServerFn(getNyFedRates);
+  const q = useQuery({ queryKey: ["nyfed"], queryFn: () => fn(), staleTime: 5 * 60_000, retry: 1 });
+  return (
+    <section>
+      <Group
+        label="Reference rates"
+        footer={<>As of = the NY Fed's effective date. Day-over-day change is our calculation vs the prior published day. LIBOR ceased on Sep 30, 2024.</>}
+      >
+        {q.isLoading ? <SkeletonRows rows={2} /> : q.isError ? <ErrorRow message="couldn't reach the NY Fed" onRetry={() => q.refetch()} /> : (q.data ?? []).map((r) => (
+          <div className="row !pr-2" key={r.id}>
+            <div className="min-w-0 flex-1">
+              <div className="font-medium">{RATE_LABEL[r.id]}</div>
+              <SourceTag>NY Fed{r.effectiveDate ? ` · as of ${shortDate(r.effectiveDate)}` : ""}</SourceTag>
+            </div>
+            <div className="text-right">
+              <div className={r.available ? "" : "text-muted-foreground"}>{r.available && r.rate != null ? `${fmt(r.rate)}%` : UNAVAILABLE}</div>
+              {r.available && (
+                <div className="text-[13px] text-muted-foreground">
+                  {r.priorRate != null && r.priorDate ? `prior ${fmt(r.priorRate)}% (${shortDate(r.priorDate)})` : "prior unavailable"}
+                  {r.change != null ? ` · ${signed(r.change)} pp, our calculation` : ""}
+                </div>
+              )}
+            </div>
+            <FlagButton ctx={{ field: r.id, displayedValue: r.available && r.rate != null ? `${fmt(r.rate)}%` : UNAVAILABLE }} />
+          </div>
+        ))}
+      </Group>
+      <div className="group-footer mt-2"><SiteDisclaimer /></div>
+    </section>
+  );
+}
+
 function Macro() {
   const q = useMacro([...CURVE.map((c) => c[0]), ...PANEL]);
   const by = new Map((q.data ?? []).map((s) => [s.id, s.points]));
@@ -154,6 +193,7 @@ function Macro() {
       ) : (
         <div className="space-y-10"><Curve by={by} /><Panel by={by} /></div>
       )}
+      <div className="mt-10"><NyFedRates /></div>
     </>
   );
 }
