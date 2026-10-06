@@ -19,6 +19,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as MacroRouteImport } from './routes/macro'
 import { Route as MarketsRouteImport } from './routes/markets'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as MoreRouteImport } from './routes/more'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SourcesRouteImport } from './routes/sources'
@@ -78,6 +79,11 @@ const McpRoute = McpRouteImport.update({
   path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MoreRoute = MoreRouteImport.update({
+  id: '/more',
+  path: '/more',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
@@ -131,6 +137,7 @@ export interface FileRoutesByFullPath {
   '/macro': typeof MacroRoute
   '/markets': typeof MarketsRoute
   '/mcp': typeof McpRoute
+  '/more': typeof MoreRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sources': typeof SourcesRoute
@@ -151,6 +158,7 @@ export interface FileRoutesByTo {
   '/macro': typeof MacroRoute
   '/markets': typeof MarketsRoute
   '/mcp': typeof McpRoute
+  '/more': typeof MoreRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sources': typeof SourcesRoute
@@ -172,6 +180,7 @@ export interface FileRoutesById {
   '/macro': typeof MacroRoute
   '/markets': typeof MarketsRoute
   '/mcp': typeof McpRoute
+  '/more': typeof MoreRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sources': typeof SourcesRoute
@@ -194,6 +203,7 @@ export interface FileRouteTypes {
     | '/macro'
     | '/markets'
     | '/mcp'
+    | '/more'
     | '/privacy'
     | '/sitemap.xml'
     | '/sources'
@@ -214,6 +224,7 @@ export interface FileRouteTypes {
     | '/macro'
     | '/markets'
     | '/mcp'
+    | '/more'
     | '/privacy'
     | '/sitemap.xml'
     | '/sources'
@@ -234,6 +245,7 @@ export interface FileRouteTypes {
     | '/macro'
     | '/markets'
     | '/mcp'
+    | '/more'
     | '/privacy'
     | '/sitemap.xml'
     | '/sources'
@@ -255,6 +267,7 @@ export interface RootRouteChildren {
   MacroRoute: typeof MacroRoute
   MarketsRoute: typeof MarketsRoute
   McpRoute: typeof McpRoute
+  MoreRoute: typeof MoreRoute
   PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SourcesRoute: typeof SourcesRoute
@@ -337,6 +350,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/more': {
+      id: '/more'
+      path: '/more'
+      fullPath: '/more'
+      preLoaderRoute: typeof MoreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
@@ -407,6 +427,7 @@ const rootRouteChildren: RootRouteChildren = {
   MacroRoute: MacroRoute,
   MarketsRoute: MarketsRoute,
   McpRoute: McpRoute,
+  MoreRoute: MoreRoute,
   PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SourcesRoute: SourcesRoute,
