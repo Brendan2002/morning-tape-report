@@ -19,3 +19,5 @@
 
 - FRED fetches are restricted to the `ALLOWED_FRED_SERIES` allowlist in `src/lib/macro.functions.ts` — stops the server's API key being used for arbitrary series.
 - Official non-FRED sources (NY Fed, U.S. Treasury, EIA, USDA AMS, USDA AgTransport) are fetched in `src/lib/{nyfed,treasury,ag}.functions.ts`, caching only successful responses in memory — a failed call after expiry shows "Unavailable", never a carried-forward value.
+- Mobile (<768px) uses one DOM with responsive classes plus mobile-only chrome in `src/components/mobile.tsx` (tab bar, key strip, section control, More page at `/more`) — avoids separate mobile routes and keeps SSR content identical for crawlers.
+- Page-level horizontal overflow is suppressed with `overflow-x: clip` (not `hidden`) on html/body — `hidden` creates a scroll container that breaks sticky headers and window scroll listeners.
