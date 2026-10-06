@@ -38,7 +38,7 @@ function Macro() {
   const spread = (by.get("DGS10") ?? []).filter((p) => d2.has(p.date)).map((p) => ({ date: p.date, value: p.value - d2.get(p.date)! }));
   // CPI YoY
   const cpi = by.get("CPIAUCSL") ?? [];
-  const cpiYoy = cpi.slice(12).map((p, i) => ({ date: p.date, value: (p.value / cpi[i].value - 1) * 100 }));
+  const cpiYoy = cpi.slice(12).map((p, i) => ({ date: p.date, value: (p.value / cpi[i]!.value - 1) * 100 }));
 
   const rows: { label: string; pts: Series["points"]; unit: string; note?: string }[] = [
     { label: "SOFR", pts: by.get("SOFR") ?? [], unit: "%", note: "LIBOR was discontinued in 2023; SOFR is its replacement." },

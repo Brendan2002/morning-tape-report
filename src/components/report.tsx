@@ -48,12 +48,12 @@ export function Markdown({ src }: { src: string }) {
   return (
     <div className="report-body">
       {blocks.map((b, i) => {
-        const lines = b.split("\n");
+        const lines = b.split("\n"); const first = lines[0] ?? "";
         return (
           <Fragment key={i}>
-            {lines[0].startsWith("#") && <h2>{lines[0].replace(/^#+\s*/, "")}</h2>}
+            {first.startsWith("#") && <h2>{first.replace(/^#+\s*/, "")}</h2>}
             {(() => {
-              const rest = lines[0].startsWith("#") ? lines.slice(1) : lines;
+              const rest = first.startsWith("#") ? lines.slice(1) : lines;
               if (!rest.length) return null;
               if (rest.every((l) => /^[-*]\s/.test(l)))
                 return <ul>{rest.map((l, j) => <li key={j}>{inline(l.replace(/^[-*]\s/, ""))}</li>)}</ul>;
