@@ -30,7 +30,8 @@ const ITEMS = [
 ];
 const SYMS = ITEMS.map((i) => i.symbol);
 
-type Detail = { title: string; points: { label: string; v: number }[]; format: (v: number) => string; source: string };
+type Detail = {
+  origin?: { x: number; y: number }; title: string; points: { label: string; v: number }[]; format: (v: number) => string; source: string };
 
 function Dairy() {
   const q = useQuotes(SYMS);
@@ -57,7 +58,7 @@ function Dairy() {
               <div className="row !pr-2" key={it.symbol}>
                 <button
                   className="-my-2 flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1 rounded-lg py-2 text-left sm:flex-nowrap"
-                  onClick={() => pts.length > 1 && setDetail({ title: it.label, points: pts, format: (v) => `${fmt(v)} ${it.unit}`, source: `${it.symbol} · Yahoo Finance · 3 months, daily close` })}
+                  onClick={(e) => pts.length > 1 && setDetail({ origin: { x: e.clientX, y: e.clientY }, title: it.label, points: pts, format: (v) => `${fmt(v)} ${it.unit}`, source: `${it.symbol} · Yahoo Finance · 3 months, daily close` })}
                   aria-label={`${it.label}: open 3-month chart`}
                 >
                   <div className="min-w-0 [flex:1_1_100%] sm:[flex:1_1_0%]">
@@ -87,7 +88,7 @@ function Dairy() {
             <div className="row !pr-2">
               <button
                 className="-my-2 flex min-w-0 flex-1 items-center gap-3 rounded-lg py-2 text-left"
-                onClick={() => setDetail({ title: "US on-highway diesel", points: dSpark, format: (v) => `$${fmt(v, 3)}/gal`, source: "EIA via FRED (GASDESW) · weekly" })}
+                onClick={(e) => setDetail({ origin: { x: e.clientX, y: e.clientY }, title: "US on-highway diesel", points: dSpark, format: (v) => `$${fmt(v, 3)}/gal`, source: "EIA via FRED (GASDESW) · weekly" })}
                 aria-label="US on-highway diesel: open 3-month chart"
               >
                 <div className="min-w-0 flex-1">
@@ -107,7 +108,7 @@ function Dairy() {
         </Group>
       </div>
 
-      <ResponsiveSheet open={!!detail} onOpenChange={(o) => !o && setDetail(null)} title={detail?.title ?? ""} description={detail?.source}>
+      <ResponsiveSheet open={!!detail} onOpenChange={(o) => !o && setDetail(null)} title={detail?.title ?? ""} description={detail?.source} origin={detail?.origin}>
         {detail && (
           <div className="pt-8">
             <LineChart points={detail.points} width={560} height={220} format={detail.format} showValue label={`${detail.title}, 3 months`} />
