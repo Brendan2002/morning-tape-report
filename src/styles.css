@@ -247,3 +247,6 @@
 @layer components {
   .report-body h2.group-label { font-size: 0.8125rem; line-height: 1.38; font-weight: 400; letter-spacing: 0.02em; margin: 0; padding: 0 16px 6px; color: var(--color-muted-foreground); }
 }
+
+/* TradingView iframes are light-scheme documents; matching the scheme keeps their transparent background from being painted opaque white on a dark page. */
+.tv-wrap iframe { color-scheme: light; }
