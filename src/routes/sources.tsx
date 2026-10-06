@@ -32,7 +32,7 @@ const PROVIDERS = [
 const RULES = [
   "Every number shows when it was observed (as-of time), what it's compared against, and where it came from.",
   "If a value can't be fetched or confirmed, we show \"Unavailable\" — never an estimate or an old value presented as current.",
-  "Quotes are cached for up to 5 minutes; economic data from FRED is fetched fresh and never stored.",
+  "Quotes are cached for up to 5 minutes; NY Fed, Treasury, EIA and USDA data for up to a few hours; FRED data is fetched fresh and never stored.",
   "No LIBOR: it ceased on Sep 30, 2024. We use SOFR and EFFR.",
 ];
 

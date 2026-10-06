@@ -152,7 +152,7 @@ async function cmePrices(key: string): Promise<DairyPrice[]> {
     const names = [...new Set(priced.map((x: any) => x.name))];
     for (const n of names) {
       const s = priced.filter((x: any) => x.name === n).sort((a: any, b: any) => (a.date < b.date ? 1 : -1));
-      out.push({ label: names.length > 1 ? `${r.label} — ${n}` : r.label, unit: r.unit, value: s[0].v, prior: s[1]?.v ?? null, date: s[0].date, priorDate: s[1]?.date ?? null });
+      out.push({ label: names.length > 1 ? `${r.label} — ${n}` : r.label, unit: r.unit, value: s[0]!.v, prior: s[1]?.v ?? null, date: s[0]!.date, priorDate: s[1]?.date ?? null });
     }
   }
   return out;
