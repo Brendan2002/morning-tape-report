@@ -4,7 +4,7 @@ import { Flag } from "lucide-react";
 import { ISSUE_TYPES, submitIssue } from "@/lib/issues.functions";
 import { ResponsiveSheet } from "./sheet";
 
-export type IssueContext = { field?: string; displayedValue?: string; reportDate?: string };
+export type IssueContext = { field?: string | undefined; displayedValue?: string | undefined; reportDate?: string | undefined };
 const Ctx = createContext<(c: IssueContext) => void>(() => {});
 export const useReportIssue = () => useContext(Ctx);
 

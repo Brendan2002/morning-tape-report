@@ -14,7 +14,7 @@ export function ResponsiveSheet({
   open: boolean;
   onOpenChange: (o: boolean) => void;
   title: string;
-  description?: string;
+  description?: string | undefined;
   children: ReactNode;
 }) {
   const mobile = useIsMobile();

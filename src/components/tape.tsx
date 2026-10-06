@@ -56,7 +56,7 @@ export function SkeletonRows({ rows = 5 }: { rows?: number }) {
   );
 }
 
-export function ErrorRow({ message, onRetry }: { message?: string; onRetry: () => void }) {
+export function ErrorRow({ message, onRetry }: { message?: string | undefined; onRetry: () => void }) {
   return (
     <div className="row text-[15px]" role="alert">
       <span className="text-muted-foreground">{UNAVAILABLE}{message ? ` — ${message}` : ""}</span>
@@ -97,7 +97,7 @@ export function useHistory(symbols: string[]) {
 
 export type Row = { symbol: string; label?: string };
 
-export function QuoteRow({ r, q, after, onClick, reportDate }: { r: Row; q?: Quote; after?: ReactNode; onClick?: () => void; reportDate?: string }) {
+export function QuoteRow({ r, q, after, onClick, reportDate }: { r: Row; q?: Quote | undefined; after?: ReactNode; onClick?: (() => void) | undefined; reportDate?: string | undefined }) {
   const name = r.label ?? q?.name ?? r.symbol;
   const ok = q && !q.error && q.last != null;
   const asOf = ok ? etTime(q!.marketTime) : null;
@@ -131,7 +131,7 @@ export function QuoteRow({ r, q, after, onClick, reportDate }: { r: Row; q?: Quo
   );
 }
 
-export function QuoteList({ rows, label, footer, extra, sortable = true }: { rows: Row[]; label?: ReactNode; footer?: ReactNode; extra?: (r: Row) => ReactNode; sortable?: boolean }) {
+export function QuoteList({ rows, label, footer, extra, sortable = true }: { rows: Row[]; label?: ReactNode; footer?: ReactNode; extra?: ((r: Row) => ReactNode) | undefined; sortable?: boolean }) {
   const symbols = useMemo(() => rows.map((r) => r.symbol), [rows]);
   const q = useQuotes(symbols);
   const [sort, setSort] = useState<"default" | "pct">("default");
