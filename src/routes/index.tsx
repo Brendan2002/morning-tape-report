@@ -1,7 +1,7 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { getLatestReport } from "@/lib/reports.functions";
-import { ReportView, TAPE, type Report } from "@/components/report";
-import { ErrorRow, PageHeader, QuoteList } from "@/components/tape";
+import { LiveMarkets, ReportView, type Report } from "@/components/report";
+import { ErrorRow, PageHeader } from "@/components/tape";
 
 const TITLE = "Daily Markets, Economy & Agriculture Brief — Close & Open";
 const DESC = "Every morning: a recap of stocks, Treasury yields and rates, key macro data, and dairy, feed and fuel prices, with sources and as-of times.";
@@ -36,7 +36,7 @@ function Today() {
     return (
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
         <PageHeader title="Today" subtitle="Today's report publishes at 6:30am ET on weekdays." />
-        <QuoteList label="Live markets" rows={TAPE} sortable={false} compact footer="Quotes may be delayed. Change vs prior close; yields in basis points." />
+        <LiveMarkets />
       </div>
     );
   return <ReportView report={report} />;

@@ -19,7 +19,6 @@ Build "Close & Open" — a personal finance-overview site whose centerpiece is a
 
 ## Data
 - Tables: `reports` (id uuid pk, report_date date unique, headline text, summary text, body_md text, sources jsonb default '[]', created_at timestamptz default now()); `calendar_events` (id uuid pk, event_date date, event_time text, region text, title text, importance int, prior text, forecast text, actual text, created_at); `watchlist` (id uuid pk, symbol text unique, note text, added_at timestamptz default now()). RLS: public SELECT on all three; public INSERT/DELETE on watchlist only; reports and calendar_events writable only by service role.
-- Edge function `market-data`: input list of symbols, fetches Yahoo Finance chart endpoint (https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?range=5d&interval=1d) server-side, returns name, last, change, change %, previous close, market time. Cache results in memory/table for 5 minutes. Handle failures per-symbol (show "—" not a crash).
 - Edge function `macro-data`: fetches FRED series observations (https://api.stlouisfed.org/fred/series/observations) using secret FRED_API_KEY; cache 6 hours. Ask me for FRED_API_KEY via the secure secrets form.
 - Every page needs loading skeletons (thin grey bars, no spinners) and a visible error line if a fetch fails, with a retry link.
 

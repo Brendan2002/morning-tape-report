@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ErrorRow, Group, PageHeader, QuoteList, SkeletonRows } from "@/components/tape";
+import { ErrorRow, Group, PageHeader, SkeletonRows } from "@/components/tape";
+import { MarketQuotes, TV_LABEL } from "@/components/tradingview";
 import { useIsAdmin, useSession } from "@/components/auth";
 
 export const Route = createFileRoute("/watchlist")({
@@ -75,7 +76,7 @@ function Watchlist() {
 
   return (
     <>
-      <PageHeader title="Watchlist" subtitle="Quotes via Yahoo Finance, may be delayed. Change vs prior close." />
+      <PageHeader title="Watchlist" subtitle={`${TV_LABEL}.`} />
       <div className="max-w-[760px] space-y-8">
         {isAdmin && (
           <form onSubmit={submit} noValidate>
@@ -95,13 +96,17 @@ function Watchlist() {
         {q.isLoading ? <div className="group"><SkeletonRows rows={5} /></div> : q.isError ? <div className="group"><ErrorRow onRetry={() => q.refetch()} /></div> : q.data!.length === 0 ? (
           <Group><div className="row text-muted-foreground">The watchlist is empty.</div></Group>
         ) : (
-          <QuoteList
-            label="Symbols"
-            rows={q.data!.map((w) => ({ symbol: w.symbol }))}
-            extra={isAdmin ? (r) => (
-              <button onClick={() => remove.mutate(idBySym.get(r.symbol)!)} className="btn-text shrink-0 !text-[15px] !text-down" aria-label={`Remove ${r.symbol}`}>Remove</button>
-            ) : undefined}
-          />
+          <>
+            <div className="group px-2 py-2"><MarketQuotes groups={[{ name: "Watchlist", symbols: q.data!.map((w) => ({ s: w.symbol, d: w.symbol })) }]} /></div>
+            <Group label="Symbols">
+              {q.data!.map((w) => (
+                <div className="row" key={w.id}>
+                  <span className="flex-1 font-medium">{w.symbol}</span>
+                  <button onClick={() => remove.mutate(idBySym.get(w.symbol)!)} className="btn-text shrink-0 !text-[15px] !text-down" aria-label={`Remove ${w.symbol}`}>Remove</button>
+                </div>
+              ))}
+            </Group>
+          </>
         )}
         {!isAdmin && (
           <p className="px-4 text-[13px] text-muted-foreground">

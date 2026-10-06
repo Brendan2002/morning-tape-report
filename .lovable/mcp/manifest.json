@@ -120,38 +120,6 @@
         "outputSchema": null
       },
       {
-        "name": "get_quotes",
-        "title": "Get market quotes",
-        "description": "Get delayed quotes (last, change vs prior close, % change, as-of time) for Yahoo Finance symbols such as ^GSPC, AAPL, ES=F, EURUSD=X.",
-        "annotations": {
-          "readOnlyHint": true,
-          "idempotentHint": true,
-          "openWorldHint": true
-        },
-        "inputSchema": {
-          "type": "object",
-          "properties": {
-            "symbols": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 20
-              },
-              "minItems": 1,
-              "maxItems": 25,
-              "description": "Yahoo Finance symbols."
-            }
-          },
-          "required": [
-            "symbols"
-          ],
-          "additionalProperties": false,
-          "$schema": "http://json-schema.org/draft-07/schema#"
-        },
-        "outputSchema": null
-      },
-      {
         "name": "get_economic_data",
         "title": "Get economic data (FRED)",
         "description": "Latest and prior observations from FRED for Treasury yields, SOFR, EFFR, unemployment, CPI, payrolls, mortgage rates and diesel. LIBOR is not available (discontinued).",

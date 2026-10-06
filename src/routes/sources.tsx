@@ -21,7 +21,7 @@ export const Route = createFileRoute("/sources")({
 });
 
 const PROVIDERS = [
-  { name: "Yahoo Finance", body: "Index, futures, currency, commodity and stock quotes. Unofficial and typically delayed 10–20 minutes or more; futures show the front-month contract. Change is vs the prior close/settle." },
+  { name: "TradingView", body: "Live or delayed quotes, charts, the S&P 500 heatmap and top movers, shown through TradingView's official embeddable widgets. Delays vary by exchange; futures show the front-month contract." },
   { name: "Federal Reserve Bank of New York", body: "SOFR, EFFR (with the Fed's target range), OBFR, TGCR, BGCR, SOFR averages and index, overnight reverse repo results, SOMA holdings and agency MBS operations, read directly from the NY Fed Markets API." },
   { name: "U.S. Treasury", body: "Official daily par yield curve rates, the primary source for the yield curve. FRED is used only if Treasury's site can't be reached." },
   { name: "FRED (Federal Reserve Bank of St. Louis)", body: "Inflation, jobs and mortgage rates, republished from the original agencies (BLS, Freddie Mac). Fetched fresh, never stored." },
@@ -33,7 +33,7 @@ const PROVIDERS = [
 const RULES = [
   "Every number shows when it was observed (as-of time), what it's compared against, and where it came from.",
   "If a value can't be fetched or confirmed, we show \"Unavailable\" — never an estimate or an old value presented as current.",
-  "Quotes are cached for up to 5 minutes; NY Fed, Treasury, EIA and USDA data for up to a few hours; FRED data is fetched fresh and never stored.",
+  "Live quotes load directly from TradingView in your browser; NY Fed, Treasury, EIA and USDA data for up to a few hours; FRED data is fetched fresh and never stored.",
   "No LIBOR: it ceased on Sep 30, 2024. We use SOFR and EFFR.",
 ];
 

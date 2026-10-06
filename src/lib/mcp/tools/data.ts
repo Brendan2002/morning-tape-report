@@ -1,7 +1,6 @@
 import { defineTool, ToolError } from "@lovable.dev/mcp-js";
 import { z } from "zod";
 import { supabaseAnon } from "../supabase";
-import { fetchQuote } from "@/lib/market.functions";
 import { fetchFredSeries } from "@/lib/macro.functions";
 
 export const getCalendar = defineTool({
@@ -22,34 +21,6 @@ export const getCalendar = defineTool({
       ? events.map((e) => `${e.event_date} ${e.event_time ?? "TBA"} ET [${e.region ?? "—"}] ${e.title} (importance ${e.importance}/3) prior ${e.prior ?? "—"}, forecast ${e.forecast ?? "—"}, actual ${e.actual ?? "—"}`).join("\n")
       : `No scheduled events in the next ${days} days.`;
     return { content: [{ type: "text", text }], structuredContent: { events } };
-  },
-});
-
-export const getQuotes = defineTool({
-  name: "get_quotes",
-  title: "Get market quotes",
-  description: "Get delayed quotes (last, change vs prior close, % change, as-of time) for Yahoo Finance symbols such as ^GSPC, AAPL, ES=F, EURUSD=X.",
-  inputSchema: { symbols: z.array(z.string().trim().min(1).max(20)).min(1).max(25).describe("Yahoo Finance symbols.") },
-  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
-  handler: async ({ symbols }, ctx) => {
-    const quotes = await Promise.all(symbols.map((s) => fetchQuote(s.toUpperCase())));
-    if (ctx.signal.aborted) throw new ToolError("Cancelled");
-    const rows = quotes.map((q) => ({
-      symbol: q.symbol,
-      name: q.name,
-      available: !q.error && q.last != null,
-      last: q.error ? null : q.last,
-      change_vs_prior_close: q.error ? null : q.change,
-      change_pct: q.error ? null : q.changePct,
-      as_of: q.marketTime ? new Date(q.marketTime * 1000).toISOString() : null,
-      source: "Yahoo Finance (unofficial, may be delayed)",
-    }));
-    const text = rows
-      .map((r) => r.available
-        ? `${r.symbol}${r.name ? ` (${r.name})` : ""}: ${r.last?.toFixed(2)} ${r.change_pct != null ? `${r.change_pct >= 0 ? "+" : ""}${r.change_pct.toFixed(2)}%` : ""} vs prior close · as of ${r.as_of} · Yahoo Finance`
-        : `${r.symbol}: Unavailable`)
-      .join("\n");
-    return { content: [{ type: "text", text }], structuredContent: { quotes: rows } };
   },
 });
 
