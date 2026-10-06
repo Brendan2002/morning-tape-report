@@ -142,7 +142,7 @@ export function NyFedSection() {
 
       <div className="group-footer space-y-2">
         <p><NyFedNotice /></p>
-        <SiteDisclaimer />
+        <SiteDisclaimer fred={false} />
       </div>
 
       <ResponsiveSheet open={!!detail} onOpenChange={(o) => !o && setDetail(null)} title={detail?.title ?? ""} description={detail?.source} origin={detail?.origin}>

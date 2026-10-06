@@ -47,10 +47,11 @@ export function legalHead(title: string, description: string) {
 }
 
 /** Site-wide disclaimer, shown in the footer and next to the rates on Macro & Rates. */
-export function SiteDisclaimer() {
+export const NYFED_TERMS = "https://www.newyorkfed.org/privacy/termsofuse";
+export function SiteDisclaimer({ fred = true }: { fred?: boolean }) {
   return (
     <>
-      <p><FredNotice /></p>
+      {fred && <p><FredNotice /></p>}
       <p className="mt-2">Quotes from Yahoo Finance may be delayed and are unofficial. Economic data from original agencies via FRED; SOFR and EFFR from the NY Fed. Not investment advice.</p>
     </>
   );

@@ -1,10 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ChevronRight, Search } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { listReports } from "@/lib/reports.functions";
 import { longDate } from "@/components/report";
-import { ErrorRow, Group, PageHeader, SkeletonRows } from "@/components/tape";
+import { ErrorRow, Group, PageHeader } from "@/components/tape";
 
 export const Route = createFileRoute("/archive")({
   staticData: { sitemap: true },
@@ -16,28 +15,23 @@ export const Route = createFileRoute("/archive")({
       { property: "og:description", content: "Search every past Close & Open market report by keyword or month." },
     ],
   }),
+  loader: () => listReports(),
+  errorComponent: ArchiveError,
   component: Archive,
 });
 
 function Archive() {
   const [term, setTerm] = useState("");
   const [month, setMonth] = useState("");
-  const q = useQuery({
-    queryKey: ["reports", "all"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("reports").select("id, report_date, headline, summary, body_md").order("report_date", { ascending: false });
-      if (error) throw error;
-      return data;
-    },
-  });
-  const months = useMemo(() => [...new Set((q.data ?? []).map((r) => r.report_date.slice(0, 7)))], [q.data]);
+  const reports = Route.useLoaderData();
+  const months = useMemo(() => [...new Set(reports.map((r) => r.report_date.slice(0, 7)))], [reports]);
   const results = useMemo(() => {
     const t = term.trim().toLowerCase();
-    return (q.data ?? []).filter((r) =>
+    return reports.filter((r) =>
       (!month || r.report_date.startsWith(month)) &&
       (!t || `${r.headline}\n${r.summary}\n${r.body_md}`.toLowerCase().includes(t)),
     );
-  }, [q.data, term, month]);
+  }, [reports, term, month]);
 
   return (
     <>
@@ -58,8 +52,8 @@ function Archive() {
           </select>
         </label>
       </div>
-      <Group label={q.data ? `${results.length} report${results.length === 1 ? "" : "s"}` : "Reports"}>
-        {q.isLoading ? <SkeletonRows rows={5} /> : q.isError ? <ErrorRow onRetry={() => q.refetch()} /> : results.length === 0 ? (
+      <Group label={`${results.length} report${results.length === 1 ? "" : "s"}`}>
+        {results.length === 0 ? (
           <div className="row text-muted-foreground">No reports match.</div>
         ) : results.map((r) => (
           <Link key={r.id} to="/report/$date" params={{ date: r.report_date }} className="row row-action !items-start text-foreground no-underline">
@@ -74,4 +68,9 @@ function Archive() {
       </Group>
     </>
   );
+}
+
+function ArchiveError() {
+  const router = useRouter();
+  return <><PageHeader title="Archive" /><div className="group"><ErrorRow onRetry={() => router.invalidate()} /></div></>;
 }

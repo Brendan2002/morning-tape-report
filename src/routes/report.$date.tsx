@@ -1,30 +1,13 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { queryOptions, useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { getReportByDate } from "@/lib/reports.functions";
 import { ReportView, type Report } from "@/components/report";
-import { ErrorRow, PageHeader, SkeletonRows } from "@/components/tape";
+import { ErrorRow, PageHeader } from "@/components/tape";
 
 const SITE = "https://closeandopen.com";
 
-const reportQuery = (date: string) =>
-  queryOptions({
-    queryKey: ["report", date],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("reports").select("*").eq("report_date", date).maybeSingle();
-      if (error) throw error;
-      return data as Report | null;
-    },
-  });
-
 export const Route = createFileRoute("/report/$date")({
   staticData: { sitemap: true },
-  loader: async ({ params, context }) => {
-    try {
-      return await context.queryClient.ensureQueryData(reportQuery(params.date));
-    } catch {
-      return null; // component shows its own error state with retry
-    }
-  },
+  loader: ({ params }) => getReportByDate({ data: { date: params.date } }),
   head: ({ params, loaderData }) => {
     const url = `${SITE}/report/${params.date}`;
     const title = loaderData ? `${loaderData.headline} — Close & Open` : `Report for ${params.date} — Close & Open`;
@@ -58,16 +41,19 @@ export const Route = createFileRoute("/report/$date")({
         : [],
     };
   },
-  errorComponent: () => <div className="group"><ErrorRow message="the report couldn't be loaded" onRetry={() => location.reload()} /></div>,
+  errorComponent: ReportError,
   notFoundComponent: () => <PageHeader title="No report" subtitle="That report doesn't exist." />,
   component: ReportPage,
 });
 
+function ReportError() {
+  const router = useRouter();
+  return <div className="group"><ErrorRow message="the report couldn't be loaded" onRetry={() => router.invalidate()} /></div>;
+}
+
 function ReportPage() {
   const { date } = Route.useParams();
-  const q = useQuery(reportQuery(date));
-  if (q.isLoading) return <div className="group"><SkeletonRows rows={6} /></div>;
-  if (q.isError) return <div className="group"><ErrorRow message="the report couldn't be loaded" onRetry={() => q.refetch()} /></div>;
-  if (!q.data) return <><PageHeader title="No report" subtitle={`There's no report for ${date}.`} /><Link to="/archive" className="btn-text">Browse the archive</Link></>;
-  return <ReportView report={q.data} />;
+  const report = Route.useLoaderData() as Report | null;
+  if (!report) return <><PageHeader title="No report" subtitle={`There's no report for ${date}.`} /><Link to="/archive" className="btn-text">Browse the archive</Link></>;
+  return <ReportView report={report} />;
 }
