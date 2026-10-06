@@ -17,7 +17,7 @@ export const Route = createFileRoute("/login")({
   }),
   validateSearch: (s: Record<string, unknown>): { next?: string | undefined } => {
     const n = s["next"];
-    return { next: typeof n === "string" && n.startsWith("/") && !n.startsWith("//") ? n : undefined };
+    return { next: safeNext(n) };
   },
   component: Login,
 });
