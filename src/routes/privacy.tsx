@@ -20,8 +20,9 @@ const SECTIONS: LegalSection[] = [
     "Error diagnostics that help us find and fix problems with the site.",
   ] },
   { title: "Cookies and local storage", body: [
-    "We use no advertising or analytics cookies.",
+    "We don't set advertising or analytics cookies ourselves.",
     "Local storage only remembers your theme choice. Admin sign-in uses strictly necessary storage.",
+    <>Live quote and chart widgets are third-party embeds that load from TradingView's servers. TradingView may set its own cookies or collect usage data under its <a href="https://www.tradingview.com/privacy-policy/" target="_blank" rel="noopener noreferrer">privacy policy</a>.</>,
   ] },
   { title: "Purposes and lawful bases (EEA/UK)", body: [
     "Our legitimate interests in running, securing and fixing the site.",
@@ -36,7 +37,8 @@ const SECTIONS: LegalSection[] = [
     "Lovable — hosting and error monitoring.",
     "Supabase — database and authentication.",
     "Resend — sending issue-report notification emails, if enabled.",
-    "Market and economic data comes from Yahoo Finance, FRED, the Federal Reserve Bank of New York, the U.S. Treasury, EIA, USDA AMS (DataMart and Dairy Market News) and USDA AgTransport. We don't send them any information about you.",
+    <>TradingView — live quote and chart widgets, loaded directly from TradingView's servers in your browser; TradingView may set cookies or collect usage data under its <a href="https://www.tradingview.com/privacy-policy/" target="_blank" rel="noopener noreferrer">privacy policy</a>.</>,
+    "Economic data comes from FRED, the Federal Reserve Bank of New York, the U.S. Treasury, EIA, USDA AMS (DataMart and Dairy Market News) and USDA AgTransport. Our servers don't send them any information about you.",
   ] },
   { title: "International processing", body: ["Our providers may process data outside your country under their own terms."] },
   { title: "Your privacy rights", body: [<>Depending on where you live, you can request access, correction, deletion, restriction, objection or portability under applicable law. Ask via the <ContactLink /> page.</>] },

@@ -15,7 +15,7 @@ const SECTIONS: LegalSection[] = [
   ] },
   { title: "Data accuracy", body: [
     "Data comes from third parties. It may be delayed, incomplete, revised or unavailable, and is not guaranteed.",
-    "Prices from Yahoo Finance are unofficial and may be delayed.",
+    "Live quotes and charts via TradingView may be delayed.",
   ] },
   { title: "Third-party data terms", body: [
     <>By using this site you agree to be bound by the <a href={FRED_TERMS_URL} target="_blank" rel="noopener noreferrer">FRED® API Terms of Use</a>.</>,

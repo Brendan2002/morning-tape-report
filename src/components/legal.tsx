@@ -52,7 +52,7 @@ export function SiteDisclaimer({ fred = true }: { fred?: boolean }) {
   return (
     <>
       {fred && <p><FredNotice /></p>}
-      <p className="mt-2">Quotes from Yahoo Finance may be delayed and are unofficial. Economic data from original agencies via FRED; SOFR and EFFR from the NY Fed. Not investment advice.</p>
+      <p className="mt-2">Live quotes by TradingView, may be delayed. Economic data from original agencies via FRED; SOFR and EFFR from the NY Fed. Not investment advice.</p>
     </>
   );
 }

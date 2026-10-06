@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { ChevronRight } from "lucide-react";
-import { ChangePill, ErrorRow, Group, LineChart, PageHeader, SkeletonRows, SourceTag, UNAVAILABLE, etTime, fmt, shortDate, signed, useHistory, useQuotes } from "@/components/tape";
+import { ErrorRow, Group, LineChart, PageHeader, SkeletonRows, SourceTag, fmt, shortDate, signed } from "@/components/tape";
+import { MarketQuotes, MiniChart, TV_LABEL } from "@/components/tradingview";
 import { FlagButton } from "@/components/report-issue";
 import { ResponsiveSheet } from "@/components/sheet";
 import { sinceYears, useMacro } from "@/components/macro";
@@ -21,67 +22,43 @@ export const Route = createFileRoute("/dairy")({
 });
 
 const ITEMS = [
-  { symbol: "DC=F", label: "Class III milk", unit: "$/cwt" },
-  { symbol: "ZC=F", label: "Corn", unit: "¢/bu" },
-  { symbol: "ZS=F", label: "Soybeans", unit: "¢/bu" },
-  { symbol: "ZM=F", label: "Soybean meal", unit: "$/short ton" },
-  { symbol: "ZW=F", label: "Wheat", unit: "¢/bu" },
-  { symbol: "HO=F", label: "Heating oil / ULSD (diesel proxy)", unit: "$/gal" },
-  { symbol: "LE=F", label: "Live cattle", unit: "¢/lb" },
+  { s: "CME:DC1!", d: "Class III milk", unit: "$/cwt" },
+  { s: "CBOT:ZC1!", d: "Corn", unit: "¢/bu" },
+  { s: "CBOT:ZS1!", d: "Soybeans", unit: "¢/bu" },
+  { s: "CBOT:ZM1!", d: "Soybean meal", unit: "$/short ton" },
+  { s: "CBOT:ZW1!", d: "Wheat", unit: "¢/bu" },
+  { s: "CME:LE1!", d: "Live cattle", unit: "¢/lb" },
+  { s: "NYMEX:HO1!", d: "Heating oil / ULSD (diesel proxy)", unit: "$/gal" },
 ];
-const SYMS = ITEMS.map((i) => i.symbol);
 
 type Detail = {
-  origin?: { x: number; y: number }; title: string; points: { label: string; v: number }[]; format: (v: number) => string; source: string };
+  origin?: { x: number; y: number }; title: string; points?: { label: string; v: number }[]; format?: (v: number) => string; source: string; tv?: string };
 
 function Dairy() {
-  const q = useQuotes(SYMS);
-  const h = useHistory(SYMS);
   const m = useMacro(["GASDESW"]);
   const eia = useEiaDiesel();
   const [detail, setDetail] = useState<Detail | null>(null);
-  const qBy = new Map((q.data ?? []).map((x) => [x.symbol, x]));
-  const hBy = new Map((h.data ?? []).map((x) => [x.symbol, x.points]));
   const diesel = m.data?.[0]?.points ?? [];
   const dLast = diesel.at(-1), dPrior = diesel.at(-2);
   const dSpark = sinceYears(diesel, 0.25).map((p) => ({ label: shortDate(p.date), v: p.value }));
 
   return (
     <>
-      <PageHeader title="Dairy & Feed" subtitle="Front-month futures via Yahoo Finance (delayed). Change vs prior settle. Tap a row for a 3-month chart." />
+      <PageHeader title="Dairy & Feed" subtitle="Official USDA, EIA and FRED prices, plus front-month futures quotes by TradingView (may be delayed)." />
       <div className="space-y-10">
         <OfficialDairyGroup />
-        <Group label="Futures" footer="Settlement and quotes are unofficial and may be delayed. Heating oil (HO) is shown as a proxy for ULSD/diesel.">
-          {q.isLoading ? <SkeletonRows rows={7} /> : q.isError ? <ErrorRow onRetry={() => q.refetch()} /> : ITEMS.map((it) => {
-            const x = qBy.get(it.symbol);
-            const ok = x && !x.error && x.last != null;
-            const pts = (hBy.get(it.symbol) ?? []).map((p) => ({ label: new Date(p.t * 1000).toLocaleDateString("en-US", { month: "short", day: "numeric" }), v: p.v }));
-            const asOf = ok ? etTime(x!.marketTime) : null;
-            return (
-              <div className="row !pr-2" key={it.symbol}>
-                <button
-                  className="-my-2 flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1 rounded-lg py-2 text-left sm:flex-nowrap"
-                  onClick={(e) => pts.length > 1 && setDetail({ origin: { x: e.clientX, y: e.clientY }, title: it.label, points: pts, format: (v) => `${fmt(v)} ${it.unit}`, source: `${it.symbol} · Yahoo Finance · 3 months, daily close` })}
-                  aria-label={`${it.label}: open 3-month chart`}
-                >
-                  <div className="min-w-0 [flex:1_1_100%] sm:[flex:1_1_0%]">
-                    <div className="font-medium">{it.label}</div>
-                    <SourceTag>{it.symbol} · Yahoo Finance{asOf ? ` · ${asOf}` : ""}</SourceTag>
-                  </div>
-                  <div className="w-[96px] shrink-0">
-                    {h.isLoading ? <span className="skel" /> : <LineChart points={pts} width={96} height={28} label={`${it.label}, 3 months`} />}
-                  </div>
-                  <div className="ml-auto text-right">
-                    <div className={ok ? "" : "text-muted-foreground"}>{ok ? fmt(x!.last) : UNAVAILABLE}</div>
-                    <div className="text-[13px] text-muted-foreground">{ok ? `${signed(x!.change)} · ${it.unit}` : "\u00a0"}</div>
-                  </div>
-                  <ChangePill pct={ok ? x!.changePct : null} />
-                  <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
-                </button>
-                <FlagButton ctx={{ field: `${it.label} (${it.symbol})`, displayedValue: ok ? fmt(x!.last) : UNAVAILABLE }} />
-              </div>
-            );
-          })}
+        <section className="min-w-0">
+          <h2 className="group-label">Futures</h2>
+          <div className="group px-2 py-2"><MarketQuotes groups={[{ name: "Front month", symbols: ITEMS }]} /></div>
+          <div className="group-footer">{TV_LABEL}. Heating oil is shown as a proxy for ULSD/diesel.</div>
+        </section>
+        <Group label="Futures charts" footer="Tap a contract for a 3-month chart by TradingView.">
+          {ITEMS.map((it) => (
+            <button key={it.s} className="row row-action w-full text-left" onClick={(e) => setDetail({ origin: { x: e.clientX, y: e.clientY }, title: it.d, source: `${it.s} · ${it.unit} · ${TV_LABEL}`, tv: it.s })}>
+              <span className="min-w-0 flex-1"><span className="block font-medium">{it.d}</span><SourceTag>{it.s} · {it.unit}</SourceTag></span>
+              <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
+            </button>
+          ))}
         </Group>
 
         <DairyPricesGroups />
@@ -117,12 +94,16 @@ function Dairy() {
 
       <ResponsiveSheet open={!!detail} onOpenChange={(o) => !o && setDetail(null)} title={detail?.title ?? ""} description={detail?.source} origin={detail?.origin}>
         {detail && (
-          <div className="pt-8">
-            <LineChart points={detail.points} width={560} height={220} format={detail.format} showValue label={`${detail.title}, 3 months`} />
-            <div className="mt-3 flex justify-between text-[13px] text-muted-foreground">
-              <span>{detail.points[0]?.label}</span>
-              <span>Latest {detail.format(detail.points.at(-1)!.v)} · {detail.points.at(-1)?.label}</span>
-            </div>
+          <div className="pt-6">
+            {detail.tv ? <MiniChart symbol={detail.tv} height={240} /> : detail.points && detail.format && (
+              <>
+                <LineChart points={detail.points} width={560} height={220} format={detail.format} showValue label={`${detail.title}, 3 months`} />
+                <div className="mt-3 flex justify-between text-[13px] text-muted-foreground">
+                  <span>{detail.points[0]?.label}</span>
+                  <span>Latest {detail.format(detail.points.at(-1)!.v)} · {detail.points.at(-1)?.label}</span>
+                </div>
+              </>
+            )}
           </div>
         )}
       </ResponsiveSheet>
