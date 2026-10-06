@@ -19,6 +19,8 @@ export const Route = createFileRoute("/report/$date")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "article" },
+      { property: "og:image", content: "https://closeandopen.com/og-image.jpg" },
+      { name: "twitter:image", content: "https://closeandopen.com/og-image.jpg" },
         { property: "og:url", content: url },
         ...(loaderData ? [{ property: "article:published_time", content: loaderData.created_at }] : [{ name: "robots", content: "noindex" }]),
       ],
@@ -35,7 +37,8 @@ export const Route = createFileRoute("/report/$date")({
               dateModified: loaderData.created_at,
               mainEntityOfPage: url,
               author: { "@type": "Organization", name: "Close & Open", url: SITE },
-              publisher: { "@type": "Organization", name: "Close & Open", url: SITE },
+              image: ["https://closeandopen.com/og-image.jpg"],
+              publisher: { "@type": "Organization", name: "Close & Open", url: SITE, logo: { "@type": "ImageObject", url: "https://closeandopen.com/logo.png" } },
             }),
           }]
         : [],
