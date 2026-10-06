@@ -5,6 +5,7 @@ import { ReportView, TAPE, type Report } from "@/components/report";
 import { ErrorRow, PageHeader, QuoteList, SkeletonRows } from "@/components/tape";
 
 export const Route = createFileRoute("/")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Today — Morning Tape" },

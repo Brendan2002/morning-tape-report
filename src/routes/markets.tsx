@@ -5,6 +5,7 @@ import { FlagButton } from "@/components/report-issue";
 import type { Quote } from "@/lib/market.functions";
 
 export const Route = createFileRoute("/markets")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Markets — Morning Tape" },

@@ -6,6 +6,7 @@ import { ErrorRow, Group, PageHeader, SkeletonRows, SourceTag } from "@/componen
 import { FlagButton } from "@/components/report-issue";
 
 export const Route = createFileRoute("/calendar")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Economic Calendar — Morning Tape" },

@@ -5,6 +5,7 @@ import { Group, PageHeader } from "@/components/tape";
 import { useSession } from "@/components/auth";
 
 export const Route = createFileRoute("/login")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Admin sign in — Morning Tape" },

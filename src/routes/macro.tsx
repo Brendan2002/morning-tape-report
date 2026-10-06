@@ -5,6 +5,7 @@ import { FlagButton } from "@/components/report-issue";
 import { diff, sinceYears, useMacro, valueAt, yoy, type Pt } from "@/components/macro";
 
 export const Route = createFileRoute("/macro")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Macro & Rates — Morning Tape" },

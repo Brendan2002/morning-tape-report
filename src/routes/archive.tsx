@@ -7,6 +7,7 @@ import { longDate } from "@/components/report";
 import { ErrorRow, Group, PageHeader, SkeletonRows } from "@/components/tape";
 
 export const Route = createFileRoute("/archive")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Archive — Morning Tape" },
