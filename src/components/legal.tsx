@@ -16,6 +16,9 @@ export const LEGAL_UPDATED = "October 6, 2026";
 
 export const ContactLink = () => <Link to="/contact">Contact</Link>;
 
+export const CONTACT_EMAIL = "bridle_07limps@icloud.com";
+export const EmailLink = () => <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>;
+
 export type LegalSection = { title: string; body: ReactNode[] };
 
 export function LegalPage({ title, sections }: { title: string; sections: LegalSection[] }) {

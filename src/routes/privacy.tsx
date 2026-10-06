@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ContactLink, LegalPage, legalHead, type LegalSection } from "@/components/legal";
+import { ContactLink, EmailLink, LegalPage, legalHead, type LegalSection } from "@/components/legal";
 
 export const Route = createFileRoute("/privacy")({
   staticData: { sitemap: true },
@@ -43,5 +43,5 @@ const SECTIONS: LegalSection[] = [
   { title: "Analytics", body: ["Morning Tape does not currently use any analytics or tracking service."] },
   { title: "Children's privacy", body: ["Morning Tape is not directed at children under 13, and we don't knowingly collect their data."] },
   { title: "Changes to this policy", body: ["Changes are reflected by updating the \"Last updated\" date above."] },
-  { title: "Contact", body: [<>Use the <ContactLink /> page.</>] },
+  { title: "Contact", body: [<>Email <EmailLink />, or use the <ContactLink /> page.</>] },
 ];

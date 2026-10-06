@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ContactLink, FRED_TERMS_URL, FredNotice, LegalPage, legalHead, type LegalSection } from "@/components/legal";
+import { ContactLink, EmailLink, FRED_TERMS_URL, FredNotice, LegalPage, legalHead, type LegalSection } from "@/components/legal";
 
 export const Route = createFileRoute("/terms")({
   staticData: { sitemap: true },
@@ -31,5 +31,5 @@ const SECTIONS: LegalSection[] = [
   { title: "Your consumer rights", body: ["Consumer protections that can't be waived under the law that applies to you are not affected."] },
   { title: "Governing law", body: ["These terms are governed by the laws of the State of Connecticut, USA."] },
   { title: "Changes to these terms", body: ["Continued use of the site means you accept the current terms. When they change, the \"Last updated\" date changes."] },
-  { title: "Contact", body: [<>Use the <ContactLink /> page.</>] },
+  { title: "Contact", body: [<>Email <EmailLink />, or use the <ContactLink /> page.</>] },
 ];
