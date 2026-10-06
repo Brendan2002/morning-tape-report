@@ -36,7 +36,7 @@ const SECTIONS: LegalSection[] = [
     "Lovable — hosting and error monitoring.",
     "Supabase — database and authentication.",
     "Resend — sending issue-report notification emails, if enabled.",
-    "Market and economic data comes from Yahoo Finance, FRED, the Federal Reserve Bank of New York, the U.S. Treasury, EIA, USDA AMS Dairy Market News and USDA AgTransport. We don't send them any information about you.",
+    "Market and economic data comes from Yahoo Finance, FRED, the Federal Reserve Bank of New York, the U.S. Treasury, EIA, USDA AMS (DataMart and Dairy Market News) and USDA AgTransport. We don't send them any information about you.",
   ] },
   { title: "International processing", body: ["Our providers may process data outside your country under their own terms."] },
   { title: "Your privacy rights", body: [<>Depending on where you live, you can request access, correction, deletion, restriction, objection or portability under applicable law. Ask via the <ContactLink /> page.</>] },
