@@ -15,4 +15,6 @@
 - Issue notification email goes through the Resend connector when linked; the issue is saved first so email failures never lose reports.
 - Watchlist reads and writes require the `admin` role in `user_roles` (checked via `has_role`) — roles never live on profile rows.
 - UI follows DESIGN.md: grouped inset lists and semantic tokens in `src/styles.css`; no hardcoded colors in components.
-- The MCP server (`src/lib/mcp/`, mounted at `/mcp` by `mcpPlugin`) is intentionally public with no auth and uses only the anon Supabase client — it must expose nothing beyond what the public site shows.
+- The MCP server (`src/lib/mcp/`, mounted at `/mcp` by `mcpPlugin`) requires OAuth (Cloud auth as the authorization server, consent page at `/.lovable/oauth/consent`) and tools still read only public data via the anon client — keeps the endpoint from being an open proxy.
+
+- FRED fetches are restricted to the `ALLOWED_FRED_SERIES` allowlist in `src/lib/macro.functions.ts` — stops the server's API key being used for arbitrary series.

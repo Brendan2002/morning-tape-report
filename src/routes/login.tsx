@@ -15,11 +15,16 @@ export const Route = createFileRoute("/login")({
       { name: "robots", content: "noindex" },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>): { next?: string | undefined } => {
+    const n = s["next"];
+    return { next: typeof n === "string" && n.startsWith("/") && !n.startsWith("//") ? n : undefined };
+  },
   component: Login,
 });
 
 function Login() {
   const nav = useNavigate();
+  const { next } = Route.useSearch();
   const { session } = useSession();
   const [mode, setMode] = useState<"in" | "up">("in");
   const [email, setEmail] = useState("");
@@ -34,14 +39,16 @@ function Login() {
       const { error } = await supabase.auth.signInWithPassword({ email, password: pw });
       setBusy(false);
       if (error) return setMsg({ ok: false, text: error.message });
-      nav({ to: "/watchlist" });
+      if (next) window.location.assign(next);
+      else nav({ to: "/watchlist" });
     } else {
-      const { error } = await supabase.auth.signUp({ email, password: pw, options: { emailRedirectTo: `${window.location.origin}/watchlist` } });
+      const { error } = await supabase.auth.signUp({ email, password: pw, options: { emailRedirectTo: `${window.location.origin}${next ?? "/watchlist"}` } });
       setBusy(false);
       setMsg(error ? { ok: false, text: error.message } : { ok: true, text: "Check your email to confirm your account." });
     }
   };
 
+  if (session && next && typeof window !== "undefined") window.location.assign(next);
   if (session)
     return (
       <>

@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getMacro, type Series } from "@/lib/macro.functions";
+import { getMacro, type Series, type ALLOWED_FRED_SERIES } from "@/lib/macro.functions";
 
 export type Pt = Series["points"][number];
 
-export function useMacro(ids: string[]) {
+export function useMacro(ids: (typeof ALLOWED_FRED_SERIES)[number][]) {
   const fn = useServerFn(getMacro);
   return useQuery({
     queryKey: ["macro", ids],
