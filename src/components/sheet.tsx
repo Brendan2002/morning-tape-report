@@ -198,7 +198,15 @@ function BottomSheet({
           style={{ transform: "translate3d(0,100%,0)", pointerEvents: open ? "auto" : "none" }}
           aria-describedby={description ? undefined : ""}
         >
-          <div {...handlers} className="touch-none select-none px-4 pb-2 pt-2">
+          {showClose && (
+            <DialogPrimitive.Close
+              aria-label="Close"
+              className="absolute right-2 top-2 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-muted-foreground hover:bg-fill hover:text-foreground active:opacity-60"
+            >
+              <X className="h-5 w-5" aria-hidden />
+            </DialogPrimitive.Close>
+          )}
+          <div {...handlers} className={`touch-none select-none px-4 pb-2 pt-2${showClose ? " pr-14" : ""}`}>
             <div className="mx-auto mb-3 h-[5px] w-9 rounded-full bg-separator" aria-hidden />
             <DialogPrimitive.Title className="group-header">{title}</DialogPrimitive.Title>
             {description && <DialogPrimitive.Description className="text-[0.9375rem] text-muted-foreground">{description}</DialogPrimitive.Description>}
