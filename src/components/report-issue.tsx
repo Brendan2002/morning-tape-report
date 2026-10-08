@@ -22,6 +22,7 @@ export function ReportIssueProvider({ children }: { children: ReactNode }) {
         open={!!ctx}
         onOpenChange={(o) => !o && setCtx(null)}
         title="Report an issue"
+        showClose
         description="Spotted something wrong? Tell us and we'll check it."
       >
         {ctx && <IssueForm ctx={ctx} onDone={() => setCtx(null)} />}

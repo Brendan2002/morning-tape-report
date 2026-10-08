@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -13,6 +14,7 @@ export function ResponsiveSheet({
   description,
   children,
   origin,
+  showClose,
 }: {
   open: boolean;
   onOpenChange: (o: boolean) => void;
@@ -21,6 +23,8 @@ export function ResponsiveSheet({
   children: ReactNode;
   /** Viewport point the content came from (e.g. a tapped row); the desktop dialog scales from/to it. */
   origin?: Origin | undefined;
+  /** Adds a ✕ to the mobile bottom sheet's top-right corner (the desktop dialog already has one). */
+  showClose?: boolean | undefined;
 }) {
   const mobile = useIsMobile();
   // Keep the last content during the exit animation so the sheet doesn't empty out while closing.
@@ -30,7 +34,7 @@ export function ResponsiveSheet({
 
   if (mobile) {
     return (
-      <BottomSheet open={open} onOpenChange={onOpenChange} title={c.title} description={c.description}>
+      <BottomSheet open={open} onOpenChange={onOpenChange} title={c.title} description={c.description} showClose={showClose}>
         {c.children}
       </BottomSheet>
     );
@@ -66,12 +70,14 @@ function BottomSheet({
   title,
   description,
   children,
+  showClose,
 }: {
   open: boolean;
   onOpenChange: (o: boolean) => void;
   title: string;
   description?: string | undefined;
   children: ReactNode;
+  showClose?: boolean | undefined;
 }) {
   const [mounted, setMounted] = useState(open);
   const sheet = useRef<HTMLDivElement | null>(null);
@@ -192,7 +198,15 @@ function BottomSheet({
           style={{ transform: "translate3d(0,100%,0)", pointerEvents: open ? "auto" : "none" }}
           aria-describedby={description ? undefined : ""}
         >
-          <div {...handlers} className="touch-none select-none px-4 pb-2 pt-2">
+          {showClose && (
+            <DialogPrimitive.Close
+              aria-label="Close"
+              className="absolute right-2 top-2 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-muted-foreground hover:bg-fill hover:text-foreground active:opacity-60"
+            >
+              <X className="h-5 w-5" aria-hidden />
+            </DialogPrimitive.Close>
+          )}
+          <div {...handlers} className={`touch-none select-none px-4 pb-2 pt-2${showClose ? " pr-14" : ""}`}>
             <div className="mx-auto mb-3 h-[5px] w-9 rounded-full bg-separator" aria-hidden />
             <DialogPrimitive.Title className="group-header">{title}</DialogPrimitive.Title>
             {description && <DialogPrimitive.Description className="text-[0.9375rem] text-muted-foreground">{description}</DialogPrimitive.Description>}

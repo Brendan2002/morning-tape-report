@@ -98,7 +98,7 @@ export const submitIssue = createServerFn({ method: "POST" })
             "X-Connection-Api-Key": resendKey,
           },
           body: JSON.stringify({
-            from: "Close & Open <onboarding@resend.dev>",
+            from: "Close & Open <alerts@closeandopen.com>",
             to: [to],
             reply_to: row.reporter_email ?? undefined,
             subject,
