@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -13,6 +14,7 @@ export function ResponsiveSheet({
   description,
   children,
   origin,
+  showClose,
 }: {
   open: boolean;
   onOpenChange: (o: boolean) => void;
@@ -21,6 +23,8 @@ export function ResponsiveSheet({
   children: ReactNode;
   /** Viewport point the content came from (e.g. a tapped row); the desktop dialog scales from/to it. */
   origin?: Origin | undefined;
+  /** Adds a ✕ to the mobile bottom sheet's top-right corner (the desktop dialog already has one). */
+  showClose?: boolean | undefined;
 }) {
   const mobile = useIsMobile();
   // Keep the last content during the exit animation so the sheet doesn't empty out while closing.
@@ -30,7 +34,7 @@ export function ResponsiveSheet({
 
   if (mobile) {
     return (
-      <BottomSheet open={open} onOpenChange={onOpenChange} title={c.title} description={c.description}>
+      <BottomSheet open={open} onOpenChange={onOpenChange} title={c.title} description={c.description} showClose={showClose}>
         {c.children}
       </BottomSheet>
     );
@@ -66,12 +70,14 @@ function BottomSheet({
   title,
   description,
   children,
+  showClose,
 }: {
   open: boolean;
   onOpenChange: (o: boolean) => void;
   title: string;
   description?: string | undefined;
   children: ReactNode;
+  showClose?: boolean | undefined;
 }) {
   const [mounted, setMounted] = useState(open);
   const sheet = useRef<HTMLDivElement | null>(null);
