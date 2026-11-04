@@ -63,7 +63,7 @@ export function TVWidget({ type, config, height, label = "TradingView widget" }:
     <div className="tv-wrap min-w-0 max-w-full overflow-hidden" aria-label={label}>
       <div ref={box} className="tradingview-widget-container w-full" style={{ minHeight: height }} />
       <div className="tradingview-widget-copyright text-[0.75rem] text-muted-foreground">
-        <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank">Track all markets on TradingView</a>
+        <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank" className="tv-attrib" aria-label={`Track all markets on TradingView (source of ${label}, opens in a new tab)`}>Track all markets on TradingView</a>
       </div>
     </div>
   );

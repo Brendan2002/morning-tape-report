@@ -10,7 +10,7 @@ const TABS = [
   { to: "/markets", label: "Markets", Icon: TrendingUp },
   { to: "/macro", label: "Rates", Icon: Percent },
   { to: "/dairy", label: "Dairy", Icon: Wheat },
-  { to: "/more", label: "More", Icon: Ellipsis },
+  { to: "/more", label: "More", aria: "More market tools and information", Icon: Ellipsis },
 ] as const;
 const MAIN = new Set(["/", "/markets", "/macro", "/dairy"]);
 
@@ -21,11 +21,11 @@ export function TabBar() {
   return (
     <nav aria-label="Tabs" className="tabbar nav-glass fixed inset-x-0 bottom-0 z-40 border-t border-separator md:hidden">
       <ul className="mx-auto grid max-w-[600px] grid-cols-5">
-        {TABS.map(({ to, label, Icon }) => {
+        {TABS.map(({ to, label, Icon, ...t }) => {
           const on = active(to);
           return (
             <li key={to}>
-              <Link to={to} aria-current={on ? "page" : undefined} className={`tab ${on ? "tab-on" : ""}`}>
+              <Link to={to} aria-label={"aria" in t ? (t as { aria: string }).aria : undefined} aria-current={on ? "page" : undefined} className={`tab ${on ? "tab-on" : ""}`}>
                 <Icon className="h-6 w-6" strokeWidth={1.6} aria-hidden />
                 <span>{label}</span>
               </Link>
