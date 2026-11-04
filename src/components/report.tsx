@@ -32,6 +32,17 @@ export const parseSources = (s: unknown): Source[] =>
   Array.isArray(s) ? s.filter((x): x is Source => !!x && typeof x.url === "string" && typeof x.title === "string") : [];
 export const domainOf = (url: string) => { try { return new URL(url).hostname.replace(/^www\./, ""); } catch { return url; } };
 
+/** Accessible name for an external link: visible text plus the linked topic, so same-named links to different pages are distinguishable. */
+export function linkLabel(text: string, url: string | undefined): string {
+  let topic = "";
+  try {
+    const u = new URL(url ?? "");
+    const segs = u.pathname.split("/").filter(Boolean).map((x) => decodeURIComponent(x).replace(/\.[a-z0-9]+$/i, "").replace(/[-_+]+/g, " ").trim()).filter(Boolean);
+    topic = segs.length ? segs.join(" › ") : u.hostname.replace(/^www\./, "");
+  } catch { /* ignore */ }
+  return topic && !text.toLowerCase().includes(topic.toLowerCase()) ? `${text}: ${topic} (opens in a new tab)` : `${text} (opens in a new tab)`;
+}
+
 function inline(s: string): ReactNode[] {
   const out: ReactNode[] = [];
   const re = /(\*\*[^*]+\*\*|\*[^*]+\*|\[[^\]]+\]\([^)]+\))/g;
@@ -42,7 +53,7 @@ function inline(s: string): ReactNode[] {
     if (t.startsWith("**")) out.push(<strong key={i++}>{t.slice(2, -2)}</strong>);
     else if (t.startsWith("[")) {
       const mm = /\[([^\]]+)\]\(([^)]+)\)/.exec(t)!;
-      out.push(<a key={i++} href={mm[2]} target="_blank" rel="noopener noreferrer">{mm[1]}</a>);
+      out.push(<a key={i++} href={mm[2]} target="_blank" rel="noopener noreferrer" aria-label={linkLabel(mm[1]!, mm[2])}>{mm[1]}</a>);
     } else out.push(<em key={i++}>{t.slice(1, -1)}</em>);
     last = m.index + t.length;
   }
@@ -168,7 +179,7 @@ function briefItems(md: string): BriefItem[] | null {
 }
 
 const MD_COMPONENTS: Components = {
-  a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer">{children}</a>,
+  a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" aria-label={typeof children === "string" ? linkLabel(children, href) : undefined}>{children}</a>,
   h1: ({ children }) => <h2>{children}</h2>,
   h3: ({ children }) => <h3 className="mt-6 mb-2 text-[1.0625rem] font-semibold">{children}</h3>,
 };
@@ -240,7 +251,7 @@ export function ReportView({ report }: { report: Report }) {
               <div className="row text-muted-foreground">No sources listed for this report.</div>
             ) : (
               sources.map((s) => (
-                <a key={s.url} href={s.url} target="_blank" rel="noopener noreferrer" className="row row-action text-foreground no-underline">
+                <a key={s.url} href={s.url} target="_blank" rel="noopener noreferrer" aria-label={linkLabel(s.title, s.url)} className="row row-action text-foreground no-underline">
                   <div className="min-w-0 flex-1">
                     <div className="truncate">{s.title}</div>
                     <div className="text-[13px] text-muted-foreground">{domainOf(s.url)}</div>
