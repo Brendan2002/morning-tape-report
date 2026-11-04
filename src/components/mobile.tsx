@@ -1,3 +1,4 @@
+import { linkLabel } from "@/components/report";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { ChevronDown, Ellipsis, Newspaper, Percent, TrendingUp, Wheat } from "lucide-react";
@@ -10,7 +11,7 @@ const TABS = [
   { to: "/markets", label: "Markets", Icon: TrendingUp },
   { to: "/macro", label: "Rates", Icon: Percent },
   { to: "/dairy", label: "Dairy", Icon: Wheat },
-  { to: "/more", label: "More", aria: "More market tools and information", Icon: Ellipsis },
+  { to: "/more", label: "Tools", aria: "More market tools and information", Icon: Ellipsis },
 ] as const;
 const MAIN = new Set(["/", "/markets", "/macro", "/dairy"]);
 
@@ -154,7 +155,7 @@ export function BriefList({ items }: { items: BriefItem[] }) {
               <div className="px-4 pb-3 pl-[52px] text-[15px] leading-relaxed">
                 <div>{it.rest}</div>
                 {it.sources.map((s) => (
-                  <a key={s.url} href={s.url} target="_blank" rel="noopener noreferrer" className="btn-text !min-h-[44px] text-[15px]">Source: {s.title}</a>
+                  <a key={s.url} href={s.url} target="_blank" rel="noopener noreferrer" aria-label={linkLabel(`Source: ${s.title}`, s.url)} className="btn-text !min-h-[44px] text-[15px]">Source: {s.title}</a>
                 ))}
               </div>
             )}
