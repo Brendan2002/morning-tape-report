@@ -1,16 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getRouterInstance } from "@tanstack/react-start";
+import { resolveReportPaths } from "@/lib/sitemap-reports";
 import { isSitemapRouteIncluded, sitemapPathForLocation, sitemapStaticPaths, sitemapXML, type SitemapEntry } from "@/lib/sitemap";
 
 const BASE_URL = "https://closeandopen.com";
-const QUERY_TIMEOUT_MS = 4000;
 const PAGE_SIZE = 1000;
 
-// Last fully successful list of report paths (per worker isolate). Used only when a fresh
-// query fails or times out, so crawlers never receive a sitemap missing real reports.
-let lastGoodReportPaths: string[] | null = null;
-
-async function fetchReportDates(): Promise<string[]> {
+async function fetchReportDates(signal: AbortSignal): Promise<string[]> {
   const { createClient } = await import("@supabase/supabase-js");
   const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
   const supabase = createClient(process.env["SUPABASE_URL"]!, key, {
@@ -24,9 +20,6 @@ async function fetchReportDates(): Promise<string[]> {
       },
     },
   });
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), QUERY_TIMEOUT_MS);
-  try {
     const dates: string[] = [];
     for (let offset = 0; ; ) {
       const { data, error } = await supabase
@@ -35,17 +28,14 @@ async function fetchReportDates(): Promise<string[]> {
         .order("report_date", { ascending: false })
         .order("id")
         .range(offset, offset + PAGE_SIZE - 1)
-        .abortSignal(controller.signal);
+        .abortSignal(signal);
       if (error) throw error;
       if (data.length === 0) break;
       for (const row of data) dates.push(row.report_date);
       if (data.length < PAGE_SIZE) break;
       offset += data.length;
     }
-    return dates;
-  } finally {
-    clearTimeout(timer);
-  }
+  return dates;
 }
 
 export const Route = createFileRoute("/sitemap.xml")({
@@ -58,20 +48,15 @@ export const Route = createFileRoute("/sitemap.xml")({
 
         const routeId = "/report/$date";
         if (isSitemapRouteIncluded(router.routesById[routeId])) {
-          let reportPaths: string[] | null = null;
-          try {
-            const dates = await fetchReportDates();
-            reportPaths = [];
-            for (const date of dates) {
+          const { paths: reportPaths } = await resolveReportPaths(async (signal) => {
+            const out: string[] = [];
+            for (const date of await fetchReportDates(signal)) {
               const location = router.buildLocation({ to: "/report/$date", params: { date }, search: () => ({}), hash: "" });
               const path = sitemapPathForLocation(router, location, routeId);
-              if (path) reportPaths.push(path);
+              if (path) out.push(path);
             }
-            lastGoodReportPaths = reportPaths;
-          } catch (error) {
-            console.error("sitemap: reports query failed", error);
-            reportPaths = lastGoodReportPaths;
-          }
+            return out;
+          });
           if (!reportPaths) {
             // No complete list available: ask crawlers to retry rather than serve a partial sitemap.
             return new Response("Sitemap temporarily unavailable.", {

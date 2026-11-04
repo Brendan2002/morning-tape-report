@@ -15,3 +15,11 @@ describe("App routing", () => {
     expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
   });
 });
+
+describe("report route", () => {
+  it("throws a real not-found for a missing report date", async () => {
+    const { Route } = await import("@/routes/report.$date");
+    const loader = Route.options.loader as (a: { params: { date: string } }) => Promise<unknown>;
+    await expect(loader({ params: { date: "not-a-date" } })).rejects.toMatchObject({ isNotFound: true });
+  });
+});
