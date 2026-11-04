@@ -250,3 +250,7 @@
 
 /* TradingView iframes are light-scheme documents; matching the scheme keeps their transparent background from being painted opaque white on a dark page. */
 .tv-wrap iframe { color-scheme: light; }
+
+/* TradingView's injected CSS greys this link below AA contrast; keep it visible with our accent ink. */
+.tradingview-widget-copyright a.tv-attrib,
+.tradingview-widget-copyright a.tv-attrib * { color: var(--accent-ink) !important; text-decoration: underline; }

@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
 import { getReportByDate } from "@/lib/reports.functions";
 import { ReportView, type Report } from "@/components/report";
 import { ErrorRow, PageHeader } from "@/components/tape";
@@ -7,7 +7,12 @@ const SITE = "https://closeandopen.com";
 
 export const Route = createFileRoute("/report/$date")({
   staticData: { sitemap: true },
-  loader: ({ params }) => getReportByDate({ data: { date: params.date } }),
+  loader: async ({ params }) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(params.date)) throw notFound();
+    const r = await getReportByDate({ data: { date: params.date } });
+    if (!r) throw notFound();
+    return r;
+  },
   head: ({ params, loaderData }) => {
     const url = `${SITE}/report/${params.date}`;
     const title = loaderData ? `${loaderData.headline} — Close & Open` : `Report for ${params.date} — Close & Open`;
@@ -45,7 +50,7 @@ export const Route = createFileRoute("/report/$date")({
     };
   },
   errorComponent: ReportError,
-  notFoundComponent: () => <PageHeader title="No report" subtitle="That report doesn't exist." />,
+  notFoundComponent: () => <><PageHeader title="No report" subtitle="There's no report for that date." /><Link to="/archive" className="btn-text">Browse the archive</Link></>,
   component: ReportPage,
 });
 
