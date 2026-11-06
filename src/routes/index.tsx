@@ -22,6 +22,15 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [{ rel: "canonical", href: "https://closeandopen.com/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify([
+          { "@context": "https://schema.org", "@type": "WebSite", name: "Close & Open", url: "https://closeandopen.com/", description: DESC, inLanguage: "en" },
+          { "@context": "https://schema.org", "@type": "Organization", name: "Close & Open", url: "https://closeandopen.com/", logo: "https://closeandopen.com/logo.png" },
+        ]),
+      },
+    ],
   }),
   errorComponent: TodayError,
   component: Today,
