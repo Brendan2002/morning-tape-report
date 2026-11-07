@@ -14,7 +14,15 @@
     "test:watch": "vitest"
   },
   "overrides": {
-    "rolldown": "1.2.1"
+    "rolldown": "1.2.1",
+    "body-parser": "2.4.0",
+    "@hono/node-server": "2.1.6",
+    "fast-uri": "3.1.9",
+    "ip-address": "10.7.6",
+    "qs": "6.17.1",
+    "js-yaml": "4.3.2",
+    "seroval": "1.7.10",
+    "source-map-js": "1.2.2"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
