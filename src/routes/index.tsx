@@ -3,6 +3,7 @@ import { getLatestReport } from "@/lib/reports.functions";
 import { LiveMarkets, ReportView, type Report } from "@/components/report";
 import { ErrorRow, PageHeader } from "@/components/tape";
 
+// Homepage: latest report, or the no-report fallback below.
 const TITLE = "Daily Markets, Economy & Agriculture Brief — Close & Open";
 const DESC = "Every morning: a recap of stocks, Treasury yields and rates, key macro data, and dairy, feed and fuel prices, with sources and as-of times.";
 
