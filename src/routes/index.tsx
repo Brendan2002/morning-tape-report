@@ -3,8 +3,8 @@ import { getLatestReport } from "@/lib/reports.functions";
 import { LiveMarkets, ReportView, type Report } from "@/components/report";
 import { ErrorRow, PageHeader } from "@/components/tape";
 
-const TITLE = "Close & Open — Daily Markets, Rates & Agriculture Brief";
-const DESC = "A free weekday morning brief for investors: stocks, Treasury yields, Fed rates, key macro data and dairy, feed and fuel prices — with sources and as-of times.";
+const TITLE = "Close & Open — Daily Market Report: Stocks, Rates & Agriculture";
+const DESC = "Every weekday at 6:30am ET: the prior market close, overnight futures, Treasury yields, Fed rates, the day's economic calendar, and dairy, feed and fuel prices.";
 
 export const Route = createFileRoute("/")({
   staticData: { sitemap: true },
