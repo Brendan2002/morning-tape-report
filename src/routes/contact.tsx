@@ -1,11 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Group, PageHeader } from "@/components/tape";
-import { EmailLink, legalHead } from "@/components/legal";
+import { EmailLink, SupportEmailLink, legalHead } from "@/components/legal";
 import { useReportIssue } from "@/components/report-issue";
 
 export const Route = createFileRoute("/contact")({
   staticData: { sitemap: true },
-  head: () => legalHead("Contact — Close & Open", "How to reach Close & Open: use the Report an issue form.", "/contact"),
+  head: () => legalHead(
+    "Contact — Close & Open",
+    "Contact Close & Open: report a wrong number, a broken link or a typo, ask a question about the site or its data, or make a privacy or accessibility request.",
+    "/contact",
+  ),
   component: Contact,
 });
 
@@ -13,13 +17,22 @@ function Contact() {
   const open = useReportIssue();
   return (
     <div className="max-w-2xl">
-      <PageHeader title="Contact" />
-      <Group>
-        <div className="row !block text-[0.9375rem]">The best way to reach us is the Report an issue form. Use it for questions, corrections, privacy requests or accessibility problems.</div>
-        <div className="row !block text-[0.9375rem]">Add your email if you'd like a reply. It's optional.</div>
-        <div className="row !block text-[0.9375rem]">Email: <EmailLink /></div>
+      <PageHeader title="Contact" subtitle="Corrections, questions, privacy and accessibility requests." />
+      <p className="mb-6 text-[0.9375rem] leading-[1.45] text-muted-foreground">
+        Close &amp; Open is a free daily market report. Tell us if a number looks wrong, a link is broken,
+        a page is hard to read or use, or you have a question about the site or where its data comes from.
+      </p>
+      <button className="btn-primary" onClick={() => open({ field: "Contact" })}>Report an issue</button>
+      <Group label="Or email us" className="mt-8" footer="Add your email in the form if you'd like a reply — it's optional.">
+        <div className="row !block text-[0.9375rem]">
+          <span className="block text-[13px] text-muted-foreground">General questions and corrections</span>
+          <span className="mt-0.5 block"><EmailLink /></span>
+        </div>
+        <div className="row !block text-[0.9375rem]">
+          <span className="block text-[13px] text-muted-foreground">Privacy rights requests and accessibility problems</span>
+          <span className="mt-0.5 block"><SupportEmailLink /></span>
+        </div>
       </Group>
-      <button className="btn-primary mt-6" onClick={() => open({ field: "Contact" })}>Report an issue</button>
     </div>
   );
 }
