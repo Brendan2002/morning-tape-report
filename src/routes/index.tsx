@@ -46,7 +46,10 @@ function Today() {
   if (!report)
     return (
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
-        <PageHeader title="Today" subtitle="Today's report publishes at 6:30am ET on weekdays." />
+        <PageHeader
+          title="Daily markets & economy brief"
+          subtitle="Close & Open recap the prior US session, overnight markets, rates, macro data and dairy, feed and fuel prices every weekday. Today's report publishes at 6:30am ET."
+        />
         <LiveMarkets />
       </div>
     );
