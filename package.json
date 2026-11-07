@@ -21,7 +21,7 @@
     "ip-address": "10.7.6",
     "qs": "6.17.1",
     "js-yaml": "4.3.2",
-    "seroval": "1.7.10",
+    "seroval": "1.6.12",
     "source-map-js": "1.2.2"
   },
   "dependencies": {
@@ -56,9 +56,9 @@
     "@supabase/supabase-js": "^2.117.2",
     "@tailwindcss/vite": "^4.2.1",
     "@tanstack/react-query": "^5.101.1",
-    "@tanstack/react-router": "1.170.46",
+    "@tanstack/react-router": "1.170.41",
     "@tanstack/react-start": "1.168.60",
-    "@tanstack/router-plugin": "1.168.48",
+    "@tanstack/router-plugin": "1.168.42",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
